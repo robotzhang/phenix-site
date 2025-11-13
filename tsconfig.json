@@ -11,7 +11,11 @@
     "strict": true,
     "noEmit": true,
     "types": [
-        "./worker-configuration.d.ts"
-    ]
+      "./worker-configuration.d.ts"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   }
 }

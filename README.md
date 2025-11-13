@@ -1,3 +1,20 @@
+# phenix site
+
+## 使用 shadcn ui
+在 tsconfig.json 文件中添加 path alias
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+
+
 # Welcome to React Router!
 
 A modern, production-ready template for building full-stack React applications using React Router.

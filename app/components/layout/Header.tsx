@@ -1,6 +1,5 @@
 import { Link } from "react-router";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Button } from "@/components/ui/button";
+import ConnectButton from "@/components/wallet/ConnectButton";
 
 export function Header() {
   return (

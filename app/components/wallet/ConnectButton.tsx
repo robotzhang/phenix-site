@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useConnectModal, useAccountModal } from "@rainbow-me/rainbowkit";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button"; // 你的 LoaderCircle 组件
 
 export default function WalletConnectButton() {
@@ -16,7 +16,7 @@ export default function WalletConnectButton() {
   // 页面未挂载或正在恢复钱包连接，显示骨架 + LoaderCircle
   if (!mounted || isConnecting || isReconnecting) {
     return (
-      <div className="w-[140px] h-9 rounded-md bg-white border dark:bg-gray-700 flex items-center justify-center animate-pulse">
+      <div className="w-36 h-9 rounded-md bg-white border dark:bg-gray-700 flex items-center justify-center animate-pulse">
         <LoaderCircle className="w-4 h-4 text-gray-500 animate-spin" />
       </div>
     );
@@ -24,19 +24,13 @@ export default function WalletConnectButton() {
 
   // 已连接钱包显示地址 + Dicebear 头像
   if (isConnected && address) {
-    const avatarUrl = `https://avatars.dicebear.com/api/pixel-art/${address}.svg`;
-
     return (
       <Button
         variant="outline"
         onClick={openAccountModal}
-        className="flex items-center gap-2 transition-all duration-200 min-w-[140px]"
+        className="flex items-center gap-2 transition-all duration-200"
       >
-        <img
-          src={avatarUrl}
-          alt="avatar"
-          className="w-5 h-5 rounded-full border"
-        />
+        <Wallet className="w-4 h-4" />
         <span className="max-w-20">{`${address.slice(0, 4)}...${address.slice(-4)}`}</span>
       </Button>
     );
@@ -46,9 +40,9 @@ export default function WalletConnectButton() {
   return (
     <Button
       onClick={openConnectModal}
-      className="transition-all duration-200 min-w-[140px]"
+      className="transition-all duration-200"
     >
-      Connect Wallet
+      Connect
     </Button>
   );
 }

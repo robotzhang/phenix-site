@@ -1,4 +1,5 @@
 import type { Route } from "./+types/home";
+import { Buy } from "@/components/biz/Buy";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,9 +14,14 @@ export function loader({ context }: Route.LoaderArgs) {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
-    <div>
-      <h1>this is phenix RWA!</h1>
-      <div>{loaderData.message}</div>
+    <div className="py-20">
+      <h1 className="text-5xl font-semibold text-center">
+        The ticket for RWA!
+      </h1>
+
+      <div className="mt-6">
+        <Buy />
+      </div>
     </div>
   );
 }

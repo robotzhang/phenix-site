@@ -46,15 +46,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <div>
+      <header className="transition-colors duration-500 text-neutral-600 fixed top-0 left-0 right-0 w-full z-20 border-b border-b-transparent h-16 px-6">
         <Header />
-      </div>
-      <main className="flex-1 container mx-auto px-4 py-6">
+      </header>
+      <main className="flex-1 container pt-16">
         <Outlet />
       </main>
-      <div>
+      <footer>
         <Footer />
-      </div>
+      </footer>
     </div>
   );
 }

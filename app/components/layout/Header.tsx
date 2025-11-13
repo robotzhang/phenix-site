@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from "@/components/ui/button";
 
 export function Header() {
@@ -18,7 +19,7 @@ export function Header() {
       </ul>
 
       <div className="ml-auto">
-        <Button size="sm">Connect</Button>
+        <ConnectButton />
       </div>
     </div>
   );

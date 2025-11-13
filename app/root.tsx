@@ -8,8 +8,10 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { Providers } from '@/components/wallet/Providers';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import '@rainbow-me/rainbowkit/styles.css';
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -45,17 +47,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <header className="transition-colors duration-500 text-neutral-600 fixed top-0 left-0 right-0 w-full z-20 border-b border-b-transparent h-16 px-6">
-        <Header />
-      </header>
-      <main className="flex-1 container pt-16">
-        <Outlet />
-      </main>
-      <footer>
-        <Footer />
-      </footer>
-    </div>
+    <Providers>
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
+        <header className="transition-colors duration-500 text-neutral-600 fixed top-0 left-0 right-0 w-full z-20 border-b border-b-transparent h-16 px-6">
+          <Header />
+        </header>
+        <main className="flex-1 container pt-16">
+          <Outlet />
+        </main>
+        <footer>
+          <Footer />
+        </footer>
+      </div>
+    </Providers>
+    
   );
 }
 

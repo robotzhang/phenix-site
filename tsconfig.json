@@ -14,6 +14,7 @@
       "./worker-configuration.d.ts"
     ],
     "baseUrl": ".",
+    "rootDirs": [".", "./.react-router/types"],
     "paths": {
       "@/*": ["./app/*"]
     },

@@ -1,10 +1,9 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Phenix RWA" },
+    { name: "description", content: "Welcome Phenix RWA!" },
   ];
 }
 
@@ -13,5 +12,10 @@ export function loader({ context }: Route.LoaderArgs) {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  return <Welcome message={loaderData.message} />;
+  return (
+    <div>
+      <h1>this is phenix RWA!</h1>
+      <div>{loaderData.message}</div>
+    </div>
+  );
 }

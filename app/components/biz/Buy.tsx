@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowUp } from 'lucide-react';
+import { toast } from "sonner";
 import { useFNFT } from "@/hooks/useFNFT";
 import { Button } from "@/components/ui/button";
 
@@ -9,17 +10,17 @@ export function Buy() {
 
   const handleBuy = async () => {
     if (amount <= 0) {
-      alert("Amount must be > 0");
+      toast.error("Amount must be > 0");
       return;
     }
 
     try {
       // ✅ 确保传入 bigint 类型
       const tx = await buy([BigInt(amount)]);
-      alert(`✅ Purchase success! TX hash: ${tx}`);
+      toast.success(`Purchase success! TX hash: ${tx}`);
     } catch (err: any) {
       console.error(err);
-      alert(`❌ Purchase failed: ${err?.shortMessage || err?.message}`);
+      toast.error(`Purchase failed: ${err?.shortMessage || err?.message}`);
     }
   };
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowDown } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import { useFNFT } from "@/hooks/useFNFT";
 import { Button } from "@/components/ui/button";
 
@@ -24,16 +24,17 @@ export function Buy() {
   };
 
   return (
-    <div className="p-6 relative shadow border rounded-2xl max-w-lg m-auto flex flex-col gap-1 bg-card text-card-foreground">
+    <>
       <div className="border rounded-xl p-4">
         <div className="text-muted-foreground mb-2">
-          Buy
+          Get
         </div>
         <div className="relative">
           <input
             className="w-full font-semibold text-3xl outline-0"
+            placeholder="0"
             onChange={(e) => setAmount(Number(e.target.value))}
-            value={0}
+            value={amount || ''}
           />
 
           <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">
@@ -46,15 +47,17 @@ export function Buy() {
       </div>
 
       <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-14 -ml-7">
-        <ArrowDown className="h-7 w-7" />
+        <ArrowUp className="h-7 w-7" />
       </div>
 
       <div className="bg-neutral-100 rounded-xl p-4">
         <div className="text-muted-foreground mb-2">
-          Pay
+          Send
         </div>
         <div className="relative">
-          <div className="text-3xl font-semibold">100</div>
+          <div className="text-3xl font-semibold">
+            {amount && price ? Number(price) * amount : '0'}
+          </div>
 
           <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">
             <div className="flex items-center gap-2 pr-3 p-1 rounded-full border bg-white">
@@ -68,6 +71,6 @@ export function Buy() {
       <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={handleBuy}>
         Buy Now
       </Button>
-    </div>
+    </>
   );
 }

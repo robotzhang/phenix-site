@@ -15,11 +15,12 @@ export function loader({ context }: Route.LoaderArgs) {
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <div className="py-20">
-      <h1 className="text-5xl font-semibold text-center">
-        The ticket for RWA!
+      <h1 className="text-5xl font-semibold text-center flex flex-col gap-2">
+        <p>The Ticket</p>
+        <p>For Phenix RWA!</p>
       </h1>
 
-      <div className="mt-6">
+      <div className="mt-10 p-6 relative shadow-lg rounded-2xl max-w-lg m-auto flex flex-col gap-1 bg-card text-card-foreground">
         <Buy />
       </div>
     </div>

@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 
 export function Buy() {
   const [amount, setAmount] = useState(1);
-  const { price, buy } = useFNFT();
+  const { price = 100, buy } = useFNFT();
+  console.log('price', price);
 
   const handleBuy = async () => {
     if (amount <= 0) {

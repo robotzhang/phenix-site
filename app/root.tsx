@@ -6,12 +6,14 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import clsx from "clsx";
 
 import type { Route } from "./+types/root";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from '@/components/wallet/Providers';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { useScrollHeader } from "@/lib/useScrollHeader";
 import '@rainbow-me/rainbowkit/styles.css';
 import "./app.css";
 
@@ -48,10 +50,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const { scrolled, hidden } = useScrollHeader(50);
+  //
   return (
     <Providers>
       <div className="min-h-screen flex flex-col text-foreground">
-        <header className="transition-colors duration-500 text-neutral-600 fixed top-0 left-0 right-0 w-full z-20 border-b border-b-transparent h-16 px-6">
+        <header 
+          className={
+            clsx(
+              "transition-colors duration-500 text-neutral-600 fixed top-0 left-0 h-16 px-6 right-0 w-full z-20",
+              scrolled ? "bg-white border-b border-b-neutral-200/60" : "border-b border-b-transparent",
+            )
+          }
+        >
           <Header />
         </header>
         <main className="flex-1 container pt-16">

@@ -12,6 +12,7 @@
 		"typecheck": "npm run cf-typegen && react-router typegen && tsc -b"
 	},
 	"dependencies": {
+		"@radix-ui/react-accordion": "^1.2.12",
 		"@radix-ui/react-navigation-menu": "^1.2.14",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@rainbow-me/rainbowkit": "^2.2.9",

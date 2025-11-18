@@ -5,7 +5,7 @@ export function Header() {
   return (
     <div className="flex items-center h-full gap-8">
       <div>
-        <img src="/logo.png" className="h-6 -mt-1" alt="phenix" />
+        <img src="/logo.png" className="h-5 sm:h-6 -mt-1" alt="phenix" />
       </div>
 
       {/* <ul className="flex items-center gap-x-6">

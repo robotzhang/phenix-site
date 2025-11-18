@@ -50,7 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { scrolled, hidden } = useScrollHeader(50);
+  const { scrolled } = useScrollHeader(50);
   //
   return (
     <Providers>
@@ -58,7 +58,7 @@ export default function App() {
         <header 
           className={
             clsx(
-              "transition-colors duration-500 text-neutral-600 fixed top-0 left-0 h-16 px-6 right-0 w-full z-20",
+              "transition-colors duration-500 text-neutral-600 fixed top-0 left-0 h-14 sm:h-16 px-4 sm:px-6 right-0 w-full z-20",
               scrolled ? "bg-white border-b border-b-neutral-200/60" : "border-b border-b-transparent",
             )
           }

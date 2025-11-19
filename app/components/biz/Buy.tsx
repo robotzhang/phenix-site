@@ -25,15 +25,18 @@ export function Buy() {
           Get
         </div>
         <div className="flex items-center">
-          <input
-            className="flex-1 font-semibold text-3xl outline-0"
-            placeholder="0"
-            onChange={(e) => {
-              const amount = Number(e.target.value) || 0;
-              buy.setAmount(amount);
-            }}
-            value={buy.amount || ''}
-          />
+          <div className="flex-1">
+            <input
+              type="text"
+              className="w-full font-semibold text-3xl outline-0"
+              placeholder="0"
+              onChange={(e) => {
+                const amount = Number(e.target.value) || 0;
+                buy.setAmount(amount);
+              }}
+              value={buy.amount || ''}
+            />
+          </div>
 
           <div className="flex flex-col justify-center ">
             <div className="flex items-center gap-2 pr-3 p-1 rounded-full border">

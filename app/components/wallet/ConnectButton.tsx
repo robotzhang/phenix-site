@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 import { useConnectModal, useAccountModal } from "@rainbow-me/rainbowkit";
 import { LoaderCircle, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button"; // 你的 LoaderCircle 组件
+import { Link } from "react-router";
 
 export default function WalletConnectButton() {
   const { address, isConnected, isReconnecting, isConnecting } = useAccount();
@@ -26,12 +27,14 @@ export default function WalletConnectButton() {
   if (isConnected && address) {
     return (
       <Button
+        asChild
         variant="outline"
-        onClick={openAccountModal}
         className="flex items-center gap-2 transition-all duration-200"
       >
-        <Wallet className="w-4 h-4" />
-        <span className="max-w-20">{`${address.slice(0, 4)}...${address.slice(-4)}`}</span>
+        <Link to="/assets">
+          <Wallet className="w-4 h-4" />
+          <span className="max-w-20">{`${address.slice(0, 4)}...${address.slice(-4)}`}</span>
+        </Link>
       </Button>
     );
   }

@@ -4,9 +4,9 @@ import ConnectButton from "@/components/wallet/ConnectButton";
 export function Header() {
   return (
     <div className="flex items-center h-full gap-8">
-      <div>
+      <Link to="/">
         <img src="/logo.png" className="h-5 sm:h-6 -mt-1" alt="phenix" />
-      </div>
+      </Link>
 
       {/* <ul className="flex items-center gap-x-6">
         <li>

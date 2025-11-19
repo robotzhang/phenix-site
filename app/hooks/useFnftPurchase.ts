@@ -1,7 +1,7 @@
 // src/hooks/useFnftPurchase.ts
 import { useState, useMemo } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { FNFT_ADDRESS, USDT_ADDRESS, USDT_DECIMALS } from "@/lib/constants";
+import { FNFT_ADDRESS, USDT_ADDRESS, USDT_DECIMALS, FNFT_DECIMALS } from "@/lib/constants";
 import fnftAbi from "@/abi/fnft.json";
 import erc20Abi from "@/abi/erc20.json";
 import { parseUnits, formatUnits } from "viem";
@@ -16,8 +16,23 @@ export function useFnftPurchase() {
     abi: fnftAbi,
     functionName: "price",
   });
-
   const price = priceRaw ? formatUnits(priceRaw as bigint, USDT_DECIMALS) : "0";
+
+  /** 总量 totalSupply */
+  const { data: maxSupplyRaw } = useReadContract({
+    address: FNFT_ADDRESS,
+    abi: fnftAbi,
+    functionName: "MAX_SUPPLY",
+  });
+  const maxSupply = maxSupplyRaw ? formatUnits(maxSupplyRaw as bigint, FNFT_DECIMALS) : "0";
+
+  /** 已售出 */
+  const { data: totalMintedRaw, isLoading: isTotalMintedLoading } = useReadContract({
+    address: FNFT_ADDRESS,
+    abi: fnftAbi,
+    functionName: "totalMinted",
+  });
+  const totalMinted = totalMintedRaw ? formatUnits(totalMintedRaw as bigint, 0) : "0";
 
   /** 用户余额 */
   const { data: usdtBalanceRaw } = useReadContract({
@@ -86,6 +101,9 @@ export function useFnftPurchase() {
 
   return {
     isPriceLoading,
+    isTotalMintedLoading,
+    maxSupply,
+    totalMinted,
     amount,
     setAmount,
     price,

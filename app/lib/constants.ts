@@ -3,5 +3,5 @@ export const PHENIX_ADDRESS = "0x5502af653792D5d24876f12Ac6658eC2332224bB";
 export const USDT_ADDRESS = "0x6dE9520092cf47e39402AbeBc43623C893D14Ddc";
 export const USDT_DECIMALS = 6;
 export const PHENIX_DECIMALS = 18;
-export const FNFT_DECIMALS = 18;
+export const FNFT_DECIMALS = 0;
 export const FNFT_MAX_SUPPLY = 2000000;

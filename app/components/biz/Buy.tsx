@@ -1,30 +1,26 @@
 import { useState } from "react";
 import { ArrowUp } from 'lucide-react';
 import { toast } from "sonner";
-import { useFNFT } from "@/hooks/useFNFT";
+import { useFnftPurchase } from "@/hooks/useFnftPurchase";
 import { Button } from "@/components/ui/button";
 
 export function Buy() {
   const [amount, setAmount] = useState(1);
-  const { price = 100, buy } = useFNFT();
-  console.log('price', price);
+  const fnftHooks = useFnftPurchase();
+  console.log('fnftHooks', fnftHooks);
 
   const handleBuy = async () => {
     if (amount <= 0) {
       toast.error("Amount must be > 0");
       return;
     }
-
     try {
-      // ✅ 确保传入 bigint 类型
-      const tx = await buy([BigInt(amount)]);
-      toast.success(`Purchase success! TX hash: ${tx}`);
+      return await fnftHooks.purchase();
     } catch (err: any) {
-      console.error(err);
-      toast.error(`Purchase failed: ${err?.shortMessage || err?.message}`);
+      toast.error(err?.shortMessage || err?.message);
     }
   };
-
+  //
   return (
     <>
       <div className="border rounded-xl p-4">
@@ -42,7 +38,7 @@ export function Buy() {
           <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">
             <div className="flex items-center gap-2 pr-3 p-1 rounded-full border">
               <img src="/favicon.ico" className="h-8 rounded-full" />
-              <div className="">NFT</div>
+              <div className="">FNFT</div>
             </div> 
           </div>
         </div>
@@ -58,7 +54,7 @@ export function Buy() {
         </div>
         <div className="relative">
           <div className="text-3xl font-semibold">
-            {amount && price ? Number(price) * amount : '0'}
+            {/* {amount && price ? Number(price) * amount : '0'} */}
           </div>
 
           <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">

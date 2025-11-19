@@ -1,16 +1,14 @@
-import { useState } from "react";
-import { ArrowUp, LoaderCircle } from 'lucide-react';
+import { ArrowUp, LoaderCircle, Wallet } from 'lucide-react';
 import { toast } from "sonner";
 import { useFnftPurchase } from "@/hooks/useFnftPurchase";
 import { Button } from "@/components/ui/button";
 
 export function Buy() {
-  const [amount, setAmount] = useState(1);
   const buy = useFnftPurchase();
 
   const handleBuy = async () => {
-    if (amount <= 0) {
-      toast.error("Amount must be > 0");
+    if (buy.amount <= 0) {
+      toast.error("Amount must be >= 1");
       return;
     }
     try {
@@ -26,9 +24,9 @@ export function Buy() {
         <div className="text-muted-foreground mb-2">
           Get
         </div>
-        <div className="relative">
+        <div className="flex items-center">
           <input
-            className="w-full font-semibold text-3xl outline-0"
+            className="flex-1 font-semibold text-3xl outline-0"
             placeholder="0"
             onChange={(e) => {
               const amount = Number(e.target.value) || 0;
@@ -37,7 +35,7 @@ export function Buy() {
             value={buy.amount || ''}
           />
 
-          <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">
+          <div className="flex flex-col justify-center ">
             <div className="flex items-center gap-2 pr-3 p-1 rounded-full border">
               <img src="/favicon.ico" className="h-8 rounded-full" />
               <div className="">FNFT</div>
@@ -46,7 +44,7 @@ export function Buy() {
         </div>
       </div>
 
-      <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-14 -ml-7">
+      <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-18 -ml-7">
         <ArrowUp className="h-7 w-7" />
       </div>
 
@@ -54,19 +52,24 @@ export function Buy() {
         <div className="text-muted-foreground mb-2">
           Send
         </div>
-        <div className="relative">
-          <div className="text-3xl font-semibold">
+        <div className="flex items-center">
+          <div className="text-3xl font-semibold flex-1">
             {buy.isPriceLoading ? (
               <div className="h-9 flex items-center"><LoaderCircle className="w-5 h-5 animate-spin" /></div>
             ) : buy.totalCos}
           </div>
 
-          <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">
+          <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2 pr-3 p-1 rounded-full border bg-white">
               <img src="/logos/usdt.png" className="h-8 rounded-full" />
               <div className="">USDT</div>
             </div> 
           </div>
+        </div>
+
+        <div className="text-sm text-muted-foreground mt-2 flex gap-2 items-center">
+          <Wallet className="w-4 h-4" />
+          ${buy.usdtBalance}
         </div>
       </div>
 

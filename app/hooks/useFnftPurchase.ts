@@ -11,7 +11,7 @@ export function useFnftPurchase() {
   const [amount, setAmount] = useState<number>(1);
 
   /** 单价 price */
-  const { data: priceRaw } = useReadContract({
+  const { data: priceRaw, isLoading: isPriceLoading } = useReadContract({
     address: FNFT_ADDRESS,
     abi: fnftAbi,
     functionName: "price",
@@ -85,12 +85,14 @@ export function useFnftPurchase() {
   }
 
   return {
+    isPriceLoading,
     amount,
     setAmount,
     price,
     usdtBalance,
     allowance,
     totalCostWei,
+    totalCos: formatUnits(totalCostWei, USDT_DECIMALS),
     purchase,
   };
 }

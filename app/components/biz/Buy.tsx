@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, LoaderCircle } from 'lucide-react';
 import { toast } from "sonner";
 import { useFnftPurchase } from "@/hooks/useFnftPurchase";
 import { Button } from "@/components/ui/button";
 
 export function Buy() {
   const [amount, setAmount] = useState(1);
-  const fnftHooks = useFnftPurchase();
-  console.log('fnftHooks', fnftHooks);
+  const buy = useFnftPurchase();
 
   const handleBuy = async () => {
     if (amount <= 0) {
@@ -15,7 +14,7 @@ export function Buy() {
       return;
     }
     try {
-      return await fnftHooks.purchase();
+      return await buy.purchase();
     } catch (err: any) {
       toast.error(err?.shortMessage || err?.message);
     }
@@ -31,8 +30,11 @@ export function Buy() {
           <input
             className="w-full font-semibold text-3xl outline-0"
             placeholder="0"
-            onChange={(e) => setAmount(Number(e.target.value))}
-            value={amount || ''}
+            onChange={(e) => {
+              const amount = Number(e.target.value) || 0;
+              buy.setAmount(amount);
+            }}
+            value={buy.amount || ''}
           />
 
           <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">
@@ -54,7 +56,9 @@ export function Buy() {
         </div>
         <div className="relative">
           <div className="text-3xl font-semibold">
-            {/* {amount && price ? Number(price) * amount : '0'} */}
+            {buy.isPriceLoading ? (
+              <div className="h-9 flex items-center"><LoaderCircle className="w-5 h-5 animate-spin" /></div>
+            ) : buy.totalCos}
           </div>
 
           <div className="flex flex-col justify-center absolute top-0 bottom-0 right-0">

@@ -30,7 +30,7 @@ contract FNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     uint256 public constant MAX_SUPPLY = 2_000_000;     // NFT 最大总量
     uint256 public price;                               // 购买价格（USDT/每 1 张 NFT）
     uint256 public redeemStart;                         // F-NFT → PHENIX 开启兑换时间戳
-    uint256 public constant EXCHANGE_RATE = 1000;       // 兑换比例：1 NFT = 1000 PHENIX
+    uint256 public constant EXCHANGE_RATE = 1000 * 1e18;  // 兑换比例：1 NFT = 1000 PHENIX
     uint256 public totalMinted;                        // 已售出数量
 
     IERC20 public immutable usdt;                       // USDT 代币地址

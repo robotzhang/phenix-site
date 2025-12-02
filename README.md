@@ -45,82 +45,17 @@ export const FNFT_MAX_SUPPLY = 2000000;
 2. 不能出现 import 错误，typescript 错误
 3. 生产可用
 
-# Welcome to React Router!
+# resources
+- https://www.alchemy.com/faucets/base-sepolia # 测试网以太坊，每天领0.1eth，不需要注册，非常快速
 
-A modern, production-ready template for building full-stack React applications using React Router.
+# test
+f-nft price 必须是6位小数 100000000 才是100u
+- usdt: 0x9Ed1f88180436C8F3202b4f0f02A7382FaD8f4BC 1000000000
+- phenix: 0xEC25aC2BEA897C8e1c33F40500bda71e523B7aa4 10000000000
+- f-nft: 0x5150da54f0cfCCcC3771E032E1925d7404cf176C
+- setRedeemStart 时间戳，必须到秒：js: Math.floor(Date.now() / 1000) + 60
 
-## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Previewing the Production Build
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-Deployment is done using the Wrangler CLI.
-
-To build and deploy directly to production:
-
-```sh
-npm run deploy
-```
-
-To deploy a preview URL:
-
-```sh
-npx wrangler versions upload
-```
-
-You can then promote a version to production after verification or roll it out progressively.
-
-```sh
-npx wrangler versions deploy
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+# deploy
+1. 一定要先把 phenix 桥接到 base L2 网络
+2. 然后要将 phenix 代币转入 f-nft 合约地址

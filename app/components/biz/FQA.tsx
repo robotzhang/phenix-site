@@ -17,7 +17,7 @@ export default function FQAComponent() {
       type="single"
       collapsible
       className="w-full"
-      defaultValue="item-1"
+      // defaultValue="item-1"
     >
       {FQAS.map((item, index) => (
         <AccordionItem key={item.q} value={`item-${index + 1}`}>

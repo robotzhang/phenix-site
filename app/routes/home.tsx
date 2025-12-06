@@ -1,7 +1,6 @@
 import FQA from "@/components/biz/FQA";
 import type { Route } from "./+types/home";
 import { Buy } from "@/components/biz/Buy";
-import { USDT_ADDRESS, FNFT_ADDRESS, PHENIX_ADDRESS } from "@/lib/constants";
 
 export function meta({}: Route.MetaArgs) {
   return [

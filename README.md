@@ -51,11 +51,32 @@ export const FNFT_MAX_SUPPLY = 2000000;
 # test
 f-nft price 必须是6位小数 100000000 才是100u
 - usdt: 0x9Ed1f88180436C8F3202b4f0f02A7382FaD8f4BC 1000000000
-- phenix: 0xEC25aC2BEA897C8e1c33F40500bda71e523B7aa4 10000000000
-- f-nft: 0x5150da54f0cfCCcC3771E032E1925d7404cf176C
+- phenix: 0x80F325b67D9cf94518930d6E24C631E38F9334f3 2000000000(20亿)
+- f-nft: 0x9d21D0a0F6c11fC8A906f1b86b010DC7A292D497
 - setRedeemStart 时间戳，必须到秒：js: Math.floor(Date.now() / 1000) + 60
 
 
 # deploy
 1. 一定要先把 phenix 桥接到 base L2 网络
 2. 然后要将 phenix 代币转入 f-nft 合约地址
+3. usdt address: 0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2
+4. phenix 主网合约地址：0xe713Dcf81438ce1DF23E4C423e74F181c7FB249d
+
+# 桥接资产
+1. 桥接主合约以太坊到 base L2 以太坊，用于发布合约的 gas
+2. 使用 主合约地址 在 base L2 上发布合约
+3. 桥接 L1 资产到 L2 上，通过 base 的桥接代码
+
+base testnet:
+1. phenix address: 0x80F325b67D9cf94518930d6E24C631E38F9334f3
+
+
+# prompts
+GEO 时代下的官网会是什么形态？如何将 SEO 时代的建站系统升级？
+
+GEO 建站 SAAS 系统，
+我需要：
+1. 核心卖点
+2. 核心功能列表
+3. 匹配的开源组件
+4. 实现系统的 SOP

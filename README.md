@@ -52,7 +52,7 @@ export const FNFT_MAX_SUPPLY = 2000000;
 f-nft price 必须是6位小数 100000000 才是100u
 - usdt: 0x9Ed1f88180436C8F3202b4f0f02A7382FaD8f4BC 1000000000
 - phenix: 0x80F325b67D9cf94518930d6E24C631E38F9334f3 2000000000(20亿)
-- f-nft: 0x9d21D0a0F6c11fC8A906f1b86b010DC7A292D497
+- f-nft: 0xf9A7E7D1EA36F2Bbf9e6AD3988177DC001d0f8c0
 - setRedeemStart 时间戳，必须到秒：js: Math.floor(Date.now() / 1000) + 60
 
 
@@ -66,9 +66,6 @@ f-nft price 必须是6位小数 100000000 才是100u
 1. 桥接主合约以太坊到 base L2 以太坊，用于发布合约的 gas
 2. 使用 主合约地址 在 base L2 上发布合约
 3. 桥接 L1 资产到 L2 上，通过 base 的桥接代码
-
-base testnet:
-1. phenix address: 0x80F325b67D9cf94518930d6E24C631E38F9334f3
 
 
 # prompts

@@ -3,15 +3,7 @@ pragma solidity ^0.8.30;
 
 /**
  * -----------------------------
- * F-NFT 合约（Base L2 版本 - 修复版）
- * 特性：
- * 1. 使用 OpenZeppelin v5.5（通过 GitHub 原始链接指定版本）
- * 2. 使用 SafeERC20 兼容 USDT（非标准 ERC20）
- * 3. 总量 2,000,000 枚 NFT（不可增发）
- * 4. 修复 redeemStart 初始化逻辑
- * 5. 修复 _nextTokenId 溢出检查
- * 6. 修复 PHENIX 转账兼容性
- * 7. 增强 withdrawUSDT 安全性
+ * F-NFT 合约（Base L2 版本）
  * -----------------------------
  */
 
@@ -39,6 +31,12 @@ contract FNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     uint256 private _nextTokenId = 1;                   // TokenId 自增（从1开始）
 
     // -------------------------
+    // tokenURI 相关
+    // -------------------------
+    string public baseTokenURI;      // 统一的 base URI
+    string public defaultTokenURI;   // 默认占位 URI（用于 burn 或不存在的 NFT）
+
+    // -------------------------
     // 事件
     // -------------------------
     event PriceUpdated(uint256 newPrice);
@@ -46,6 +44,8 @@ contract FNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     event Purchased(address indexed buyer, uint256 amount, uint256 cost);
     event Redeemed(address indexed user, uint256 tokenId, uint256 phenixAmount);
     event Withdrawn(address indexed admin, uint256 amount);
+    event BaseURIUpdated(string newBaseURI);
+    event DefaultURIUpdated(string newDefaultURI);
 
     // -------------------------
     // 构造函数
@@ -70,9 +70,6 @@ contract FNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         redeemStart = 0;  // 初始化为禁用状态
     }
 
-    // -------------------------
-    // 修饰符
-    // -------------------------
     // @notice 确保数量为正整数（uint 本身就禁止小数）
     modifier positive(uint256 n) {
         require(n > 0, "amount must be > 0");
@@ -111,6 +108,18 @@ contract FNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 amount = (bal * maxPercentage) / 100;
         usdt.safeTransfer(msg.sender, amount);
         emit Withdrawn(msg.sender, amount);
+    }
+
+    // @notice 设置统一 baseTokenURI
+    function setBaseTokenURI(string calldata uri) external onlyOwner {
+        baseTokenURI = uri;
+        emit BaseURIUpdated(uri);
+    }
+
+    // @notice 设置默认占位 URI（用于 burn 或不存在的 NFT）
+    function setDefaultTokenURI(string calldata uri) external onlyOwner {
+        defaultTokenURI = uri;
+        emit DefaultURIUpdated(uri);
     }
 
     // -------------------------
@@ -152,5 +161,37 @@ contract FNFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         // 使用 transfer 兼容非标准 ERC20
         phenix.transfer(msg.sender, EXCHANGE_RATE);
         emit Redeemed(msg.sender, tokenId, EXCHANGE_RATE);
+    }
+
+    // -------------------------
+    // tokenURI 逻辑（安全版本，兼容 Remix）
+    // -------------------------
+    function tokenURI(uint256 tokenId) public view override(ERC721) returns (string memory) {
+        // NFT 不存在或已 burn 返回默认占位图
+        try this.ownerOf(tokenId) returns (address) {
+            return string(abi.encodePacked(baseTokenURI, "?id=", _toString(tokenId)));
+        } catch {
+            return defaultTokenURI;
+        }
+    }
+
+    // -------------------------
+    // 内部工具函数
+    // -------------------------
+    function _toString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) return "0";
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
     }
 }

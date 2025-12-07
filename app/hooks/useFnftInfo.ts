@@ -3,7 +3,7 @@ import { useReadContract } from "wagmi";
 import fnftAbi from "@/abi/fnft.json";
 import { FNFT_ADDRESS, USDT_DECIMALS } from "@/lib/constants";
 import { formatUnits } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 
 // usage: const { infoQuery } = useFnftInfo();
 export function useFnftInfo() {
@@ -11,14 +11,14 @@ export function useFnftInfo() {
     address: FNFT_ADDRESS as `0x${string}`,
     abi: fnftAbi,
     functionName: "price",
-    chainId: baseSepolia.id,
+    chainId: base.id,
   });
 
   const totalMintedQuery = useReadContract({
     address: FNFT_ADDRESS as `0x${string}`,
     abi: fnftAbi,
     functionName: "totalMinted",
-    chainId: baseSepolia.id,
+    chainId: base.id,
   });
 
   const infoQuery = useQuery({

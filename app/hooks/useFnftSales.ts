@@ -3,7 +3,7 @@ import { useWatchContractEvent } from "wagmi";
 import fnftAbi from "@/abi/fnft.json";
 import { FNFT_ADDRESS, USDT_DECIMALS } from "@/lib/constants";
 import { formatUnits } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 
 export function useFnftSales() {
   const [sales, setSales] = React.useState<
@@ -20,7 +20,7 @@ export function useFnftSales() {
     address: FNFT_ADDRESS as `0x${string}`,
     abi: fnftAbi,
     eventName: "Purchased",
-    chainId: baseSepolia.id,
+    chainId: base.id,
     enabled: true,
     onLogs(logs) {
       // logs: readonly any[]

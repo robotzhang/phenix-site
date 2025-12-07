@@ -60,7 +60,8 @@ f-nft price 必须是6位小数 100000000 才是100u
 1. 一定要先把 phenix 桥接到 base L2 网络
 2. 然后要将 phenix 代币转入 f-nft 合约地址
 3. usdt address: 0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2
-4. phenix 主网合约地址：0xe713Dcf81438ce1DF23E4C423e74F181c7FB249d
+4. phenix base 主网合约地址: 0xf9A7E7D1EA36F2Bbf9e6AD3988177DC001d0f8c0
+5. f-nft: 0xceBc6e3bDbDd972658056CB852B5F1bA8e548268
 
 # 桥接资产
 1. 桥接主合约以太坊到 base L2 以太坊，用于发布合约的 gas

@@ -12,7 +12,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   // 你可以替换成自己的图片地址
-  const imageUrl = `https://phenix-site.dianin.workers.dev/logo.png`;
+  const imageUrl = `https://phenixmcga.com/fnft.jpg`;
 
   const metadata = {
     name: `Phenix FNFT #${id}`,

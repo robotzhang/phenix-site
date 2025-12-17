@@ -8,14 +8,20 @@ export function Header() {
         <img src="/logo.png" className="h-5 sm:h-6 -mt-1" alt="phenix" />
       </Link>
 
-      {/* <ul className="flex items-center gap-x-6">
+      <ul className="flex items-center gap-x-6">
         <li>
           <Link to="/" className="hover:text-black">Home</Link>
         </li>
         <li>
-          <Link to="/buy" className="hover:text-black">Buy</Link>
+          <Link to="/f-nft" className="hover:text-black">RWA</Link>
         </li>
-      </ul> */}
+        <li>
+          <Link to="/f-nft" className="hover:text-black">FNFT</Link>
+        </li>
+        <li>
+          <Link to="/f-nft" className="hover:text-black">MEME</Link>
+        </li>
+      </ul>
 
       <div className="ml-auto">
         <ConnectButton />

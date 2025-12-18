@@ -10,7 +10,7 @@ export function Header() {
 
       <ul className="flex items-center gap-x-6 ml-auto">
         <li>
-          <Link to="/" className="hover:text-black">Home</Link>
+          <Link to="/" className="hover:text-black">HOME</Link>
         </li>
         <li>
           <Link to="/rwa" className="hover:text-black">RWA</Link>

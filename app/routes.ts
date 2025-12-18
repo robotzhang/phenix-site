@@ -6,4 +6,5 @@ export default [
   route("nft", "./routes/nft.tsx"),
   route("nft/metadata", "./routes/nft-metadata.tsx"),
   route("rwa", "./routes/rwa.tsx"),
+  route("meme", "./routes/meme.tsx"),
 ] satisfies RouteConfig;

@@ -41,7 +41,11 @@ export default function Meme() {
             <div className="mt-6 pt-4 border-t">
               <div className="mb-2 text-muted-foreground">Exchange phenix meme?</div>
               <ul className="flex items-center">
-                <li>uniswap</li>
+                <li>
+                  <a href="https://app.uniswap.org/" target="_blank" rel="noreferrer">
+                    <img src="/logos/uniswap.png" className="h-7" alt="uniswap" />
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

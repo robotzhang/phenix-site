@@ -37,6 +37,13 @@ export default function Meme() {
                 </div>
               </div>
             </div>
+
+            <div className="mt-6 pt-4 border-t">
+              <div className="mb-2 text-muted-foreground">Exchange phenix meme?</div>
+              <ul className="flex items-center">
+                <li>uniswap</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -45,8 +52,6 @@ export default function Meme() {
         <h2 className="text-3xl font-semibold mb-2 sm:mb-6">FQA</h2>
         <MemeFaq />
       </div>
-
-      <div>exchange</div>
     </div>
   );
 }

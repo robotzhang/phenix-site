@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 const BASE_CHAIN_ID = 8453;
 
-export function useProductionGuard() {
+export function useGuard() {
   const { isConnected } = useAccount();
   const chainId = useChainId();
 

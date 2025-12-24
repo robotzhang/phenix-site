@@ -16,7 +16,7 @@ import {
 } from "@/lib/constants";
 
 import { useSafeContractWrite } from "./useSafeContractWrite";
-import { useProductionGuard } from "./useGuard";
+import { useGuard } from "./useGuard";
 
 /**
  * MEME Domain Hook
@@ -26,27 +26,26 @@ export function useMeme() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { write } = useSafeContractWrite();
-  const production = useProductionGuard();
+  const guardHooks = useGuard();
 
   const [amount, setAmount] = useState("1");
 
   // =======================
   // Read: On-chain state
   // =======================
-
-  const { data: price } = useReadContract({
+  const { data: price, isLoading: isPriceLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
     functionName: "price",
   });
 
-  const { data: mined } = useReadContract({
+  const { data: mined, isLoading: isMinedLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
     functionName: "totalMined",
   });
 
-  const { data: cap } = useReadContract({
+  const { data: cap, isLoading: isCapLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
     functionName: "MAX_SUPPLY",
@@ -55,7 +54,6 @@ export function useMeme() {
   // =======================
   // Derived state
   // =======================
-
   const cost = useMemo(() => {
     if (!price) return "0";
     const total = BigInt(price?.toString()) * BigInt(amount || 0);
@@ -65,10 +63,9 @@ export function useMeme() {
   // =======================
   // Guard layer
   // =======================
-
   const guard = useMemo(() => {
-    if (!production.ready)
-      return { canBuy: false, reason: production.reason };
+    if (!guardHooks.ready)
+      return { canBuy: false, reason: guardHooks.reason };
 
     if (!amount || Number(amount) <= 0)
       return { canBuy: false, reason: "Invalid amount" };
@@ -77,12 +74,11 @@ export function useMeme() {
       return { canBuy: false, reason: "Mining finished" };
 
     return { canBuy: true as const };
-  }, [production, amount, mined, cap]);
+  }, [guardHooks, amount, mined, cap]);
 
   // =======================
   // Write: Buy MEME
   // =======================
-
   const buy = useCallback(async () => {
     if (!guard.canBuy || !address || !publicClient) return;
 
@@ -105,6 +101,13 @@ export function useMeme() {
     // User input
     amount,
     setAmount,
+
+    // Loading
+    isLoading: {
+      price: isPriceLoading,
+      minted: isMinedLoading,
+      cap: isCapLoading,
+    },
 
     // Chain state
     price,

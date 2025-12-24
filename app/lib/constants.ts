@@ -6,3 +6,4 @@ export const USDT_DECIMALS = 6;
 export const PHENIX_DECIMALS = 18;
 export const FNFT_DECIMALS = 0;
 export const FNFT_MAX_SUPPLY = 2000000;
+export const MEME_DECIMALS = 18;

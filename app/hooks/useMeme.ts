@@ -88,7 +88,7 @@ export function useMeme() {
     const simulation = await publicClient.simulateContract({
       address: MEME_ADDRESS,
       abi: memeAbi,
-      functionName: "buyMeme",
+      functionName: "mine",
       args: [memeAmount],
       account: address,
     });

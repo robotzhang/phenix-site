@@ -9,7 +9,6 @@ pragma solidity ^0.8.30;
  * Compiler: Solidity ^0.8.30
  * ------------------------------------------------------------
  */
-
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/token/ERC20/ERC20.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/token/ERC20/utils/SafeERC20.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/access/Ownable.sol";
@@ -20,7 +19,6 @@ contract PhenixMemeMining is ERC20, Ownable {
     /* ========================= CONSTANTS ========================= */
     uint256 public constant PHENIX_PER_MEME = 500 * 1e18;
     uint256 public constant TOTAL_PHENIX_CAP = 2_500_000_000 * 1e18;
-    uint256 public constant DEFAULT_LOCK_DURATION = 365 days;
 
     /* ========================= STATE ========================= */
     IERC20 public immutable usdt; // 6 decimals
@@ -31,21 +29,11 @@ contract PhenixMemeMining is ERC20, Ownable {
 
     bool public redeemEnabled;
 
-    /* ========================= LOCKING ========================= */
-    struct LockInfo {
-        uint256 amount; // MEME amount (18d)
-        uint256 unlockTime; // unix timestamp
-    }
-
-    mapping(address => LockInfo[]) public locks;
-    mapping(address => uint256) public lockedBalance;
-
     /* ========================= EVENTS ========================= */
     event MemeMined(
         address indexed user,
         uint256 memeAmount,
-        uint256 usdtPaid,
-        uint256 unlockTime
+        uint256 usdtPaid
     );
     event MemeRedeemed(
         address indexed user,
@@ -53,7 +41,6 @@ contract PhenixMemeMining is ERC20, Ownable {
         uint256 phenixAmount
     );
     event RedeemEnabled();
-    event LocksUnlocked(address indexed user, uint256 amount);
     event UsdtWithdrawn(address indexed owner, uint256 amount);
 
     /* ========================= STAGES ========================= */
@@ -107,10 +94,20 @@ contract PhenixMemeMining is ERC20, Ownable {
         revert("Mining finished");
     }
 
+    /* ========================= INTERNAL UTILS ========================= */
+    function _memeToPhenix(uint256 memeHuman) internal pure returns (uint256) {
+        return memeHuman * PHENIX_PER_MEME;
+    }
+
+    function _memeToWei(uint256 memeHuman) internal pure returns (uint256) {
+        return memeHuman * 1e18;
+    }
+
+    /* ========================= PREVIEW ========================= */
     function previewMine(
         uint256 memeHuman
     ) external view returns (uint256 usdtCost, uint256 phenixOut) {
-        uint256 memeRemaining = memeHuman * 1e18;
+        uint256 memeRemaining = _memeToWei(memeHuman);
         uint256 tempPhenix = totalPhenixMined;
 
         while (memeRemaining > 0 && tempPhenix < TOTAL_PHENIX_CAP) {
@@ -134,7 +131,7 @@ contract PhenixMemeMining is ERC20, Ownable {
 
             uint256 memeH = use / 1e18;
             usdtCost += memeH * s.priceUsdt;
-            uint256 phenixThis = memeH * PHENIX_PER_MEME;
+            uint256 phenixThis = _memeToPhenix(memeH);
 
             phenixOut += phenixThis;
             tempPhenix += phenixThis;
@@ -145,13 +142,12 @@ contract PhenixMemeMining is ERC20, Ownable {
     /* ========================= MINING ========================= */
     function mine(
         uint256 memeHuman,
-        uint256 maxUsdtCost,
-        uint256 lockDuration
+        uint256 maxUsdtCost
     ) external {
         require(!redeemEnabled, "Mining ended");
         require(memeHuman > 0, "Zero amount");
 
-        uint256 memeRemaining = memeHuman * 1e18;
+        uint256 memeRemaining = _memeToWei(memeHuman);
         uint256 usdtCost;
         uint256 phenixThisTx;
 
@@ -164,7 +160,7 @@ contract PhenixMemeMining is ERC20, Ownable {
 
             uint256 memeH = use / 1e18;
             uint256 cost = memeH * s.priceUsdt;
-            uint256 phenixOut = memeH * PHENIX_PER_MEME;
+            uint256 phenixOut = _memeToPhenix(memeH);
 
             usdtCost += cost;
             phenixThisTx += phenixOut;
@@ -183,52 +179,19 @@ contract PhenixMemeMining is ERC20, Ownable {
         require(usdtCost <= maxUsdtCost, "Slippage exceeded");
 
         usdt.safeTransferFrom(msg.sender, address(this), usdtCost);
-        _mint(msg.sender, memeHuman * 1e18);
+        _mint(msg.sender, _memeToWei(memeHuman));
 
-        uint256 duration = lockDuration == 0
-            ? DEFAULT_LOCK_DURATION
-            : lockDuration;
-        uint256 unlock = block.timestamp + duration;
-
-        locks[msg.sender].push(LockInfo(memeHuman * 1e18, unlock));
-        lockedBalance[msg.sender] += memeHuman * 1e18;
-
-        emit MemeMined(msg.sender, memeHuman * 1e18, usdtCost, unlock);
-    }
-
-    /* ========================= UNLOCK ========================= */
-    function unlockExpiredLocks() external {
-        LockInfo[] storage userLocks = locks[msg.sender];
-        uint256 unlocked;
-
-        for (uint256 i = 0; i < userLocks.length; i++) {
-            if (
-                userLocks[i].amount > 0 &&
-                block.timestamp >= userLocks[i].unlockTime
-            ) {
-                unlocked += userLocks[i].amount;
-                userLocks[i].amount = 0;
-            }
-        }
-
-        if (unlocked > 0) {
-            lockedBalance[msg.sender] -= unlocked;
-            emit LocksUnlocked(msg.sender, unlocked);
-        }
+        emit MemeMined(msg.sender, _memeToWei(memeHuman), usdtCost);
     }
 
     /* ========================= REDEEM ========================= */
-
     function redeem(uint256 memeHuman) external {
         require(redeemEnabled, "Redeem not enabled");
 
-        uint256 amount = memeHuman * 1e18;
-        require(
-            balanceOf(msg.sender) - lockedBalance[msg.sender] >= amount,
-            "MEME locked"
-        );
+        uint256 amount = _memeToWei(memeHuman);
+        require(balanceOf(msg.sender) >= amount, "Insufficient MEME");
 
-        uint256 phenixOut = memeHuman * PHENIX_PER_MEME;
+        uint256 phenixOut = _memeToPhenix(memeHuman);
         _burn(msg.sender, amount);
         phenix.safeTransfer(msg.sender, phenixOut);
 
@@ -236,16 +199,13 @@ contract PhenixMemeMining is ERC20, Ownable {
     }
 
     /* ========================= TRANSFER LOCK ========================= */
-    function _update(
+    function _transfer(
         address from,
         address to,
         uint256 amount
     ) internal override {
-        if (from != address(0)) {
-            uint256 available = balanceOf(from) - lockedBalance[from];
-            require(available >= amount, "Transfer exceeds unlocked balance");
-        }
-        super._update(from, to, amount);
+        // 已移除锁仓检查，直接使用 ERC20 默认转账逻辑
+        super._transfer(from, to, amount);
     }
 
     /* ========================= OWNER ========================= */

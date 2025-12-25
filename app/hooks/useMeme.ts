@@ -22,6 +22,13 @@ import { useGuard } from "./useGuard";
  * MEME Domain Hook
  * Production-grade contract interface
  */
+
+type Stage = {
+  phenixStart: bigint;
+  phenixEnd: bigint;
+  priceUsdt: bigint;
+};
+
 export function useMeme() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
@@ -33,11 +40,18 @@ export function useMeme() {
   // =======================
   // Read: On-chain state
   // =======================
-  const { data: price, isLoading: isPriceLoading } = useReadContract({
+  const stageRead = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
-    functionName: "price",
+    functionName: "currentStage",
   });
+
+  const currentStage = stageRead.data as Stage | undefined;
+
+  const price = useMemo(() => {
+    if (!currentStage) return "0";
+    return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
+  }, [currentStage]);
 
   const { data: mined, isLoading: isMinedLoading } = useReadContract({
     abi: memeAbi,
@@ -51,14 +65,61 @@ export function useMeme() {
     functionName: "MAX_SUPPLY",
   });
 
+  const minedValue = useMemo(() => {
+    try {
+      return BigInt(mined?.toString() ?? "0");
+    } catch {
+      return 0n;
+    }
+  }, [mined]);
+
+  const capValue = useMemo(() => {
+    try {
+      return BigInt(cap?.toString() ?? "0");
+    } catch {
+      return 0n;
+    }
+  }, [cap]);
+
   // =======================
   // Derived state
   // =======================
   const cost = useMemo(() => {
-    if (!price) return "0";
-    const total = BigInt(price?.toString()) * BigInt(amount || 0);
-    return formatUnits(total, USDT_DECIMALS);
-  }, [price, amount]);
+    if (!currentStage || !amount) return "0";
+
+    try {
+      const memeAmount = parseUnits(amount, 18);
+      const memeHuman = memeAmount / 10n ** 18n;
+      const totalUsdt = memeHuman * currentStage.priceUsdt;
+
+      return formatUnits(totalUsdt, USDT_DECIMALS);
+    } catch {
+      return "0";
+    }
+  }, [currentStage, amount]);
+
+  // =======================
+  // Advanced derived state
+  // =======================
+  const nextPrice = useMemo(() => {
+    if (!currentStage) return null;
+    return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
+  }, [currentStage]);
+
+  const maxBuyable = useMemo(() => {
+    if (!capValue || !minedValue) return "0";
+
+    const remaining = capValue - minedValue;
+    const perMeme = 500n * 10n ** 18n;
+    const memeLeft = remaining / perMeme;
+
+    return memeLeft.toString();
+  }, [capValue, minedValue]);
+
+  const progressPercent = useMemo(() => {
+    if (!capValue || !minedValue || capValue === 0n) return 0;
+    return Number((minedValue * 10000n) / capValue) / 100;
+  }, [capValue, minedValue]);
 
   // =======================
   // Guard layer
@@ -70,11 +131,14 @@ export function useMeme() {
     if (!amount || Number(amount) <= 0)
       return { canBuy: false, reason: "Invalid amount" };
 
-    if (mined && cap && BigInt(mined?.toString()) >= BigInt(cap.toString()))
+    if (maxBuyable && Number(amount) > Number(maxBuyable))
+      return { canBuy: false, reason: "Exceeds remaining supply" };
+
+    if (minedValue >= capValue)
       return { canBuy: false, reason: "Mining finished" };
 
     return { canBuy: true as const };
-  }, [guardHooks, amount, mined, cap]);
+  }, [guardHooks, amount, maxBuyable, minedValue, capValue]);
 
   // =======================
   // Write: Buy MEME
@@ -84,7 +148,6 @@ export function useMeme() {
 
     const memeAmount = parseUnits(amount, 0);
 
-    // 1. Simulate before sending tx
     const simulation = await publicClient.simulateContract({
       address: MEME_ADDRESS,
       abi: memeAbi,
@@ -93,7 +156,6 @@ export function useMeme() {
       account: address,
     });
 
-    // 2. Safe transaction pipeline
     await write(simulation.request);
   }, [guard, amount, address, publicClient, write]);
 
@@ -104,15 +166,15 @@ export function useMeme() {
 
     // Loading
     isLoading: {
-      price: isPriceLoading,
+      price: stageRead.isLoading,
       minted: isMinedLoading,
       cap: isCapLoading,
     },
 
     // Chain state
     price,
-    mined,
-    cap,
+    mined: minedValue,
+    cap: capValue,
     cost,
 
     // Actions
@@ -120,5 +182,10 @@ export function useMeme() {
 
     // Guards
     guard,
+
+    // Advanced metrics
+    nextPrice,
+    maxBuyable,
+    progressPercent,
   };
 }

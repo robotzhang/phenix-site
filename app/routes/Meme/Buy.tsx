@@ -68,7 +68,7 @@ export default function Buy() {
       </div>
 
       <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={meme.buy}>
-        Buy Now
+        Mint Now
       </Button>
     </>
   );

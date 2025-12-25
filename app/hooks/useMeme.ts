@@ -11,6 +11,7 @@ import erc20Abi from "@/abi/erc20.json";
 
 import {
   MEME_ADDRESS,
+  PHENIX_DECIMALS,
   USDT_ADDRESS,
   USDT_DECIMALS,
 } from "@/lib/constants";
@@ -59,10 +60,10 @@ export function useMeme() {
     functionName: "totalMined",
   });
 
-  const { data: cap, isLoading: isCapLoading } = useReadContract({
+  const { data: phenixCap, isLoading: isCapLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
-    functionName: "MAX_SUPPLY",
+    functionName: "TOTAL_PHENIX_CAP",
   });
 
   const minedValue = useMemo(() => {
@@ -75,11 +76,11 @@ export function useMeme() {
 
   const capValue = useMemo(() => {
     try {
-      return BigInt(cap?.toString() ?? "0");
+      return BigInt(phenixCap?.toString() ?? "0");
     } catch {
       return 0n;
     }
-  }, [cap]);
+  }, [phenixCap]);
 
   // =======================
   // Derived state
@@ -159,6 +160,26 @@ export function useMeme() {
     await write(simulation.request);
   }, [guard, amount, address, publicClient, write]);
 
+  //
+  const phenixCapFormatted = useMemo(() => {
+    try {
+      const cap = BigInt(phenixCap?.toString() ?? "0");
+      return formatUnits(cap, PHENIX_DECIMALS);
+    } catch {
+      return "0";
+    }
+  }, [phenixCap]);
+
+  const memeCapFormatted = useMemo(() => {
+    try {
+      const cap = BigInt(phenixCap?.toString() ?? "0");
+      const memeCap = cap / (500n * 10n ** 18n);
+      return memeCap.toString();
+    } catch {
+      return "0";
+    }
+  }, [phenixCap]);
+  //
   return {
     // User input
     amount,
@@ -174,7 +195,8 @@ export function useMeme() {
     // Chain state
     price,
     mined: minedValue,
-    cap: capValue,
+    cap: memeCapFormatted,
+    phenixCap: phenixCapFormatted,
     cost,
 
     // Actions

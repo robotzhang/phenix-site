@@ -41,6 +41,7 @@ export function useMeme() {
   // =======================
   // Read: On-chain state
   // =======================
+
   const stageRead = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
@@ -49,21 +50,28 @@ export function useMeme() {
 
   const currentStage = stageRead.data as Stage | undefined;
 
-  const price = useMemo(() => {
-    if (!currentStage) return "0";
-    return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
-  }, [currentStage]);
-
   const { data: mined, isLoading: isMinedLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
-    functionName: "totalMined",
+    functionName: "totalPhenixMined",
+  });
+
+  const { data: totalMemeMinted } = useReadContract({
+    abi: memeAbi,
+    address: MEME_ADDRESS,
+    functionName: "totalMemeMinted",
   });
 
   const { data: phenixCap, isLoading: isCapLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
     functionName: "TOTAL_PHENIX_CAP",
+  });
+
+  const { data: phenixPerMeme } = useReadContract({
+    abi: memeAbi,
+    address: MEME_ADDRESS,
+    functionName: "PHENIX_PER_MEME",
   });
 
   const minedValue = useMemo(() => {
@@ -74,6 +82,14 @@ export function useMeme() {
     }
   }, [mined]);
 
+  const memeMintedValue = useMemo(() => {
+    try {
+      return BigInt(totalMemeMinted?.toString() ?? "0");
+    } catch {
+      return 0n;
+    }
+  }, [totalMemeMinted]);
+
   const capValue = useMemo(() => {
     try {
       return BigInt(phenixCap?.toString() ?? "0");
@@ -82,17 +98,28 @@ export function useMeme() {
     }
   }, [phenixCap]);
 
+  const perMemeValue = useMemo(() => {
+    try {
+      return BigInt(phenixPerMeme?.toString() ?? "0");
+    } catch {
+      return 0n;
+    }
+  }, [phenixPerMeme]);
+
   // =======================
   // Derived state
   // =======================
+
+  const price = useMemo(() => {
+    if (!currentStage) return "0";
+    return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
+  }, [currentStage]);
+
   const cost = useMemo(() => {
     if (!currentStage || !amount) return "0";
-
     try {
-      const memeAmount = parseUnits(amount, 18);
-      const memeHuman = memeAmount / 10n ** 18n;
+      const memeHuman = BigInt(amount);
       const totalUsdt = memeHuman * currentStage.priceUsdt;
-
       return formatUnits(totalUsdt, USDT_DECIMALS);
     } catch {
       return "0";
@@ -102,29 +129,38 @@ export function useMeme() {
   // =======================
   // Advanced derived state
   // =======================
+
   const nextPrice = useMemo(() => {
-    if (!currentStage) return null;
-    return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
-  }, [currentStage]);
+    if (!currentStage || !perMemeValue) return null;
+    const remainingInStage = currentStage.phenixEnd - minedValue;
+    if (remainingInStage <= perMemeValue) return "Next stage soon";
+    return price;
+  }, [currentStage, minedValue, perMemeValue, price]);
 
   const maxBuyable = useMemo(() => {
-    if (!capValue || !minedValue) return "0";
+    if (!capValue || !minedValue || !perMemeValue) return "0";
 
-    const remaining = capValue - minedValue;
-    const perMeme = 500n * 10n ** 18n;
-    const memeLeft = remaining / perMeme;
+    const remainingPhenix = capValue - minedValue;
+    const memeLeftByPhenix = remainingPhenix / perMemeValue;
+
+    const memeLeftByMinted = memeLeftByPhenix; // reserved for future MEME cap logic
+
+    const memeLeft = memeLeftByPhenix < memeLeftByMinted
+      ? memeLeftByPhenix
+      : memeLeftByMinted;
 
     return memeLeft.toString();
-  }, [capValue, minedValue]);
+  }, [capValue, minedValue, perMemeValue, memeMintedValue]);
 
   const progressPercent = useMemo(() => {
-    if (!capValue || !minedValue || capValue === 0n) return 0;
+    if (!capValue || capValue === 0n) return 0;
     return Number((minedValue * 10000n) / capValue) / 100;
   }, [capValue, minedValue]);
 
   // =======================
   // Guard layer
   // =======================
+
   const guard = useMemo(() => {
     if (!guardHooks.ready)
       return { canBuy: false, reason: guardHooks.reason };
@@ -144,6 +180,7 @@ export function useMeme() {
   // =======================
   // Write: Buy MEME
   // =======================
+
   const buy = useCallback(async () => {
     if (!guard.canBuy || !address || !publicClient) return;
 
@@ -153,33 +190,40 @@ export function useMeme() {
       address: MEME_ADDRESS,
       abi: memeAbi,
       functionName: "mine",
-      args: [memeAmount],
+      args: [memeAmount, parseUnits(cost, USDT_DECIMALS)],
       account: address,
     });
 
     await write(simulation.request);
-  }, [guard, amount, address, publicClient, write]);
+  }, [guard, amount, cost, address, publicClient, write]);
 
-  //
   const phenixCapFormatted = useMemo(() => {
     try {
-      const cap = BigInt(phenixCap?.toString() ?? "0");
-      return formatUnits(cap, PHENIX_DECIMALS);
+      return formatUnits(capValue, PHENIX_DECIMALS);
     } catch {
       return "0";
     }
-  }, [phenixCap]);
+  }, [capValue]);
 
   const memeCapFormatted = useMemo(() => {
     try {
-      const cap = BigInt(phenixCap?.toString() ?? "0");
-      const memeCap = cap / (500n * 10n ** 18n);
+      const memeCap = capValue / perMemeValue;
       return memeCap.toString();
     } catch {
       return "0";
     }
-  }, [phenixCap]);
+  }, [capValue, perMemeValue]);
+
   //
+  const remaining = useMemo(() => {
+    try {
+      const memeCap = capValue / perMemeValue;
+      return (memeCap - minedValue).toString();
+    } catch {
+      return "0";
+    }
+  }, [capValue, minedValue]);
+
   return {
     // User input
     amount,
@@ -198,6 +242,7 @@ export function useMeme() {
     cap: memeCapFormatted,
     phenixCap: phenixCapFormatted,
     cost,
+    remaining,
 
     // Actions
     buy,

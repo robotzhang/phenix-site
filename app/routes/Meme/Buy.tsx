@@ -34,7 +34,7 @@ export default function Buy() {
         </div>
 
         <div className="text-sm text-muted-foreground mt-2 flex gap-2 items-center">
-          {meme.isLoading.minted ? <LoaderCircle className="w-4 h-4 animate-spin" /> : `${meme.mined} / ${meme.maxBuyable}`}
+          {meme.isLoading.minted ? <LoaderCircle className="w-4 h-4 animate-spin" /> : `${meme.mined} / ${meme.remaining}`}
         </div>
       </div>
 

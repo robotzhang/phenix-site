@@ -13,7 +13,7 @@ import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/token/ERC20/utils/SafeERC20.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/access/Ownable.sol";
 
-contract PhenixMemeMining is ERC20, Ownable {
+contract PhenixMeme is ERC20, Ownable {
     using SafeERC20 for IERC20;
 
     /* ========================= CONSTANTS ========================= */
@@ -198,14 +198,14 @@ contract PhenixMemeMining is ERC20, Ownable {
         emit MemeRedeemed(msg.sender, amount, phenixOut);
     }
 
-    /* ========================= TRANSFER LOCK ========================= */
-    function _transfer(
+    /* ========================= TRANSFER ========================= */
+    function _update(
         address from,
         address to,
         uint256 amount
     ) internal override {
         // 已移除锁仓检查，直接使用 ERC20 默认转账逻辑
-        super._transfer(from, to, amount);
+        super._update(from, to, amount);
     }
 
     /* ========================= OWNER ========================= */

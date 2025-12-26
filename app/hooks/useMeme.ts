@@ -18,6 +18,7 @@ import {
 
 import { useSafeContractWrite } from "./useSafeContractWrite";
 import { useGuard } from "./useGuard";
+import { toast } from "sonner";
 
 /**
  * MEME Domain Hook
@@ -137,20 +138,20 @@ export function useMeme() {
     return price;
   }, [currentStage, minedValue, perMemeValue, price]);
 
+  //
+  const remaining = useMemo(() => {
+    try {
+      const memeCap = capValue / perMemeValue;
+      return (memeCap - minedValue).toString();
+    } catch {
+      return "0";
+    }
+  }, [capValue, minedValue]);
+
   const maxBuyable = useMemo(() => {
-    if (!capValue || !minedValue || !perMemeValue) return "0";
-
-    const remainingPhenix = capValue - minedValue;
-    const memeLeftByPhenix = remainingPhenix / perMemeValue;
-
-    const memeLeftByMinted = memeLeftByPhenix; // reserved for future MEME cap logic
-
-    const memeLeft = memeLeftByPhenix < memeLeftByMinted
-      ? memeLeftByPhenix
-      : memeLeftByMinted;
-
-    return memeLeft.toString();
-  }, [capValue, minedValue, perMemeValue, memeMintedValue]);
+    if (!remaining) return "0";
+    return remaining.toString();
+  }, [remaining]);
 
   const progressPercent = useMemo(() => {
     if (!capValue || capValue === 0n) return 0;
@@ -182,7 +183,10 @@ export function useMeme() {
   // =======================
 
   const buy = useCallback(async () => {
-    if (!guard.canBuy || !address || !publicClient) return;
+    if (!guard.canBuy || !address || !publicClient) {
+      toast.error(guard.reason || 'please wait a moment');
+      return;
+    }
 
     const memeAmount = parseUnits(amount, 0);
 
@@ -213,16 +217,6 @@ export function useMeme() {
       return "0";
     }
   }, [capValue, perMemeValue]);
-
-  //
-  const remaining = useMemo(() => {
-    try {
-      const memeCap = capValue / perMemeValue;
-      return (memeCap - minedValue).toString();
-    } catch {
-      return "0";
-    }
-  }, [capValue, minedValue]);
 
   return {
     // User input

@@ -8,14 +8,14 @@ export default function Meme() {
     <div>
       <div className="py-10 sm:py-10 max-w-5xl m-auto">
         <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-7">
+          <div className="col-span-12 sm:col-span-7">
             <h2 className="text-3xl font-semibold mb-2 sm:mb-6">Mint Phenix Meme</h2>
             <div className="bg-white p-4 rounded-2xl relative">
               <BuyMeme />
             </div>
           </div>
 
-          <div className="col-span-5">
+          <div className="col-span-12 sm:col-span-5">
             <h2 className="text-3xl font-semibold mb-2 sm:mb-6">Mint Information</h2>
             <MemeInformation />
 

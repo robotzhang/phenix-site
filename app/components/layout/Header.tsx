@@ -8,7 +8,7 @@ export function Header() {
         <img src="/logo.png" className="h-5 sm:h-6 -mt-1" alt="phenix" />
       </Link>
 
-      <ul className="flex items-center gap-x-6 ml-auto">
+      <ul className="sm:flex hidden items-center gap-x-6 ml-auto">
         <li>
           <Link to="/" className="hover:text-black">HOME</Link>
         </li>
@@ -23,7 +23,7 @@ export function Header() {
         </li>
       </ul>
 
-      <div className="">
+      <div className="ml-auto sm:ml-0">
         <ConnectButton />
       </div>
     </div>

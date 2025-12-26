@@ -75,6 +75,12 @@ export function useMeme() {
     functionName: "PHENIX_PER_MEME",
   });
 
+  const { data: redeemEnabled } = useReadContract({
+    abi: memeAbi,
+    address: MEME_ADDRESS,
+    functionName: "redeemEnabled",
+  });
+
   const minedValue = useMemo(() => {
     try {
       return BigInt(mined?.toString() ?? "0");
@@ -138,7 +144,6 @@ export function useMeme() {
     return price;
   }, [currentStage, minedValue, perMemeValue, price]);
 
-  //
   const remaining = useMemo(() => {
     try {
       const memeCap = capValue / perMemeValue;
@@ -146,7 +151,7 @@ export function useMeme() {
     } catch {
       return "0";
     }
-  }, [capValue, minedValue]);
+  }, [capValue, minedValue, perMemeValue]);
 
   const maxBuyable = useMemo(() => {
     if (!remaining) return "0";
@@ -157,6 +162,10 @@ export function useMeme() {
     if (!capValue || capValue === 0n) return 0;
     return Number((minedValue * 10000n) / capValue) / 100;
   }, [capValue, minedValue]);
+
+  const canRedeem = useMemo(() => {
+    return Boolean(redeemEnabled);
+  }, [redeemEnabled]);
 
   // =======================
   // Guard layer
@@ -178,13 +187,63 @@ export function useMeme() {
     return { canBuy: true as const };
   }, [guardHooks, amount, maxBuyable, minedValue, capValue]);
 
+  const { data: allowance } = useReadContract({
+    abi: erc20Abi,
+    address: USDT_ADDRESS,
+    functionName: "allowance",
+    args: [address ?? "0x0000000000000000000000000000000000000000", MEME_ADDRESS],
+  });
+
   // =======================
   // Write: Buy MEME
   // =======================
 
   const buy = useCallback(async () => {
     if (!guard.canBuy || !address || !publicClient) {
-      toast.error(guard.reason || 'please wait a moment');
+      toast.error(guard.reason || "please wait a moment");
+      return;
+    }
+
+    const memeAmount = parseUnits(amount, 0);
+    const usdtCost = parseUnits(cost, USDT_DECIMALS);
+
+    const currentAllowance = BigInt(allowance?.toString() ?? "0");
+
+    if (currentAllowance < usdtCost) {
+      const approveSim = await publicClient.simulateContract({
+        address: USDT_ADDRESS,
+        abi: erc20Abi,
+        functionName: "approve",
+        args: [MEME_ADDRESS, usdtCost],
+        account: address,
+      });
+
+      await write(approveSim.request);
+    }
+
+    const simulation = await publicClient.simulateContract({
+      address: MEME_ADDRESS,
+      abi: memeAbi,
+      functionName: "mine",
+      args: [memeAmount, usdtCost],
+      account: address,
+    });
+
+    await write(simulation.request);
+  }, [guard, amount, cost, allowance, address, publicClient, write]);
+
+  // =======================
+  // Write: Redeem MEME
+  // =======================
+
+  const redeem = useCallback(async () => {
+    if (!address || !publicClient) {
+      toast.error("please connect wallet");
+      return;
+    }
+
+    if (!canRedeem) {
+      toast.error("Redeem not enabled");
       return;
     }
 
@@ -193,13 +252,13 @@ export function useMeme() {
     const simulation = await publicClient.simulateContract({
       address: MEME_ADDRESS,
       abi: memeAbi,
-      functionName: "mine",
-      args: [memeAmount, parseUnits(cost, USDT_DECIMALS)],
+      functionName: "redeem",
+      args: [memeAmount],
       account: address,
     });
 
     await write(simulation.request);
-  }, [guard, amount, cost, address, publicClient, write]);
+  }, [address, amount, canRedeem, publicClient, write]);
 
   const phenixCapFormatted = useMemo(() => {
     try {
@@ -240,9 +299,13 @@ export function useMeme() {
 
     // Actions
     buy,
+    redeem,
 
     // Guards
     guard,
+
+    // Redeem
+    canRedeem,
 
     // Advanced metrics
     nextPrice,

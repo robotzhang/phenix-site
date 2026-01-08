@@ -204,7 +204,6 @@ contract PhenixMeme is ERC20, Ownable {
         address to,
         uint256 amount
     ) internal override {
-        // 已移除锁仓检查，直接使用 ERC20 默认转账逻辑
         super._update(from, to, amount);
     }
 

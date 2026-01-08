@@ -1,7 +1,8 @@
 import { useAccount, useChainId } from "wagmi";
 import { useMemo } from "react";
+import { base, baseSepolia } from "viem/chains";
 
-const BASE_CHAIN_ID = 8453;
+const BASE_CHAIN_ID = baseSepolia.id || base.id;
 
 export function useGuard() {
   const { isConnected } = useAccount();

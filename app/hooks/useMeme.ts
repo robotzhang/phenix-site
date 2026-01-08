@@ -11,6 +11,7 @@ import erc20Abi from "@/abi/erc20.json";
 
 import {
   MEME_ADDRESS,
+  MEME_DECIMALS,
   PHENIX_DECIMALS,
   USDT_ADDRESS,
   USDT_DECIMALS,
@@ -54,12 +55,6 @@ export function useMeme() {
   const { data: mined, isLoading: isMinedLoading } = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
-    functionName: "totalPhenixMined",
-  });
-
-  const { data: totalMemeMinted } = useReadContract({
-    abi: memeAbi,
-    address: MEME_ADDRESS,
     functionName: "totalMemeMinted",
   });
 
@@ -88,14 +83,6 @@ export function useMeme() {
       return 0n;
     }
   }, [mined]);
-
-  const memeMintedValue = useMemo(() => {
-    try {
-      return BigInt(totalMemeMinted?.toString() ?? "0");
-    } catch {
-      return 0n;
-    }
-  }, [totalMemeMinted]);
 
   const capValue = useMemo(() => {
     try {
@@ -146,8 +133,16 @@ export function useMeme() {
 
   const remaining = useMemo(() => {
     try {
-      const memeCap = capValue / perMemeValue;
-      return (memeCap - minedValue).toString();
+      if (!perMemeValue || perMemeValue === 0n) return "0";
+
+      const memeCap = capValue / perMemeValue; 
+      const memeCapScaled = memeCap * 10n ** BigInt(MEME_DECIMALS);
+
+      const remainingMeme = memeCapScaled - minedValue;
+
+      if (remainingMeme <= 0n) return "0";
+
+      return remainingMeme.toString();
     } catch {
       return "0";
     }
@@ -277,6 +272,26 @@ export function useMeme() {
     }
   }, [capValue, perMemeValue]);
 
+  // =======================
+  // Human readable display
+  // =======================
+
+  const minedFormatted = useMemo(() => {
+    try {
+      return formatUnits(minedValue, MEME_DECIMALS);
+    } catch {
+      return "0";
+    }
+  }, [minedValue]);
+
+  const remainingFormatted = useMemo(() => {
+    try {
+      return formatUnits(BigInt(remaining), MEME_DECIMALS);
+    } catch {
+      return "0";
+    }
+  }, [remaining]);
+
   return {
     // User input
     amount,
@@ -311,5 +326,9 @@ export function useMeme() {
     nextPrice,
     maxBuyable,
     progressPercent,
+
+    // Human readable
+    minedFormatted,
+    remainingFormatted,
   };
 }

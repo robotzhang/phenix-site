@@ -154,9 +154,22 @@ export function useMeme() {
   }, [remaining]);
 
   const progressPercent = useMemo(() => {
-    if (!capValue || capValue === 0n) return 0;
-    return Number((minedValue * 10000n) / capValue) / 100;
-  }, [capValue, minedValue]);
+  try {
+    if (perMemeValue === 0n || capValue === 0n) return "0";
+
+    // 计算 MEME 总量
+    const memeCap = capValue / perMemeValue;
+    if (memeCap === 0n) return "0";
+
+    // 放大 10^4 倍，得到整数形式
+    const percentBigInt = (minedValue * 10000n) / memeCap;
+
+    // formatUnits 将整数除以 10^2，得到百分比两位小数
+    return formatUnits(percentBigInt / 100n, MEME_DECIMALS); // 这里 2 表示保留两位小数
+  } catch {
+    return "0";
+  }
+}, [capValue, minedValue, perMemeValue]);
 
   const canRedeem = useMemo(() => {
     return Boolean(redeemEnabled);

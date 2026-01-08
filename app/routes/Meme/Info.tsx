@@ -9,10 +9,10 @@ export default function MemeInformation() {
       <div>
         <h3 className="text-muted-foreground mb-2 text-sm flex items-center justify-between">
           <div>Minting Progress</div>
-          <div>{meme?.mined || 0}/{meme?.cap || ''}</div>
+          <div>{meme?.minedFormatted || 0}/{meme?.cap || ''}</div>
         </h3>
         <div>
-          <Progress value={10} className="w-full h-2.5" />
+          <Progress value={Number(meme.progressPercent)} className="w-full h-2.5" />
         </div>
       </div>
       <div className="grid grid-cols-12 gap-4 mt-6">

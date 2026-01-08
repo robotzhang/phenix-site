@@ -1,9 +1,11 @@
 import { ArrowUp, LoaderCircle, Wallet } from 'lucide-react';
 import { useMeme } from "@/hooks/useMeme";
 import { Button } from "@/components/ui/button";
+import { useUsdt } from '@/hooks/useUsdt';
 
 export default function Buy() {
   const meme = useMeme();
+  const usdt = useUsdt();
   //
   return (
     <>
@@ -63,7 +65,7 @@ export default function Buy() {
 
         <div className="text-sm text-muted-foreground mt-2 flex gap-2 items-center">
           <Wallet className="w-4 h-4" />
-          {/* ${buy.usdtBalance} */}
+          {usdt.balance}
         </div>
       </div>
 

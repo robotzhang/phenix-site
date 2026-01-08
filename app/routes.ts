@@ -1,4 +1,4 @@
-import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import { type RouteConfig, index, prefix, route } from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
@@ -7,4 +7,7 @@ export default [
   route("nft/metadata", "./routes/nft-metadata.tsx"),
   route("rwa", "./routes/rwa.tsx"),
   route("meme", "./routes/meme.tsx"),
+  ...prefix("support", [
+    route("bridge", "routes/support/bridge.tsx"),
+  ]),
 ] satisfies RouteConfig;

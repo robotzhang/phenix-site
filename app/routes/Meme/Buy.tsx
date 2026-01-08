@@ -38,7 +38,7 @@ export default function Buy() {
         </div>
       </div>
 
-      <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-16 -ml-7">
+      <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-15 -ml-7">
         <ArrowUp className="h-7 w-7" />
       </div>
 

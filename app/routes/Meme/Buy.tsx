@@ -1,22 +1,11 @@
 import { ArrowUp, LoaderCircle, Wallet } from 'lucide-react';
-import { useFnftPurchase } from "@/hooks/useFnftPurchase";
+import { useMeme } from "@/hooks/useMeme";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { useUsdt } from '@/hooks/useUsdt';
 
 export default function Buy() {
-  const buy = useFnftPurchase();
-  //
-  const handleBuy = async () => {
-    if (buy.amount <= 0) {
-      toast.error("Amount must be >= 1");
-      return;
-    }
-    try {
-      return await buy.purchase();
-    } catch (err: any) {
-      toast.error(err?.shortMessage || err?.message);
-    }
-  };
+  const meme = useMeme();
+  const usdt = useUsdt();
   //
   return (
     <>
@@ -32,9 +21,9 @@ export default function Buy() {
               placeholder="0"
               onChange={(e) => {
                 const amount = Number(e.target.value) || 0;
-                buy.setAmount(amount);
+                meme.setAmount(amount.toString());
               }}
-              value={buy.amount || ''}
+              value={meme.amount || ''}
             />
           </div>
 
@@ -47,11 +36,11 @@ export default function Buy() {
         </div>
 
         <div className="text-sm text-muted-foreground mt-2 flex gap-2 items-center">
-          {buy.isTotalMintedLoading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : `${buy.totalMinted} / ${buy.maxSupply}`}
+          {meme.isLoading.minted ? <LoaderCircle className="w-4 h-4 animate-spin" /> : `${meme.minedFormatted} / ${meme.remainingFormatted}`}
         </div>
       </div>
 
-      <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-16 -ml-7">
+      <div className="top-1/2 bg-neutral-100 rounded-xl p-2 border-4 border-white absolute left-1/2 -mt-15 -ml-7">
         <ArrowUp className="h-7 w-7" />
       </div>
 
@@ -61,9 +50,9 @@ export default function Buy() {
         </div>
         <div className="flex items-center">
           <div className="text-3xl font-semibold flex-1">
-            {buy.isPriceLoading ? (
+            {meme.isLoading.price ? (
               <div className="h-9 flex items-center"><LoaderCircle className="w-5 h-5 animate-spin" /></div>
-            ) : buy.totalCos}
+            ) : meme.cost}
           </div>
 
           <div className="flex flex-col justify-center">
@@ -76,12 +65,12 @@ export default function Buy() {
 
         <div className="text-sm text-muted-foreground mt-2 flex gap-2 items-center">
           <Wallet className="w-4 h-4" />
-          ${buy.usdtBalance}
+          {usdt.balance}
         </div>
       </div>
 
-      <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={handleBuy}>
-        Buy Now
+      <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={meme.buy}>
+        Mint Now
       </Button>
     </>
   );

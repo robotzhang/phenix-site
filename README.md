@@ -113,4 +113,21 @@ GEO 建站 SAAS 系统，
 请注意要给出生产级别的代码，注释完备清晰，能够在 remix.ethereum.org 直接编译通过，外部的包使用 https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.5.0/contracts/token/ERC721/extensions/ERC721Enumerable.sol 这种 github 的方式引用 
 
 testnet:
-meme address: 0x7e517e4Efb16807c14188c83bBC7D6756c1ea64B
+meme address: 0xcD503Ad62838A3422CFD70e2C138da55bcb1571e
+
+
+# base L2 资产桥接
+- owner wallet: 0xe713Dcf81438ce1DF23E4C423e74F181c7FB249d
+- phenix: 0x18574BDCd95Ac108cAB8e4E6CB536cEF9738c848
+- base L2 phenix: 0x6dE9520092cf47e39402AbeBc43623C893D14Ddc
+- mainnet bridge: 0x9b8275334f070C9fd2324B061dcdE82E3aEA4CBe
+- base bridge: 0x5502af653792D5d24876f12Ac6658eC2332224bB
+
+# 更换思路(base L2)
+最终 phenix 也发布到 base L2，之后再考虑桥接 base phenix 到主网。
+- owner wallet: 0xe713Dcf81438ce1DF23E4C423e74F181c7FB249d
+- usdt: 0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2
+- phenix: 0xBc121C4d6cfE2B7830dCf18163E1892e5bbB1735
+- f-nft: 0x35CF1a00a53f17145bEfddbD9F720CA05C76f39f
+- meme:
+- rwa:

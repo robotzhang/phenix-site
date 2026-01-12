@@ -10,10 +10,10 @@ import memeAbi from "@/abi/meme.json";
 import erc20Abi from "@/abi/erc20.json";
 
 import {
-  MEME_ADDRESS,
+  TEST_MEME_ADDRESS as MEME_ADDRESS, // todo remove debug code
+  TEST_USDT_ADDRESS as USDT_ADDRESS, // todo remove debug code
   MEME_DECIMALS,
   PHENIX_DECIMALS,
-  USDT_ADDRESS,
   USDT_DECIMALS,
 } from "@/lib/constants";
 

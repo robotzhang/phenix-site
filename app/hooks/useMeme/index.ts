@@ -86,7 +86,7 @@ export function useMeme() {
     write,
     guard,
     amount,
-    cost: derived.cost,
+    rawUsdtCost: derived.rawUsdtCost,
     allowance,
     canRedeem: derived.canRedeem,
   });

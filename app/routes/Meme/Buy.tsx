@@ -3,6 +3,8 @@ import { useMeme } from "@/hooks/useMeme";
 import { Button } from "@/components/ui/button";
 import { useUsdt } from '@/hooks/useUsdt';
 import { toast } from 'sonner';
+import { parseUnits } from 'viem';
+import { MEME_DECIMALS } from '@/lib/constants';
 
 export default function Buy() {
   const meme = useMeme();
@@ -18,17 +20,32 @@ export default function Buy() {
           <div className="flex-1">
             <input
               type="text"
+              inputMode="numeric"
               className="w-full font-semibold text-3xl outline-0"
               placeholder="0"
+              value={meme.amount || ""}
               onChange={(e) => {
-                const amount = Number(e.target.value) || 0;
-                if (amount * 10**18 > meme.remaining) {
+                const raw = e.target.value.trim();
+
+                // 允许清空
+                if (raw === "") {
+                  meme.setAmount("");
+                  return;
+                }
+
+                // 只允许正整数（不允许 0、不允许小数、不允许负数）
+                if (!/^[1-9]\d*$/.test(raw)) return;
+
+                // 不使用 Number，全程 bigint
+                const amountWei = BigInt(raw) * 10n ** BigInt(MEME_DECIMALS);
+
+                if (amountWei > meme.remaining) {
                   toast.error(`Exceeds max buyable memes: ${meme.remainingFormatted}`);
                   return;
                 }
-                meme.setAmount(amount.toString());
+
+                meme.setAmount(raw);
               }}
-              value={meme.amount || ''}
             />
           </div>
 

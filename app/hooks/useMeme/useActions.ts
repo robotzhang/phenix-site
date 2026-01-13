@@ -16,7 +16,7 @@ type Input = {
   write: (req: any) => Promise<any>;
   guard: { canBuy: boolean; reason?: string };
   amount: string;
-  cost: string;
+  rawUsdtCost: bigint;
   allowance: unknown;
   canRedeem: boolean;
 };
@@ -27,7 +27,7 @@ export function useActions({
   write,
   guard,
   amount,
-  cost,
+  rawUsdtCost,
   allowance,
   canRedeem,
 }: Input) {
@@ -38,7 +38,7 @@ export function useActions({
     }
 
     const memeAmount = parseUnits(amount, 0);
-    const usdtCost = parseUnits(cost, USDT_DECIMALS);
+    const usdtCost = rawUsdtCost;
     const currentAllowance = BigInt(allowance?.toString() ?? "0");
 
     if (currentAllowance < usdtCost) {

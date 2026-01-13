@@ -43,6 +43,8 @@ export function useDerived({
     return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
   }, [currentStage]);
 
+  const rawUsdtCost = useMemo(() => preview?.[0] ?? 0n, [preview]);
+
   const cost = useMemo(() => {
     try {
       const usdtCost = preview?.[0];
@@ -120,6 +122,7 @@ export function useDerived({
     memeAmountParsed,
 
     price,
+    rawUsdtCost,
     cost,
     nextPrice,
 

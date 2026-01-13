@@ -4,11 +4,20 @@ import { Button } from "@/components/ui/button";
 import { useUsdt } from '@/hooks/useUsdt';
 import { toast } from 'sonner';
 import { parseUnits } from 'viem';
-import { MEME_DECIMALS } from '@/lib/constants';
+import { MEME_DECIMALS, USDT_DECIMALS } from '@/lib/constants';
 
 export default function Buy() {
   const meme = useMeme();
   const usdt = useUsdt();
+  //
+  const onBuy = async () => {
+    const usdtBalanceWei = parseUnits(usdt.balance || "0", USDT_DECIMALS);
+    if (usdtBalanceWei < meme.rawUsdtCost) {
+      toast.error("USDT balance not enough");
+      return;
+    }
+    await meme.buy();
+  };
   //
   return (
     <>
@@ -99,7 +108,7 @@ export default function Buy() {
         </div>
       </div>
 
-      <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={meme.buy}>
+      <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={onBuy}>
         Mint Now
       </Button>
     </>

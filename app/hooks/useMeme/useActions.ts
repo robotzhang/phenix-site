@@ -3,12 +3,10 @@ import { toast } from "sonner";
 
 import memeAbi from "@/abi/meme.json";
 import erc20Abi from "@/abi/erc20.json";
-import { useUsdt } from "../useUsdt";
 
 import {
   TEST_MEME_ADDRESS as MEME_ADDRESS,
   TEST_USDT_ADDRESS as USDT_ADDRESS,
-  USDT_DECIMALS,
 } from "@/lib/constants";
 
 type Input = {
@@ -38,16 +36,9 @@ export function useActions({
       return;
     }
 
-    const usdt = useUsdt();
-    const usdtBalanceWei = parseUnits(usdt.balance || "0", USDT_DECIMALS);
     const memeAmount = parseUnits(amount, 0);
     const usdtCost = rawUsdtCost;
     const currentAllowance = BigInt(allowance?.toString() ?? "0");
-
-    if (usdtBalanceWei < usdtCost) {
-      toast.error("USDT balance not enough");
-      return;
-    }
 
     if (currentAllowance < usdtCost) {
       const approveSim = await publicClient.simulateContract({

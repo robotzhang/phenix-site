@@ -2,6 +2,7 @@ import { ArrowUp, LoaderCircle, Wallet } from 'lucide-react';
 import { useMeme } from "@/hooks/useMeme";
 import { Button } from "@/components/ui/button";
 import { useUsdt } from '@/hooks/useUsdt';
+import { toast } from 'sonner';
 
 export default function Buy() {
   const meme = useMeme();
@@ -21,6 +22,10 @@ export default function Buy() {
               placeholder="0"
               onChange={(e) => {
                 const amount = Number(e.target.value) || 0;
+                if (amount * 10**18 > meme.remaining) {
+                  toast.error(`Exceeds max buyable memes: ${meme.remainingFormatted}`);
+                  return;
+                }
                 meme.setAmount(amount.toString());
               }}
               value={meme.amount || ''}

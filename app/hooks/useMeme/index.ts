@@ -125,5 +125,6 @@ export function useMeme() {
     // Human readable
     minedFormatted: derived.minedFormatted,
     remainingFormatted: derived.remainingFormatted,
+    memeCapFormatted: derived.memeCapFormatted,
   };
 }

@@ -65,11 +65,27 @@ export function useDerived({
     }
   }, [nextPreview]);
 
+  const memeCap = useMemo(() => {
+    try {
+      if (perMemeValue === 0n) return 0n;
+      return capValue / perMemeValue;
+    } catch {
+      return 0n;
+    }
+  }, [capValue, perMemeValue]);
+
+  const memeCapFormatted = useMemo(() => {
+    try {
+      return memeCap.toString();
+    } catch {
+      return "0";
+    }
+  }, [memeCap]);
+
   const remaining = useMemo<bigint>(() => {
     try {
       if (perMemeValue === 0n) return 0n;
 
-      const memeCap = capValue / perMemeValue;
       const memeCapScaled = memeCap * 10n ** BigInt(MEME_DECIMALS);
 
       const left = memeCapScaled - minedValue;
@@ -78,13 +94,11 @@ export function useDerived({
     } catch {
       return 0n;
     }
-  }, [capValue, minedValue, perMemeValue]);
+  }, [memeCap, minedValue, perMemeValue]);
 
   const progressPercent = useMemo(() => {
     try {
       if (perMemeValue === 0n || capValue === 0n) return "0";
-
-      const memeCap = capValue / perMemeValue;
       if (memeCap === 0n) return "0";
 
       const percentBigInt = (minedValue * 10000n) / memeCap;
@@ -92,7 +106,7 @@ export function useDerived({
     } catch {
       return "0";
     }
-  }, [capValue, minedValue, perMemeValue]);
+  }, [capValue, minedValue, perMemeValue, memeCap]);
 
   const phenixCapFormatted = useMemo(() => {
     try {
@@ -134,5 +148,6 @@ export function useDerived({
     phenixCapFormatted,
     minedFormatted,
     remainingFormatted,
+    memeCapFormatted,
   };
 }

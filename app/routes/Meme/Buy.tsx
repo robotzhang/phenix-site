@@ -58,7 +58,15 @@ export default function Buy() {
         </div>
 
         <div className="text-sm text-muted-foreground mt-2 flex gap-2 items-center">
-          {meme.isLoading.minted ? <LoaderCircle className="w-4 h-4 animate-spin" /> : `${meme.minedFormatted} / ${meme.remainingFormatted}`}
+          {meme.isLoading.minted ? <LoaderCircle className="w-4 h-4 animate-spin" /> : (
+            <div>
+              <span className='text-xs'>Mined:</span>
+              <span>{meme.minedFormatted}</span>
+              <span className='mx-2'>/</span>
+              <span className='text-xs'>Left: </span>
+              <span>{meme.remainingFormatted}</span>
+            </div>
+          )}
         </div>
       </div>
 

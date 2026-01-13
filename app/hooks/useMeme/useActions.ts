@@ -61,6 +61,7 @@ export function useActions({
     });
 
     await write(simulation.request);
+    window.location.reload();
   };
 
   const redeem = async () => {
@@ -85,6 +86,7 @@ export function useActions({
     });
 
     await write(simulation.request);
+    window.location.reload();
   };
 
   return { buy, redeem };

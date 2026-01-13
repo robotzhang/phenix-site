@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useReadContract } from "wagmi";
 
 import memeAbi from "@/abi/meme.json";
-import { TEST_MEME_ADDRESS as MEME_ADDRESS } from "@/lib/constants";
+import { MEME_ADDRESS } from "@/lib/constants";
 
 import { useSafeContractWrite } from "../useSafeContractWrite";
 import { useGuard } from "../useGuard";

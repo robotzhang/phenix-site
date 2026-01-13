@@ -5,7 +5,7 @@ import MemeInformation from "./Meme/Info";
 export default function Meme() {
   //
   return (
-    <div>
+    <div className="sm:px-6">
       <div className="py-10 sm:py-10 max-w-5xl m-auto">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 sm:col-span-7">

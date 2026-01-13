@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useAccount, useReadContract, usePublicClient } from "wagmi";
 import memeAbi from "@/abi/meme.json";
 import erc20Abi from "@/abi/erc20.json";
-import { TEST_MEME_ADDRESS as MEME_ADDRESS, TEST_USDT_ADDRESS as USDT_ADDRESS } from "@/lib/constants";
+import { MEME_ADDRESS, USDT_ADDRESS } from "@/lib/constants";
 import type { Stage } from "./types";
 
 export function useRead() {

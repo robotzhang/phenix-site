@@ -1,5 +1,5 @@
 import { useAccount, useReadContract } from "wagmi";
-import { TEST_USDT_ADDRESS as USDT_ADDRESS, USDT_DECIMALS } from "@/lib/constants";
+import { USDT_ADDRESS, USDT_DECIMALS } from "@/lib/constants";
 import erc20Abi from "@/abi/erc20.json";
 import { formatUnits } from "viem";
 

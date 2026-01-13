@@ -12,8 +12,9 @@ pragma solidity ^0.8.30;
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/token/ERC20/ERC20.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/token/ERC20/utils/SafeERC20.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/access/Ownable.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.5.0/contracts/utils/ReentrancyGuard.sol";
 
-contract PhenixMeme is ERC20, Ownable {
+contract PhenixMeme is ERC20, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     /* ========================= CONSTANTS ========================= */
@@ -150,6 +151,7 @@ contract PhenixMeme is ERC20, Ownable {
         uint256 memeRemaining = _memeToWei(memeHuman);
         uint256 usdtCost;
         uint256 phenixThisTx;
+        uint256 memeMintedThisTx;
 
         while (memeRemaining > 0) {
             Stage memory s = currentStage();
@@ -167,6 +169,7 @@ contract PhenixMeme is ERC20, Ownable {
 
             totalPhenixMined += phenixOut;
             totalMemeMinted += use;
+            memeMintedThisTx += use;
             memeRemaining -= use;
 
             if (totalPhenixMined == TOTAL_PHENIX_CAP) {
@@ -179,23 +182,23 @@ contract PhenixMeme is ERC20, Ownable {
         require(usdtCost <= maxUsdtCost, "Slippage exceeded");
 
         usdt.safeTransferFrom(msg.sender, address(this), usdtCost);
-        _mint(msg.sender, _memeToWei(memeHuman));
+        _mint(msg.sender, memeMintedThisTx);
 
-        emit MemeMined(msg.sender, _memeToWei(memeHuman), usdtCost);
+        emit MemeMined(msg.sender, memeMintedThisTx, usdtCost);
     }
 
     /* ========================= REDEEM ========================= */
-    function redeem(uint256 memeHuman) external {
+    function redeem(uint256 memeAmountWei) external {
         require(redeemEnabled, "Redeem not enabled");
+        require(balanceOf(msg.sender) >= memeAmountWei, "Insufficient MEME");
 
-        uint256 amount = _memeToWei(memeHuman);
-        require(balanceOf(msg.sender) >= amount, "Insufficient MEME");
+        uint256 phenixOut = (memeAmountWei / 1e18) * PHENIX_PER_MEME;
+        require(phenix.balanceOf(address(this)) >= phenixOut, "Insufficient PHENIX");
 
-        uint256 phenixOut = _memeToPhenix(memeHuman);
-        _burn(msg.sender, amount);
+        _burn(msg.sender, memeAmountWei);
         phenix.safeTransfer(msg.sender, phenixOut);
 
-        emit MemeRedeemed(msg.sender, amount, phenixOut);
+        emit MemeRedeemed(msg.sender, memeAmountWei, phenixOut);
     }
 
     /* ========================= TRANSFER ========================= */
@@ -207,8 +210,13 @@ contract PhenixMeme is ERC20, Ownable {
         super._update(from, to, amount);
     }
 
-    /* ========================= OWNER ========================= */
-    function withdrawUsdt(uint256 amount) external onlyOwner {
+    /* ========================= OWNER ========================= */    
+    function withdrawUSDT(uint256 maxPercentage) external onlyOwner nonReentrant {
+        require(maxPercentage <= 100, "max 100%");
+        uint256 bal = usdt.balanceOf(address(this));
+        require(bal > 0, "zero balance");
+
+        uint256 amount = (bal * maxPercentage) / 100;
         usdt.safeTransfer(msg.sender, amount);
         emit UsdtWithdrawn(msg.sender, amount);
     }

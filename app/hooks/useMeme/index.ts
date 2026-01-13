@@ -105,6 +105,7 @@ export function useMeme() {
     cap: derived.phenixCapFormatted,
     phenixCap: derived.phenixCapFormatted,
     cost: derived.cost,
+    rawUsdtCost: derived.rawUsdtCost,
     remaining: derived.remaining,
 
     // Actions

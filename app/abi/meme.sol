@@ -210,6 +210,19 @@ contract PhenixMeme is ERC20, Ownable, ReentrancyGuard {
         super._update(from, to, amount);
     }
 
+    function fundPhenix(uint256 amount) external onlyOwner {
+        phenix.safeTransferFrom(msg.sender, address(this), amount);
+    }
+
+    function withdrawPhenix(uint256 maxPercentage) external onlyOwner nonReentrant {
+        require(maxPercentage <= 100, "max 100%");
+        uint256 bal = phenix.balanceOf(address(this));
+        require(bal > 0, "zero balance");
+
+        uint256 amount = (bal * maxPercentage) / 100;
+        phenix.safeTransfer(msg.sender, amount);
+    }
+
     /* ========================= OWNER ========================= */    
     function withdrawUSDT(uint256 maxPercentage) external onlyOwner nonReentrant {
         require(maxPercentage <= 100, "max 100%");

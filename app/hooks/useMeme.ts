@@ -1,9 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import {
-  useAccount,
-  useReadContract,
-  usePublicClient,
-} from "wagmi";
+import { useAccount, useReadContract, usePublicClient } from "wagmi";
 import { parseUnits, formatUnits } from "viem";
 
 import memeAbi from "@/abi/meme.json";
@@ -136,36 +132,35 @@ export function useMeme() {
   }, [previewRead.data]);
 
   // =======================
-  // Advanced derived state
+  // Advanced derived state (FIXED)
   // =======================
 
-  const nextStageRead = useReadContract({
+  const nextPreviewRead = useReadContract({
     abi: memeAbi,
     address: MEME_ADDRESS,
-    functionName: "stages",
-    args: [
-      useMemo(() => {
-        if (!currentStage) return 0n;
-        return minedValue >= currentStage.phenixEnd ? 1n : 0n;
-      }, [currentStage, minedValue]),
-    ],
+    functionName: "previewMine",
+    args: [1n],
   });
 
   const nextPrice = useMemo(() => {
     try {
-      const nextStage = nextStageRead.data as Stage | undefined;
-      if (!nextStage) return null;
-      return formatUnits(nextStage.priceUsdt, USDT_DECIMALS);
+      const preview = nextPreviewRead.data as readonly [bigint, bigint] | undefined;
+      if (!preview) return null;
+
+      const [usdtCost] = preview;
+      if (usdtCost === 0n) return null;
+
+      return formatUnits(usdtCost, USDT_DECIMALS);
     } catch {
       return null;
     }
-  }, [nextStageRead.data]);
+  }, [nextPreviewRead.data]);
 
   const remaining = useMemo(() => {
     try {
       if (!perMemeValue || perMemeValue === 0n) return "0";
 
-      const memeCap = capValue / perMemeValue; 
+      const memeCap = capValue / perMemeValue;
       const memeCapScaled = memeCap * 10n ** BigInt(MEME_DECIMALS);
 
       const remainingMeme = memeCapScaled - minedValue;
@@ -206,8 +201,7 @@ export function useMeme() {
   // =======================
 
   const guard = useMemo(() => {
-    if (!guardHooks.ready)
-      return { canBuy: false, reason: guardHooks.reason };
+    if (!guardHooks.ready) return { canBuy: false, reason: guardHooks.reason };
 
     if (!amount || Number(amount) <= 0)
       return { canBuy: false, reason: "Invalid amount" };
@@ -225,7 +219,10 @@ export function useMeme() {
     abi: erc20Abi,
     address: USDT_ADDRESS,
     functionName: "allowance",
-    args: [address ?? "0x0000000000000000000000000000000000000000", MEME_ADDRESS],
+    args: [
+      address ?? "0x0000000000000000000000000000000000000000",
+      MEME_ADDRESS,
+    ],
   });
 
   // =======================
@@ -365,7 +362,7 @@ export function useMeme() {
     nextPrice,
     maxBuyable,
     progressPercent,
-    
+
     // Human readable
     minedFormatted,
     remainingFormatted,

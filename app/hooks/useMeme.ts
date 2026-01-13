@@ -104,32 +104,62 @@ export function useMeme() {
   // Derived state
   // =======================
 
+  const memeAmountParsed = useMemo(() => {
+    try {
+      return parseUnits(amount || "0", 0);
+    } catch {
+      return 0n;
+    }
+  }, [amount]);
+
+  const previewRead = useReadContract({
+    abi: memeAbi,
+    address: MEME_ADDRESS,
+    functionName: "previewMine",
+    args: [memeAmountParsed],
+    query: { enabled: memeAmountParsed > 0n },
+  });
+
   const price = useMemo(() => {
     if (!currentStage) return "0";
     return formatUnits(currentStage.priceUsdt, USDT_DECIMALS);
   }, [currentStage]);
 
   const cost = useMemo(() => {
-    if (!currentStage || !amount) return "0";
     try {
-      const memeHuman = BigInt(amount);
-      const totalUsdt = memeHuman * currentStage.priceUsdt;
-      return formatUnits(totalUsdt, USDT_DECIMALS);
+      const usdtCost = (previewRead.data as readonly [bigint, bigint])?.[0];
+      if (!usdtCost) return "0";
+      return formatUnits(usdtCost, USDT_DECIMALS);
     } catch {
       return "0";
     }
-  }, [currentStage, amount]);
+  }, [previewRead.data]);
 
   // =======================
   // Advanced derived state
   // =======================
 
+  const nextStageRead = useReadContract({
+    abi: memeAbi,
+    address: MEME_ADDRESS,
+    functionName: "stages",
+    args: [
+      useMemo(() => {
+        if (!currentStage) return 0n;
+        return minedValue >= currentStage.phenixEnd ? 1n : 0n;
+      }, [currentStage, minedValue]),
+    ],
+  });
+
   const nextPrice = useMemo(() => {
-    if (!currentStage || !perMemeValue) return null;
-    const remainingInStage = currentStage.phenixEnd - minedValue;
-    if (remainingInStage <= perMemeValue) return "Next stage soon";
-    return price;
-  }, [currentStage, minedValue, perMemeValue, price]);
+    try {
+      const nextStage = nextStageRead.data as Stage | undefined;
+      if (!nextStage) return null;
+      return formatUnits(nextStage.priceUsdt, USDT_DECIMALS);
+    } catch {
+      return null;
+    }
+  }, [nextStageRead.data]);
 
   const remaining = useMemo(() => {
     try {
@@ -154,22 +184,18 @@ export function useMeme() {
   }, [remaining]);
 
   const progressPercent = useMemo(() => {
-  try {
-    if (perMemeValue === 0n || capValue === 0n) return "0";
+    try {
+      if (perMemeValue === 0n || capValue === 0n) return "0";
 
-    // 计算 MEME 总量
-    const memeCap = capValue / perMemeValue;
-    if (memeCap === 0n) return "0";
+      const memeCap = capValue / perMemeValue;
+      if (memeCap === 0n) return "0";
 
-    // 放大 10^4 倍，得到整数形式
-    const percentBigInt = (minedValue * 10000n) / memeCap;
-
-    // formatUnits 将整数除以 10^2，得到百分比两位小数
-    return formatUnits(percentBigInt / 100n, MEME_DECIMALS); // 这里 2 表示保留两位小数
-  } catch {
-    return "0";
-  }
-}, [capValue, minedValue, perMemeValue]);
+      const percentBigInt = (minedValue * 10000n) / memeCap;
+      return formatUnits(percentBigInt / 100n, MEME_DECIMALS);
+    } catch {
+      return "0";
+    }
+  }, [capValue, minedValue, perMemeValue]);
 
   const canRedeem = useMemo(() => {
     return Boolean(redeemEnabled);
@@ -339,7 +365,7 @@ export function useMeme() {
     nextPrice,
     maxBuyable,
     progressPercent,
-
+    
     // Human readable
     minedFormatted,
     remainingFormatted,

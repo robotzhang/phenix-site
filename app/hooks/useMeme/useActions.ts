@@ -5,8 +5,8 @@ import memeAbi from "@/abi/meme.json";
 import erc20Abi from "@/abi/erc20.json";
 
 import {
-  TEST_MEME_ADDRESS as MEME_ADDRESS,
-  TEST_USDT_ADDRESS as USDT_ADDRESS,
+  MEME_ADDRESS,
+  USDT_ADDRESS,
 } from "@/lib/constants";
 
 type Input = {

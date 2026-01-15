@@ -1,6 +1,6 @@
 import { useReadContract } from "wagmi";
 import abi from "@/abi/rwa.json";
-import { PHENIX_DECIMALS, TEST_RWA_ADDRESS as RWA_ADDRESS } from "@/lib/constants";
+import { PHENIX_DECIMALS, RWA_ADDRESS } from "@/lib/constants";
 import { formatUnits } from "viem";
 
 export interface RWA {

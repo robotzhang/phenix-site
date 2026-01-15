@@ -25,6 +25,10 @@ export default function RwaList() {
         </div>
       </div>
 
+      {(rwas || []).length === 0 && !loading && (
+        <div className="text-center text-gray-500 mt-10">No RWA assets found.</div>
+      )}
+
       {loading && <GlobalLoading />}
     </div>
   );

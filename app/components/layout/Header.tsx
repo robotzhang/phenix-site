@@ -18,9 +18,9 @@ export function Header() {
         <li>
           <Link to="/nft" className="hover:text-black">FNFT</Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/meme" className="hover:text-black">MEME</Link>
-        </li>
+        </li> */}
       </ul>
 
       <div className="ml-auto sm:ml-0">

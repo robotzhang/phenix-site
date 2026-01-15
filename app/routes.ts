@@ -6,6 +6,7 @@ export default [
   route("nft", "./routes/nft.tsx"),
   route("nft/metadata", "./routes/nft-metadata.tsx"),
   route("rwa", "./routes/rwa/list.tsx"),
+  route("rwa/metadata", "./routes/rwa/metadata.tsx"),
   route("rwa/:rwaId", "./routes/rwa/show.tsx"),
   route("meme", "./routes/meme.tsx"),
   ...prefix("support", [

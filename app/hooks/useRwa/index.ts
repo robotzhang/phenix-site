@@ -20,7 +20,7 @@ export interface RWA {
 function formatRwaInfo(rwaData: any): RWA {
   return {
     ...rwaData,
-    imageURL: `https://cdn.phenixmcga.com/rwa/${rwaData.asset.fileHash}.jpg`,
+    imageURL: `https://rwa-cdn.phenixmcga.com/${rwaData.asset.fileHash}/cover.png`,
     asset: {
       ...rwaData.asset,
       pricePhenixFormatted: formatUnits(rwaData.asset.pricePhenix, PHENIX_DECIMALS),

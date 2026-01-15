@@ -23,7 +23,7 @@ contract RWANFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     struct RWAAsset {
         string name;
         uint256 pricePhenix;
-        bytes32 fileHash;     // 唯一可信的文件包 hash
+        string fileHash;          // ← 修改为 string
         RWAStatus status;
     }
 
@@ -34,7 +34,6 @@ contract RWANFT is ERC721Enumerable, Ownable, ReentrancyGuard {
     mapping(uint256 => RWAAsset) public rwaAssets;
     mapping(address => bool) public authorizedIssuer;
 
-    // tokenURI 配置
     string public baseTokenURI;
     string public defaultTokenURI;
 
@@ -84,12 +83,12 @@ contract RWANFT is ERC721Enumerable, Ownable, ReentrancyGuard {
         address to,
         string calldata name,
         uint256 pricePhenix,
-        bytes32 fileHash
+        string calldata fileHash
     ) external onlyIssuer nonReentrant returns (uint256 tokenId) {
 
         require(bytes(name).length > 0, "Invalid name");
         require(pricePhenix > 0, "Invalid price");
-        require(fileHash != bytes32(0), "Invalid file hash");
+        require(bytes(fileHash).length > 0, "Invalid file hash");
 
         tokenId = nextTokenId++;
         _safeMint(to, tokenId);
@@ -128,7 +127,7 @@ contract RWANFT is ERC721Enumerable, Ownable, ReentrancyGuard {
                 abi.encodePacked(
                     baseTokenURI,
                     "?id=", _toString(tokenId),
-                    "&hash=", _bytes32ToHex(rwa.fileHash)
+                    "&hash=", rwa.fileHash
                 )
             );
         } catch {
@@ -150,16 +149,6 @@ contract RWANFT is ERC721Enumerable, Ownable, ReentrancyGuard {
             value /= 10;
         }
         return string(buffer);
-    }
-
-    function _bytes32ToHex(bytes32 data) internal pure returns (string memory) {
-        bytes memory hexChars = "0123456789abcdef";
-        bytes memory str = new bytes(64);
-        for (uint256 i = 0; i < 32; i++) {
-            str[i*2]     = hexChars[uint8(data[i] >> 4)];
-            str[i*2 + 1] = hexChars[uint8(data[i] & 0x0f)];
-        }
-        return string(str);
     }
 
     /* ========================= RWA QUERY EXTENSIONS ========================= */

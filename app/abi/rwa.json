@@ -445,9 +445,9 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "fileHash",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "createRWA",
@@ -508,9 +508,9 @@
 								"type": "uint256"
 							},
 							{
-								"internalType": "bytes32",
+								"internalType": "string",
 								"name": "fileHash",
-								"type": "bytes32"
+								"type": "string"
 							},
 							{
 								"internalType": "enum RWANFT.RWAStatus",
@@ -590,9 +590,9 @@
 								"type": "uint256"
 							},
 							{
-								"internalType": "bytes32",
+								"internalType": "string",
 								"name": "fileHash",
-								"type": "bytes32"
+								"type": "string"
 							},
 							{
 								"internalType": "enum RWANFT.RWAStatus",
@@ -723,9 +723,9 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "fileHash",
-				"type": "bytes32"
+				"type": "string"
 			},
 			{
 				"internalType": "enum RWANFT.RWAStatus",

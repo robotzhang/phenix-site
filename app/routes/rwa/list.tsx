@@ -1,8 +1,6 @@
 import GlobalLoading from "@/components/ui/global-loading";
 import { useRwaList } from "@/hooks/useRwa";
 import { Link } from "react-router";
-import { formatUnits } from "viem";
-import { PHENIX_DECIMALS } from "@/lib/constants";
 
 export default function RwaList() {
   const { data: rwas, loading } = useRwaList();
@@ -18,8 +16,9 @@ export default function RwaList() {
               to={`/rwa/${rwa.tokenId}`}
               className="block p-4 rounded-xl bg-white shadow"
             >
+              <img src={rwa.imageURL} alt={rwa.asset.name} className="w-full h-auto mb-4 rounded" />
               <div className="font-bold">{rwa.asset.name}</div>
-              <div>Floor Price: {formatUnits(rwa.asset.pricePhenix, PHENIX_DECIMALS)} PHENIX</div>
+              <div>Floor Price: {rwa.asset.pricePhenixFormatted} PHENIX</div>
               <div>Status: {rwa.asset.status === 0 ? "Published" : "Unpublished"}</div>
             </Link>
           ))}

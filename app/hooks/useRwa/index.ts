@@ -1,16 +1,30 @@
 import { useReadContract } from "wagmi";
 import abi from "@/abi/rwa.json";
-import { TEST_RWA_ADDRESS as RWA_ADDRESS } from "@/lib/constants";
+import { PHENIX_DECIMALS, TEST_RWA_ADDRESS as RWA_ADDRESS } from "@/lib/constants";
+import { formatUnits } from "viem";
 
 export interface RWA {
   tokenId: bigint;
   owner: `0x${string}`;
   tokenURI: string;
+  imageURL: string;
   asset: {
     name: string;
     pricePhenix: bigint;
+    pricePhenixFormatted: string;
     fileHash: `0x${string}`;
     status: number;
+  };
+}
+
+function formatRwaInfo(rwaData: any): RWA {
+  return {
+    ...rwaData,
+    imageURL: `https://cdn.phenixmcga.com/rwa/${rwaData.asset.fileHash}.jpg`,
+    asset: {
+      ...rwaData.asset,
+      pricePhenixFormatted: formatUnits(rwaData.asset.pricePhenix, PHENIX_DECIMALS),
+    },
   };
 }
 
@@ -24,9 +38,9 @@ export function useRwaList() {
     abi,
     functionName: "getAllRWAs",
   });
-
+  //
   return {
-    data: (data ?? []) as RWA[],
+    data: data ? (data as any[]).map((i) => formatRwaInfo(i)) : [],
     loading: isLoading,
     error,
   };
@@ -46,7 +60,7 @@ export function useRwaDetail(tokenId?: string) {
   });
 
   return {
-    data: (data ?? null) as RWA | null,
+    data: data ? formatRwaInfo(data) as RWA : null,
     loading: isLoading,
     error,
   };

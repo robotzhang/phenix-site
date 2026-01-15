@@ -28,3 +28,8 @@
 2. 使用 solidity ^0.8.30。
 3. 外部的包使用 https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.5.0/contracts/token/ERC721/extensions/ERC721Enumerable.sol 这种 github 的方式引用。 
 4. 给出生产级别的代码，注释完备清晰，能够在 remix.ethereum.org 直接编译通过。
+
+
+# RWA 页面
+我已经发布了 rwa 合约，请参考附件的 abi 文件，我使用了技术栈请查看 package.json。
+现在我想要实现 raw 列表和详情页，请给出可以直接运行的代码，注意要简洁，读取 rwa 的数据封装成 useRwa.ts。

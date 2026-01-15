@@ -132,6 +132,9 @@ meme address: 0xcD503Ad62838A3422CFD70e2C138da55bcb1571e
 - meme:
 - rwa:
 
+# base testnet
+- rwa: 0x1003847F3fd4A520cC789F4c81C00e3253a88307
+
 
 # deploy base
 - phoenix: 0xdC9a8607A7CAE96b4D70E3482f2Ea4A05931a3BF

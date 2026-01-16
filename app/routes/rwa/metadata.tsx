@@ -3,7 +3,7 @@ import type { LoaderFunctionArgs } from "react-router";
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const id = url.searchParams.get("id");
-  const fileHash = url.searchParams.get("fileHash");
+  const fileHash = url.searchParams.get("hash");
 
   if (!id) {
     return new Response(JSON.stringify({ error: "Missing id" }), {

@@ -9,9 +9,9 @@ export function Header() {
       </Link>
 
       <ul className="sm:flex hidden items-center gap-x-6 ml-auto">
-        <li>
+        {/* <li>
           <Link to="/" className="hover:text-black">HOME</Link>
-        </li>
+        </li> */}
         <li>
           <Link to="/rwa" className="hover:text-black">RWA</Link>
         </li>

@@ -13,7 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   // 动态地址
-  const imageUrl = `https://cdn.phenixmcga.com/rwa/${fileHash}.jpg`;
+  const imageUrl = `https://rwa-cdn.phenixmcga.com/${fileHash}/cover.png`;
 
   const metadata = {
     name: `Phenix RWA #${id}`,

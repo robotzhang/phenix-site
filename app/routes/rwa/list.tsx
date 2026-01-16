@@ -6,10 +6,10 @@ export default function RwaList() {
   const { data: rwas, loading } = useRwaList();
   //
   return (
-    <div className="md:max-w-5xl sm:max-w-3xl mx-auto sm:px-6">
+    <div className="md:max-w-7xl sm:max-w-3xl mx-auto sm:px-6">
       <h1 className="text-2xl font-bold mb-4">All RWA Assets</h1>
       <div className="grid grid-cols-12 gap-6">
-        <div className="md:col-span-4 sm:col-span-3 col-span-2">
+        <div className="md:col-span-3 sm:col-span-4 col-span-12">
           {(rwas || []).map((rwa) => (
             <Link
               key={rwa.tokenId.toString()}

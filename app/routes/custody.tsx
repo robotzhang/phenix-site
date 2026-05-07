@@ -41,13 +41,13 @@ export function meta() {
 export default function Custody() {
   return (
     <div className="-mx-4 md:mx-0">
-      <section className="border-b border-neutral-200 bg-neutral-950 px-4 py-16 text-white sm:px-8 sm:py-24">
+      <section className="border-b border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] px-4 py-16 text-sky-950 sm:px-8 sm:py-24">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-red-300">Custody System</p>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Custody System</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-6xl">分离式第三方托管</h1>
           </div>
-          <p className="text-lg leading-8 text-white/72">
+          <p className="text-lg leading-8 text-sky-900/70">
             PHENIX 联合金融机构、安保机构与保险机构，建立资产保管、资金监管、风险保障和链上存证相互分离的托管体系，提升文化资产的国际流通能力与全球公信力。
           </p>
         </div>
@@ -56,30 +56,30 @@ export default function Custody() {
       <section className="px-4 py-16 sm:px-0 sm:py-24">
         <div className="grid gap-4 md:grid-cols-2">
           {custodyLayers.map((item) => (
-            <article key={item.title} className="border border-neutral-200 bg-white p-6">
-              <item.icon className="h-6 w-6 text-red-700" />
-              <h2 className="mt-5 text-xl font-semibold text-neutral-950">{item.title}</h2>
-              <p className="mt-3 leading-7 text-neutral-600">{item.text}</p>
+            <article key={item.title} className="border border-sky-100 bg-white/80 p-6 shadow-sm">
+              <item.icon className="h-6 w-6 text-sky-700" />
+              <h2 className="mt-5 text-xl font-semibold text-sky-950">{item.title}</h2>
+              <p className="mt-3 leading-7 text-sky-900/70">{item.text}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-8 border-y border-neutral-200 bg-white px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="grid gap-8 border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-red-700">On-chain Proof</p>
-          <h2 className="mt-4 text-3xl font-semibold text-neutral-950 sm:text-5xl">让关键资产信息可追溯</h2>
-          <p className="mt-6 leading-8 text-neutral-600">
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">On-chain Proof</p>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">让关键资产信息可追溯</h2>
+          <p className="mt-6 leading-8 text-sky-900/70">
             链上记录不是替代线下鉴定与托管，而是把核心信息组织成可验证、可追踪、可持续沉淀的资产索引。
           </p>
         </div>
-        <div className="border border-neutral-200 p-6">
-          <LockKeyhole className="h-6 w-6 text-red-700" />
-          <h3 className="mt-5 text-xl font-semibold text-neutral-950">资产凭证记录</h3>
-          <ul className="mt-5 space-y-4 text-neutral-600">
+        <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
+          <LockKeyhole className="h-6 w-6 text-sky-700" />
+          <h3 className="mt-5 text-xl font-semibold text-sky-950">资产凭证记录</h3>
+          <ul className="mt-5 space-y-4 text-sky-900/70">
             {records.map((item) => (
               <li key={item} className="flex gap-3">
-                <span className="mt-2 h-1.5 w-1.5 bg-red-700" />
+                <span className="mt-2 h-1.5 w-1.5 bg-sky-700" />
                 <span>{item}</span>
               </li>
             ))}
@@ -88,14 +88,14 @@ export default function Custody() {
       </section>
 
       <section className="px-4 py-16 sm:px-0 sm:py-24">
-        <div className="bg-neutral-950 p-8 text-white">
+        <div className="border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] p-8 text-sky-950 shadow-sm">
           <h2 className="text-2xl font-semibold sm:text-3xl">托管是流通的前提</h2>
-          <p className="mt-4 max-w-3xl leading-7 text-white/70">
+          <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
             当资产的真伪、保管、权属与记录可被持续验证，文化艺术品才具备成为长期资产配置工具的基础条件。
           </p>
           <Link
             to="/liquidity"
-            className="mt-8 inline-flex items-center gap-2 border border-white/30 px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
+            className="mt-8 inline-flex items-center gap-2 border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
           >
             查看变现机制
             <ArrowRight className="h-4 w-4" />

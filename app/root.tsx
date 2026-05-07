@@ -58,8 +58,8 @@ export default function App() {
         <header 
           className={
             clsx(
-              "transition-colors duration-500 text-neutral-600 fixed top-0 left-0 h-14 sm:h-16 px-4 sm:px-6 right-0 w-full z-20",
-              scrolled ? "bg-white border-b border-b-neutral-200/60" : "border-b border-b-transparent",
+              "transition-colors duration-500 text-sky-900/75 fixed top-0 left-0 h-14 sm:h-16 px-4 sm:px-6 right-0 w-full z-20",
+              scrolled ? "bg-white/85 backdrop-blur-md border-b border-b-sky-100" : "border-b border-b-transparent",
             )
           }
         >

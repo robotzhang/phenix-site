@@ -22,7 +22,7 @@ export function Buy() {
     <>
       <div className="border rounded-xl p-4">
         <div className="text-muted-foreground mb-2">
-          Get
+          获取
         </div>
         <div className="flex items-center">
           <div className="flex-1">
@@ -41,7 +41,7 @@ export function Buy() {
           <div className="flex flex-col justify-center ">
             <div className="flex items-center gap-2 pr-3 p-1 rounded-full border">
               <img src="/favicon.ico" className="h-8 rounded-full" />
-              <div className="">FNFT</div>
+              <div className="">会员凭证</div>
             </div> 
           </div>
         </div>
@@ -57,7 +57,7 @@ export function Buy() {
 
       <div className="bg-neutral-100 rounded-xl p-4">
         <div className="text-muted-foreground mb-2">
-          Send
+          支付
         </div>
         <div className="flex items-center">
           <div className="text-3xl font-semibold flex-1">
@@ -81,7 +81,7 @@ export function Buy() {
       </div>
 
       <Button className="w-full text-xl h-14 rounded-xl mt-4" size="lg" onClick={handleBuy}>
-        Buy Now
+        获取会员凭证
       </Button>
     </>
   );

@@ -6,12 +6,7 @@ import erc20Abi from "@/abi/erc20.json";
 import { FNFT_ADDRESS, USDT_ADDRESS } from "@/lib/constants";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
-
-type FNFT = {
-  tokenId: string;
-  name: string;
-  amount: string;
-};
+import { WalletCards } from "lucide-react";
 
 export default function Assets() {
   const { address, isConnected } = useAccount();
@@ -49,38 +44,56 @@ export default function Assets() {
   });
 
   return (
-    <div>
-      <div className="my-6">
-        <h1 className="text-xl font-bold">My Assets</h1>
+    <div className="py-8 sm:py-12">
+      <div className="mb-8 border-b border-neutral-200 pb-8">
+        <p className="text-sm font-semibold uppercase tracking-wide text-red-700">Wallet Assets</p>
+        <h1 className="mt-4 text-3xl font-semibold text-neutral-950 sm:text-5xl">我的资产</h1>
+        <p className="mt-4 max-w-2xl leading-7 text-neutral-600">
+          查看当前钱包中的 ETH、USDT 与 PHENIX 会员凭证余额。
+        </p>
         {isConnected && (
-          <div className="flex justify-between gap-4 mt-2">
-            <div className=" break-all text-sm">{address}</div>
+          <div className="mt-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="break-all text-sm text-muted-foreground">{address}</div>
             <Button
               variant="outline"
               size="sm"
               onClick={() => disconnect()}
             >
-              Disconnect
+              断开连接
             </Button>
           </div>
-          
         )}
       </div>
 
-      <div className="flex justify-between border-b border-t py-3">
-        <div className="">ETH</div>
-        <div>{parseFloat(ethBalance).toFixed(6)}</div>
-      </div>
+      {!isConnected && (
+        <div className="border border-neutral-200 bg-white p-8">
+          <WalletCards className="h-7 w-7 text-red-700" />
+          <h2 className="mt-5 text-xl font-semibold text-neutral-950">连接钱包查看资产</h2>
+          <p className="mt-3 leading-7 text-neutral-600">连接后可读取你的链上余额和会员凭证数量。</p>
+          <div className="mt-6">
+            <ConnectButton />
+          </div>
+        </div>
+      )}
 
-      <div className="flex justify-between border-b py-3">
-        <div className="">USDT</div>
-        <div>{usdtBalance}</div>
-      </div>
+      {isConnected && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="border border-neutral-200 bg-white p-6">
+            <div className="text-sm text-muted-foreground">ETH</div>
+            <div className="mt-2 text-2xl font-semibold text-neutral-950">{parseFloat(ethBalance).toFixed(6)}</div>
+          </div>
 
-      <div className="flex justify-between py-3">
-        <div className="">FNFT</div>
-        <div>{fnftNumbers?.toString()}</div>
-      </div>
+          <div className="border border-neutral-200 bg-white p-6">
+            <div className="text-sm text-muted-foreground">USDT</div>
+            <div className="mt-2 text-2xl font-semibold text-neutral-950">{usdtBalance}</div>
+          </div>
+
+          <div className="border border-neutral-200 bg-white p-6">
+            <div className="text-sm text-muted-foreground">会员凭证</div>
+            <div className="mt-2 text-2xl font-semibold text-neutral-950">{fnftNumbers?.toString() || "0"}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

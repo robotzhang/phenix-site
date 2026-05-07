@@ -8,6 +8,9 @@ export default [
   route("rwa", "./routes/rwa/list.tsx"),
   route("rwa/metadata", "./routes/rwa/metadata.tsx"),
   route("rwa/:rwaId", "./routes/rwa/show.tsx"),
+  route("membership", "./routes/membership.tsx"),
+  route("custody", "./routes/custody.tsx"),
+  route("liquidity", "./routes/liquidity.tsx"),
   route("meme", "./routes/meme.tsx"),
   ...prefix("support", [
     route("bridge", "routes/support/bridge.tsx"),

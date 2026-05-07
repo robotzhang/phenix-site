@@ -10,7 +10,15 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { TextAlignJustify } from "lucide-react";
+import { Menu } from "lucide-react";
+
+const navItems = [
+  { to: "/", label: "首页" },
+  { to: "/rwa", label: "资产池" },
+  { to: "/membership", label: "会员体系" },
+  { to: "/custody", label: "托管与确权" },
+  { to: "/liquidity", label: "变现机制" },
+];
 
 export function Header() {
   return (
@@ -19,19 +27,14 @@ export function Header() {
         <img src="/logo.png" className="h-5 sm:h-6 -mt-1" alt="phenix" />
       </Link>
 
-      <ul className="sm:flex hidden items-center gap-x-6 ml-auto">
-        {/* <li>
-          <Link to="/" className="hover:text-black">HOME</Link>
-        </li> */}
-        <li>
-          <Link to="/rwa" className="hover:text-black">RWA</Link>
-        </li>
-        <li>
-          <Link to="/nft" className="hover:text-black">FNFT</Link>
-        </li>
-        {/* <li>
-          <Link to="/meme" className="hover:text-black">MEME</Link>
-        </li> */}
+      <ul className="sm:flex hidden items-center gap-x-6 ml-auto text-sm">
+        {navItems.map((item) => (
+          <li key={item.to}>
+            <Link to={item.to} className="hover:text-black">
+              {item.label}
+            </Link>
+          </li>
+        ))}
       </ul>
 
       <div className="ml-auto sm:ml-0 hidden sm:block">
@@ -40,33 +43,30 @@ export function Header() {
 
       <Drawer direction="right">
         <DrawerTrigger asChild>
-          <Button variant="outline" className="ml-auto sm:hidden">
-            <TextAlignJustify className="w-4 h-4" />
+          <Button variant="outline" size="icon" className="ml-auto sm:hidden" aria-label="Open navigation">
+            <Menu className="w-4 h-4" />
           </Button>
         </DrawerTrigger>
 
         <DrawerContent className="right-0 top-0 h-full w-[320px] rounded-none">
           <DrawerHeader className="border-b">
-            <DrawerTitle>Phoenix</DrawerTitle>
+            <DrawerTitle>PHENIX</DrawerTitle>
             <DrawerDescription>
               <ConnectButton />
             </DrawerDescription>
           </DrawerHeader>
 
           <div className="flex flex-col p-4 space-y-3">
+            {navItems.map((item) => (
+              <DrawerClose asChild key={item.to}>
+                <Link to={item.to} className="w-full justify-start border-b border-neutral-100 py-3">
+                  {item.label}
+                </Link>
+              </DrawerClose>
+            ))}
             <DrawerClose asChild>
-              <Link to="/assets" className="w-full justify-start">
-                Assets
-              </Link>
-            </DrawerClose>
-            <DrawerClose asChild>
-              <Link to="/rwa" className="w-full justify-start">
-                Rwa
-              </Link>
-            </DrawerClose>
-            <DrawerClose asChild>
-              <Link to="/nft" className="w-full justify-start">
-                FNFT
+              <Link to="/assets" className="w-full justify-start border-b border-neutral-100 py-3">
+                我的资产
               </Link>
             </DrawerClose>
           </div>

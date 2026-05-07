@@ -65,7 +65,7 @@ export default function App() {
         >
           <Header />
         </header>
-        <main className="flex-1 container pt-16">
+        <main className="flex-1 container pt-14 sm:pt-16">
           <Outlet />
         </main>
         <footer>

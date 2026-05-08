@@ -18,6 +18,8 @@ import '@rainbow-me/rainbowkit/styles.css';
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
+  { rel: "icon", href: "/favicon-blue.svg", type: "image/svg+xml" },
+  { rel: "shortcut icon", href: "/favicon-blue.svg" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",

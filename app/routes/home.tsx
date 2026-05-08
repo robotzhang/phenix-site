@@ -45,9 +45,9 @@ export default function Home() {
     <div className="-mx-4 md:mx-0">
       <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#edf6fb_100%)] px-4 py-16 text-sky-950 sm:px-8 sm:py-24">
         <img
-          src="/fnft-blue.png"
+          src="/fnft-blue-vivid.png"
           alt="PHENIX"
-          className="absolute inset-y-0 right-0 h-full w-full object-cover opacity-18 mix-blend-multiply sm:w-2/3"
+          className="absolute inset-y-0 right-0 h-full w-full object-cover opacity-16 mix-blend-multiply sm:w-2/3"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(242,248,251,0.96),rgba(242,248,251,0.76),rgba(242,248,251,0.28))]" />
         <div className="relative z-10 flex min-h-[calc(100vh-12rem)] max-w-4xl flex-col justify-center">

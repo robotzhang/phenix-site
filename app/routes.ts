@@ -8,6 +8,8 @@ export default [
   route("rwa", "./routes/rwa/list.tsx"),
   route("rwa/metadata", "./routes/rwa/metadata.tsx"),
   route("rwa/:rwaId", "./routes/rwa/show.tsx"),
+  route("admin/rwa/storage", "./routes/admin/rwa-storage.tsx"),
+  route("admin/rwa", "./routes/admin/rwa.tsx"),
   route("membership", "./routes/membership.tsx"),
   route("custody", "./routes/custody.tsx"),
   route("liquidity", "./routes/liquidity.tsx"),

@@ -35,7 +35,7 @@ export function meta() {
     { title: "PHENIX | 华夏文化艺术品资产交易与配置平台" },
     {
       name: "description",
-      content: "构建文化艺术品资产的信任基础设施，让文化艺术品在严选、托管、确权与退出机制中实现可信流通。",
+      content: "构建文化艺术品资产的信任基础设施，让文化艺术品实现可信流通。",
     },
   ];
 }
@@ -62,7 +62,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="mt-8 max-w-2xl text-lg leading-8 text-sky-900/72 sm:text-xl">
-            构建文化艺术品资产的信任基础设施，让文化艺术品在严选、托管、确权与退出机制中实现可信流通。
+            构建文化艺术品资产的信任基础设施，让文化艺术品实现可信流通。
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link

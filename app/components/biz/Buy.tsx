@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ArrowUp, LoaderCircle, Wallet } from 'lucide-react';
 import { toast } from "sonner";
 import { useFnftPurchase } from "@/hooks/useFnftPurchase";
@@ -5,6 +6,11 @@ import { Button } from "@/components/ui/button";
 
 export function Buy() {
   const buy = useFnftPurchase();
+  const { refresh } = buy;
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
 
   const handleBuy = async () => {
     if (buy.amount <= 0) {
@@ -12,7 +18,9 @@ export function Buy() {
       return;
     }
     try {
-      return await buy.purchase();
+      const receipt = await buy.purchase();
+      await refresh();
+      return receipt;
     } catch (err: any) {
       toast.error(err?.shortMessage || err?.message);
     }

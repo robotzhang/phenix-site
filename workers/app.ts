@@ -1,4 +1,5 @@
 import { createRequestHandler } from "react-router";
+export { RwaAdminStorage } from "./rwa-admin-storage";
 
 declare module "react-router" {
   export interface AppLoadContext {

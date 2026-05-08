@@ -15,7 +15,7 @@ export function Footer() {
             <div className="flex flex-col gap-2">
               <Link to="/rwa" className="hover:text-sky-700">资产库</Link>
               <Link to="/membership" className="hover:text-sky-700">会员体系</Link>
-              <Link to="/points-mall" className="hover:text-sky-700">积分商城</Link>
+              <Link to="/points-mall" className="hover:text-sky-700">社区商城</Link>
               <Link to="/custody" className="hover:text-sky-700">托管与确权</Link>
             </div>
             <div className="flex flex-col gap-2">

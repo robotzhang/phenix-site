@@ -13,7 +13,7 @@ const scenarios = [
   {
     icon: BookOpenCheck,
     title: "线上课程",
-    text: "使用 PHENIX 积分购买文化艺术品鉴赏、资产配置、托管确权等线上课程。",
+    text: "使用 PHENIX 积分兑换文化艺术品鉴赏、资产配置、托管确权等线上课程。",
   },
   {
     icon: Gift,
@@ -22,21 +22,21 @@ const scenarios = [
   },
   {
     icon: Users,
-    title: "团购拼团",
-    text: "积分可用于消费团购拼团产品，支持会员共同参与精选商品与服务。",
+    title: "兑换康养产品",
+    text: "积分可用于兑换平台提供的绿色产品，支持会员共同参与精选商品与服务。",
   },
 ];
 
 const products = [
   { type: "课程", name: "文化艺术品资产配置入门课", points: "800 PHENIX", status: "即将上线" },
   { type: "虚拟物品", name: "会员专属线上资料包", points: "300 PHENIX", status: "即将上线" },
-  { type: "拼团", name: "精选服务卡拼团权益", points: "1200 PHENIX", status: "规划中" },
+  { type: "康养产品", name: "精选绿色产品兑换权益", points: "1200 PHENIX", status: "规划中" },
 ];
 
 export function meta() {
   return [
-    { title: "积分商城 | PHENIX" },
-    { name: "description", content: "PHENIX 积分可用于课程、虚拟物品、团购拼团等应用场景。" },
+    { title: "社区商城 | PHENIX" },
+    { name: "description", content: "PHENIX 积分可用于兑换课程、虚拟物品、康养产品等应用场景。" },
   ];
 }
 
@@ -47,10 +47,10 @@ export default function PointsMall() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Points Mall</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            PHENIX 积分应用场景。
+            PHENIX 积分用途
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            PHENIX 积分可用于消费，购买线上课程、虚拟物品以及团购拼团产品。会员通过链接钱包登录，平台将基于钱包记录统计年度消费额。
+            PHENIX 积分可用于兑换商城的商品、服务及各种权益。
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -84,9 +84,6 @@ export default function PointsMall() {
         <div className="mb-10 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Catalog Preview</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">积分商品目录</h2>
-          <p className="mt-5 leading-8 text-sky-900/70">
-            先以商品目录和消费统计框架承接业务，后续可接入商品库存、订单、拼团和积分扣减流程。
-          </p>
         </div>
 
         <div className="grid gap-4">
@@ -101,7 +98,7 @@ export default function PointsMall() {
               </div>
               <div>
                 <h3 className="font-semibold text-sky-950">{product.name}</h3>
-                <p className="mt-1 text-sm text-sky-900/60">支持使用 PHENIX 积分消费</p>
+                <p className="mt-1 text-sm text-sky-900/60">支持使用 PHENIX 积分兑换</p>
               </div>
               <div className="font-semibold text-sky-950">{product.points}</div>
               <div className="text-sm text-sky-700">{product.status}</div>
@@ -112,10 +109,10 @@ export default function PointsMall() {
 
       <section className="grid gap-8 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Member Spending</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">年度消费统计</h2>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Member Redemption</p>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">年度兑换统计</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            会员通过链接钱包方式登录后，平台可按钱包地址统计当年积分消费额，用于会员等级、活动资格和后续权益策略。
+            会员通过链接钱包方式登录后，平台可按钱包地址统计当年积分兑换额，用于会员等级、活动资格和后续权益策略。
           </p>
         </div>
 
@@ -130,7 +127,7 @@ export default function PointsMall() {
               </div>
             </div>
             <div className="bg-sky-50 p-5">
-              <div className="text-sm text-sky-900/60">年度消费额</div>
+              <div className="text-sm text-sky-900/60">年度兑换额</div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">0 PHENIX</div>
             </div>
           </div>
@@ -140,7 +137,7 @@ export default function PointsMall() {
               后续可扩展
             </div>
             <p className="mt-3 text-sm leading-7 text-sky-900/60">
-              积分余额、积分扣减、订单记录、团购进度、年度消费排行榜和会员权益升级。
+              积分余额、积分扣减、订单记录、团购进度、年度兑换排行榜和会员权益升级。
             </p>
           </div>
         </div>

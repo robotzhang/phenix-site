@@ -15,6 +15,10 @@
 			{
 				"class_name": "RwaAdminStorage",
 				"name": "RWA_ADMIN_STORAGE"
+			},
+			{
+				"class_name": "StakingStorage",
+				"name": "STAKING_STORAGE"
 			}
 		]
 	},
@@ -23,6 +27,12 @@
 			"tag": "v1",
 			"new_sqlite_classes": [
 				"RwaAdminStorage"
+			]
+		},
+		{
+			"tag": "v2",
+			"new_sqlite_classes": [
+				"StakingStorage"
 			]
 		}
 	],

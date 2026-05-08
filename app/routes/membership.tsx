@@ -49,19 +49,28 @@ export default function Membership() {
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
             PHENIX 的会员体系不同于传统年费制。会员通过配置平台精选资产进入生态，在资产服务、圈层资源、项目合作与优先流通中获得长期价值。
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/nft"
+                className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+              >
+                获取会员凭证
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/rwa"
+                className="inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+              >
+                浏览资产库
+              </Link>
+            </div>
             <Link
-              to="/nft"
-              className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+              to="/staking"
+              className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
-              获取会员凭证
+              质押领积分
               <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/rwa"
-              className="inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
-            >
-              浏览资产库
             </Link>
           </div>
         </div>

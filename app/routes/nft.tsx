@@ -54,7 +54,7 @@ export default function Nft() {
             <BadgeCheck className="h-5 w-5 text-sky-700" />
             <div>
               <h2 className="font-semibold text-sky-950">获取链上会员凭证</h2>
-              <p className="text-sm text-sky-900/60">线上直接采购鉴定服务卡，买满10张的，联系我们领取黄金会员卡（仅限平台上购买的）。</p>
+              <p className="text-sm text-sky-900/60">线上直接采购鉴定服务卡，买满10张的，联系我们领取黄金会员卡。</p>
             </div>
           </div>
           <div className="relative flex flex-col gap-1 bg-card text-card-foreground">

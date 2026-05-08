@@ -25,8 +25,8 @@ const trustRecords = [
 
 export function meta() {
   return [
-    { title: "文化资产详情 | PHENIX" },
-    { name: "description", content: "查看 PHENIX 链上文化资产的确权记录、资产文件包 hash 与流通信息。" },
+    { title: "文化艺术品资产详情 | PHENIX" },
+    { name: "description", content: "查看 PHENIX 链上文化艺术品资产的确权记录、资产文件包 hash 与流通信息。" },
   ];
 }
 

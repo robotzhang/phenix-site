@@ -8,7 +8,7 @@ export function Footer() {
           <div>
             <img src="/logo-porcelain.svg" className="h-10" alt="PHENIX" />
             <p className="mt-4 max-w-xl text-sm leading-7 text-sky-900/70">
-              PHENIX 构建文化资产的信任基础设施，以真实资产、真实交易、真实服务推动文化艺术品资产可信流通。
+              PHENIX 构建文化艺术品资产的信任基础设施，以真实资产、真实交易、真实服务推动文化艺术品资产可信流通。
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm">

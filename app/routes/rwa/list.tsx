@@ -21,7 +21,7 @@ export default function RwaList() {
         <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Asset Pool</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">文化资产库</h1>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">文化艺术品资产库</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
               PHENIX 不卖单品，而是构建可配置资产库。每一项上链资产都关联文件包 hash、权属记录与资产状态，用于支撑后续托管、流通与会员配置服务。
             </p>
@@ -72,7 +72,7 @@ export default function RwaList() {
           <h2 className="text-2xl font-semibold text-sky-950">资产列表</h2>
           <div className="flex items-center gap-2 border border-sky-100 bg-white/80 px-3 py-2 text-sm text-sky-900/60 shadow-sm">
             <Search className="h-4 w-4" />
-            严选文化资产与链上凭证
+            严选文化艺术品资产与链上凭证
           </div>
         </div>
 

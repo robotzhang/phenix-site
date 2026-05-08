@@ -16,7 +16,7 @@ const painPoints = [
 ];
 
 const solutionItems = [
-  { icon: BadgeCheck, title: "严选资产库", text: "多层鉴定与专家评审，优先筛选稀缺性强、具备长期流通潜力的文化资产。" },
+  { icon: BadgeCheck, title: "严选资产库", text: "多层鉴定与专家评审，优先筛选稀缺性强、具备长期流通潜力的文化艺术品资产。" },
   { icon: LockKeyhole, title: "第三方托管", text: "联合金融、安保、保险等机构建立分离式托管体系，提升资产安全与公信力。" },
   { icon: Blocks, title: "数字确权存证", text: "通过链上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
   { icon: CircleDollarSign, title: "可预期退出", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的流通与变现路径。" },
@@ -27,15 +27,15 @@ const flywheel = ["资产库扩容", "会员规模增长", "圈层价值增强",
 const milestones = [
   { stage: "第一阶段", title: "基础建设期", goal: "建立核心资产储备、严选入库机制、托管体系和种子会员网络。" },
   { stage: "第二阶段", title: "规模扩张期", goal: "扩展资产规模与会员网络，推动托管、回收和流通渠道落地。" },
-  { stage: "第三阶段", title: "生态成熟期", goal: "建设全球文化资产配置中心，形成行业标准与全球化运营能力。" },
+  { stage: "第三阶段", title: "生态成熟期", goal: "建设全球文化艺术品资产配置中心，形成行业标准与全球化运营能力。" },
 ];
 
 export function meta() {
   return [
-    { title: "PHENIX | 中国文化艺术品资产交易与配置平台" },
+    { title: "PHENIX | 华夏文化艺术品资产交易与配置平台" },
     {
       name: "description",
-      content: "PHENIX 构建文化资产的信任基础设施，让文化艺术品资产实现可信流通。",
+      content: "构建文化艺术品资产的信任基础设施，让文化艺术品在严选、托管、确权与退出机制中实现可信流通。",
     },
   ];
 }
@@ -45,24 +45,24 @@ export default function Home() {
     <div className="-mx-4 md:mx-0">
       <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#edf6fb_100%)] px-4 py-16 text-sky-950 sm:px-8 sm:py-24">
         <img
-          src="/fnft.jpg"
+          src="/fnft-blue.png"
           alt="PHENIX"
-          className="absolute inset-y-0 right-0 h-full w-full object-cover opacity-15 mix-blend-multiply sm:w-2/3"
+          className="absolute inset-y-0 right-0 h-full w-full object-cover opacity-18 mix-blend-multiply sm:w-2/3"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(242,248,251,0.96),rgba(242,248,251,0.76),rgba(242,248,251,0.28))]" />
         <div className="relative z-10 flex min-h-[calc(100vh-12rem)] max-w-4xl flex-col justify-center">
           <div className="mb-6 inline-flex w-fit items-center gap-2 border border-sky-200 bg-white/70 px-3 py-1 text-sm text-sky-800 shadow-sm backdrop-blur">
             <Sparkles className="h-4 w-4 text-sky-600" />
-            文化资产流通体系构建者
+            文化艺术品资产流通体系构建者
           </div>
           <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
             PHENIX
             <span className="mt-4 block text-2xl font-medium text-sky-900/90 sm:text-4xl">
-              中国文化艺术品资产交易与配置平台
+              华夏文化艺术品资产交易与配置平台
             </span>
           </h1>
           <p className="mt-8 max-w-2xl text-lg leading-8 text-sky-900/72 sm:text-xl">
-            构建文化资产的信任基础设施，让文化艺术品资产在严选、托管、确权与退出机制中实现可信流通。
+            构建文化艺术品资产的信任基础设施，让文化艺术品在严选、托管、确权与退出机制中实现可信流通。
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -110,10 +110,10 @@ export default function Home() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Our Solution</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
-              信任驱动型文化资产流通平台
+              信任驱动型文化艺术品资产流通平台
             </h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              PHENIX 以资产为纽带、以资源为价值，连接高净值人群、优质文化资产与专业服务网络。
+              PHENIX 以资产为纽带、以资源为价值，连接高净值人群、优质文化艺术品资产与专业服务网络。
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -174,7 +174,7 @@ export default function Home() {
           <div>
             <h2 className="text-2xl font-semibold sm:text-3xl">面向合格机构投资者与战略伙伴</h2>
             <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
-              PHENIX 不公开募资，不承诺收益。平台以真实资产、真实交易、真实服务为基础，欢迎长期认同文化资产流通价值的伙伴共同参与基础设施建设。
+              PHENIX 不公开募资，不承诺收益。平台以真实资产、真实交易、真实服务为基础，欢迎长期认同文化艺术品资产流通价值的伙伴共同参与基础设施建设。
             </p>
           </div>
           <Link

@@ -15,7 +15,7 @@ const rights = [
   {
     icon: BriefcaseBusiness,
     title: "项目合作机会",
-    text: "对接文化资产、展陈、品牌合作与跨境流通机会，推动资产价值被持续发现。",
+    text: "对接文化艺术品资产、展陈、品牌合作与跨境流通机会，推动资产价值被持续发现。",
   },
   {
     icon: ShieldCheck,
@@ -33,7 +33,7 @@ const tiers = [
 export function meta() {
   return [
     { title: "会员体系 | PHENIX" },
-    { name: "description", content: "PHENIX 以资产为纽带、以资源为价值，构建高端会员与文化资产流通生态。" },
+    { name: "description", content: "PHENIX 以资产为纽带、以资源为价值，构建高端会员与文化艺术品资产流通生态。" },
   ];
 }
 

@@ -6,14 +6,14 @@ import { BadgeCheck, BriefcaseBusiness, Gem, Network, ShieldCheck } from "lucide
 const benefits = [
   { icon: Gem, title: "资产配置服务", text: "获取平台严选资产库相关信息与配置服务入口。" },
   { icon: Network, title: "圈层资源对接", text: "进入 PHENIX 高净值会员与战略伙伴生态。" },
-  { icon: BriefcaseBusiness, title: "项目合作机会", text: "围绕文化资产、品牌、展陈与跨境流通建立连接。" },
+  { icon: BriefcaseBusiness, title: "项目合作机会", text: "围绕文化艺术品资产、品牌、展陈与跨境流通建立连接。" },
   { icon: ShieldCheck, title: "优先流通支持", text: "对接典当、拍卖、回收等退出路径的信息与服务。" },
 ];
 
 export function meta() {
   return [
     { title: "PHENIX 会员凭证" },
-    { name: "description", content: "获取 PHENIX 会员凭证，进入文化资产配置与可信流通生态。" },
+    { name: "description", content: "获取 PHENIX 会员凭证，进入文化艺术品资产配置与可信流通生态。" },
   ];
 }
 
@@ -27,7 +27,7 @@ export default function Nft() {
             PHENIX 会员凭证
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            会员凭证是进入 PHENIX 文化资产配置生态的链上入口。它连接资产配置服务、圈层资源、项目合作机会与优先流通支持。
+            会员凭证是进入 PHENIX 文化艺术品资产配置生态的链上入口。它连接资产配置服务、圈层资源、项目合作机会与优先流通支持。
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/membership" className="inline-flex items-center justify-center border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">

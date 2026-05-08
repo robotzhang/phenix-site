@@ -34,7 +34,7 @@ const records = [
 export function meta() {
   return [
     { title: "托管与确权 | PHENIX" },
-    { name: "description", content: "PHENIX 通过第三方托管、数字确权与链上存证构建文化资产可信流通基础设施。" },
+    { name: "description", content: "PHENIX 通过第三方托管、数字确权与链上存证构建文化艺术品资产可信流通基础设施。" },
   ];
 }
 
@@ -48,7 +48,7 @@ export default function Custody() {
             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-6xl">分离式第三方托管</h1>
           </div>
           <p className="text-lg leading-8 text-sky-900/70">
-            PHENIX 联合金融机构、安保机构与保险机构，建立资产保管、资金监管、风险保障和链上存证相互分离的托管体系，提升文化资产的国际流通能力与全球公信力。
+            PHENIX 联合金融机构、安保机构与保险机构，建立资产保管、资金监管、风险保障和链上存证相互分离的托管体系，提升文化艺术品资产的国际流通能力与全球公信力。
           </p>
         </div>
       </section>

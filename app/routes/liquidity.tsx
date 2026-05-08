@@ -29,7 +29,7 @@ const process = [
 export function meta() {
   return [
     { title: "变现机制 | PHENIX" },
-    { name: "description", content: "PHENIX 提前连接典当、拍卖与回收渠道，为文化资产建立可预期退出路径。" },
+    { name: "description", content: "PHENIX 提前连接典当、拍卖与回收渠道，为文化艺术品资产建立可预期退出路径。" },
   ];
 }
 
@@ -83,7 +83,7 @@ export default function Liquidity() {
           <BadgeDollarSign className="h-7 w-7 text-sky-700" />
           <h2 className="mt-5 text-2xl font-semibold sm:text-3xl">不承诺收益，只建设更可信的流通基础设施</h2>
           <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
-            文化资产价格受市场、资产稀缺性、保存状况、交易渠道和宏观环境影响。PHENIX 的目标是降低信息不对称与流通摩擦，而不是提供固定收益承诺。
+            文化艺术品资产价格受市场、资产稀缺性、保存状况、交易渠道和宏观环境影响。PHENIX 的目标是降低信息不对称与流通摩擦，而不是提供固定收益承诺。
           </p>
           <Link
             to="/rwa"

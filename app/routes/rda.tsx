@@ -63,7 +63,7 @@ export default function Rda() {
         </div>
       </section>
 
-      <section className="grid gap-8 px-4 py-14 sm:px-0 sm:py-20 lg:grid-cols-[0.85fr_1.15fr]">
+      <section id="faq" className="scroll-mt-20 grid gap-8 px-4 py-14 sm:px-0 sm:py-20 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">FAQ</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">常见问题</h2>

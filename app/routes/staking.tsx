@@ -53,7 +53,7 @@ function formatDateTime(value: string) {
 export function meta() {
   return [
     { title: "质押领积分 | PHENIX" },
-    { name: "description", content: "质押鉴定服务卡，或申请平台以 RMB 回购未质押的鉴定服务卡。" },
+    { name: "description", content: "质押鉴定服务卡，或提交未质押鉴定服务卡的平台出售申请。" },
   ];
 }
 
@@ -186,12 +186,12 @@ export default function Staking() {
     }
 
     if (parsedBuybackCardCount <= 0) {
-      toast.error("请输入回购申请数量");
+      toast.error("请输入平台出售申请数量");
       return;
     }
 
     if (parsedBuybackCardCount > operableCards) {
-      toast.error("回购数量不能超过可操作的未质押鉴定服务卡数量");
+      toast.error("平台出售数量不能超过可操作的未质押鉴定服务卡数量");
       return;
     }
 
@@ -204,9 +204,9 @@ export default function Staking() {
         cardCount: parsedBuybackCardCount,
         ownedCardCount: cardBalance,
       });
-      toast.success("回购申请已提交，已按申请时间进入队列");
+      toast.success("平台出售申请已提交，已按申请时间进入队列");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "回购申请提交失败");
+      toast.error(error instanceof Error ? error.message : "平台出售申请提交失败");
     } finally {
       setBusyAction(null);
     }
@@ -392,10 +392,10 @@ export default function Staking() {
       <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">RMB Buyback Queue</p>
-            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">未质押卡平台回购</h2>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">RMB Sell Queue</p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">未质押卡平台出售</h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              未质押的鉴定服务卡可提交平台回购申请，质押中的服务卡不能提交回购申请。平台按申请时间戳排序处理，支付 RMB 后完成交易。
+              未质押的鉴定服务卡可提交平台出售申请，质押中的服务卡不能提交平台出售申请。平台按申请时间戳排序处理，支付 RMB 后完成交易。
             </p>
           </div>
 
@@ -420,7 +420,7 @@ export default function Staking() {
             </div>
 
             <label className="mt-6 block text-sm font-semibold text-sky-950" htmlFor="buyback-card-count">
-              申请回购鉴定服务卡数量
+              申请平台出售的鉴定服务卡数量
             </label>
             <input
               id="buyback-card-count"
@@ -438,7 +438,7 @@ export default function Staking() {
               disabled={!isConnected || busyAction === "buyback"}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
             >
-              {busyAction === "buyback" ? "提交中..." : "提交 RMB 回购申请"}
+              {busyAction === "buyback" ? "提交中..." : "提交平台出售申请"}
             </button>
 
             {userPendingBuyback && (
@@ -454,7 +454,7 @@ export default function Staking() {
             )}
 
             <p className="mt-6 text-sm leading-7 text-sky-900/60">
-              排队位置按待处理申请的时间戳从早到晚计算。只有可操作的未质押服务卡能进入回购队列；平台审核后，以 RMB 支付完成回购交易。
+              排队位置按待处理申请的时间戳从早到晚计算。只有可操作的未质押服务卡能进入平台出售队列；平台审核后，以 RMB 支付完成交易。
             </p>
           </div>
         </div>
@@ -488,10 +488,10 @@ export default function Staking() {
           </div>
 
           <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
-            <h2 className="text-2xl font-semibold text-sky-950">我的回购申请</h2>
+            <h2 className="text-2xl font-semibold text-sky-950">我的平台出售申请</h2>
             <div className="mt-5 space-y-3">
               {userBuybackRequests.length === 0 ? (
-                <p className="text-sm leading-7 text-sky-900/60">暂无回购申请。</p>
+                <p className="text-sm leading-7 text-sky-900/60">暂无平台出售申请。</p>
               ) : (
                 userBuybackRequests.map((item) => {
                   const queuePosition =
@@ -503,7 +503,7 @@ export default function Staking() {
                     <div key={item.id} className="border border-sky-100 bg-sky-50 p-4">
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div className="font-semibold text-sky-950">
-                          {item.cardCount} 张 / {item.payoutCurrency} 回购
+                          {item.cardCount} 张 / {item.payoutCurrency} 平台出售
                         </div>
                         <div className="text-sm text-sky-700">
                           {item.status === "pending" ? `排第 ${queuePosition} 位` : item.status}

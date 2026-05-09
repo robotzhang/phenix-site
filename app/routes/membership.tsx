@@ -32,8 +32,8 @@ const tiers = [
 
 const heroHighlights = [
   { label: "服务卡价值", value: "1 张 = 1000 PHENIX" },
-  { label: "积分方式", value: "质押服务卡日日累积" },
-  { label: "流通路径", value: "未质押可申请平台回购" },
+  { label: "积分获取方式", value: "通过质押服务卡获取PHENIX 积分" },
+  { label: "流通路径", value: "未质押的服务卡，可申请平台出售" },
 ];
 
 export function meta() {

@@ -28,7 +28,7 @@ async function readRemoteStorage() {
   });
 
   if (!response.ok) {
-    throw new Error(`读取质押与回购队列失败 (${response.status})`);
+    throw new Error(`读取质押与平台出售队列失败 (${response.status})`);
   }
 
   return normalizeStakingStorageDocument(await response.json());
@@ -78,7 +78,7 @@ async function mutateStorage(payload: CreateStakePayload | CreateBuybackPayload)
   });
 
   if (!response.ok) {
-    const fallback = `写入质押与回购队列失败 (${response.status})`;
+    const fallback = `写入质押与平台出售队列失败 (${response.status})`;
 
     try {
       const result = await response.json();

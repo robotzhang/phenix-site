@@ -218,10 +218,10 @@ export default function Staking() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Phenix Token Points</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            质押鉴定服务卡，日日领取积分。
+            质押服务卡，天天得PHENIX福利
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            1 张鉴定服务卡 = 1000 PHENIX。会员持有的鉴定服务卡分为质押中与未质押两种状态；只有未质押的卡可提交平台 RMB 回购申请，队列按申请时间戳排序。
+            一张鉴定服务卡等值于 1,000 PHENIX 积分，质押服务卡获得 PHENIX 积分！
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -269,7 +269,7 @@ export default function Staking() {
             {isConnected ? availableCards : "-"}
           </div>
           <p className="mt-3 text-sm leading-6 text-sky-900/60">
-            未质押卡可继续质押，或提交平台 RMB 回购申请。质押中的服务卡不能提交回购申请，待回购排队中 {isConnected ? pendingBuybackCards : "-"} 张。
+            未质押卡可继续质押
           </p>
         </div>
       </section>
@@ -293,7 +293,7 @@ export default function Staking() {
 
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <BadgeCheck className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-2xl font-semibold text-sky-950">空投规则</h2>
+          <h2 className="mt-5 text-2xl font-semibold text-sky-950">获得规则</h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {plans.map((plan) => (
               <button
@@ -313,7 +313,7 @@ export default function Staking() {
                 <div className="mt-4 text-4xl font-semibold text-sky-950">
                   {(plan.annualRate * 100).toFixed(0)}%
                 </div>
-                <p className="mt-3 text-sm leading-6 text-sky-900/60">日日空投 PHENIX token 积分</p>
+                <p className="mt-3 text-sm leading-6 text-sky-900/60">日日获得 PHENIX 积分</p>
               </button>
             ))}
           </div>
@@ -325,7 +325,7 @@ export default function Staking() {
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Staking Estimate</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">质押领积分</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            输入计划质押的未质押鉴定服务卡数量，选择质押周期，即可估算对应 PHENIX token 积分空投。
+            输入计划质押的未质押鉴定服务卡数量，选择质押周期，即可估算对应 PHENIX 积分获得。
           </p>
         </div>
 
@@ -347,7 +347,7 @@ export default function Staking() {
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Coins className="h-4 w-4" />
-                质押本金
+                质押基数
               </div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.principal)} PHENIX</div>
             </div>
@@ -361,14 +361,14 @@ export default function Staking() {
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Gift className="h-4 w-4" />
-                预计总空投
+                预计总获得
               </div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.totalAirdrop)} PHENIX</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <ShieldCheck className="h-4 w-4" />
-                预计日日空投
+                预计日日获得
               </div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.dailyAirdrop)} PHENIX</div>
             </div>

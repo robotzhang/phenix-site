@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, BriefcaseBusiness, Gem, Network, ShieldCheck } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, Coins, Gem, Network, ShieldCheck, WalletCards } from "lucide-react";
 
 const rights = [
   {
@@ -30,6 +30,12 @@ const tiers = [
   { name: "Strategic Member", focus: "资源与战略合作", value: "面向机构与战略伙伴，参与资产库共建与全球流通网络建设。" },
 ];
 
+const heroHighlights = [
+  { label: "服务卡价值", value: "1 张 = 1000 PHENIX" },
+  { label: "积分方式", value: "质押服务卡日日累积" },
+  { label: "流通路径", value: "未质押可申请平台回购" },
+];
+
 export function meta() {
   return [
     { title: "会员体系 | PHENIX" },
@@ -40,43 +46,63 @@ export function meta() {
 export default function Membership() {
   return (
     <div className="-mx-4 md:mx-0">
-      <section className="border-b border-sky-100 bg-white/80 px-4 py-16 sm:px-0 sm:py-24">
-        <div className="max-w-4xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Membership Model</p>
-          <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            资产是纽带，资源是价值。
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            PHENIX 的会员体系不同于传统年费制。会员通过配置平台精选资产进入生态，在资产服务、圈层资源、项目合作与优先流通中获得长期价值。
-          </p>
-          <div className="mt-8 flex flex-col gap-3">
-            <div className="flex flex-col gap-3 sm:flex-row">
+      <section className="border-b border-sky-100 bg-white/80 px-4 py-14 sm:px-0 sm:py-20">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center">
+          <div className="max-w-4xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Membership Model</p>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
+              资产是纽带，资源是价值。
+            </h1>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
+              PHENIX 的会员体系不同于传统年费制。会员通过配置平台精选资产进入生态，在资产服务、圈层资源、项目合作与优先流通中获得长期价值。
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 to="/nft"
-                className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+                className="inline-flex w-full items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 sm:w-auto"
               >
                 获取会员凭证
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/rwa"
-                className="inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+                className="inline-flex w-full items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 sm:w-auto"
               >
                 浏览资产库
               </Link>
+              <Link
+                to="/staking"
+                className="inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 sm:w-auto"
+              >
+                <Coins className="h-4 w-4" />
+                质押领积分
+              </Link>
             </div>
-            <Link
-              to="/staking"
-              className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
-            >
-              质押领积分
-              <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
+
+          <aside className="border border-sky-100 bg-sky-50/70 p-6 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-sky-200 bg-white text-sky-700">
+                <WalletCards className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">Member Path</p>
+                <h2 className="mt-1 text-xl font-semibold text-sky-950">会员权益路径</h2>
+              </div>
+            </div>
+            <div className="mt-6 grid gap-3">
+              {heroHighlights.map((item) => (
+                <div key={item.label} className="border-b border-sky-100 pb-3 last:border-b-0 last:pb-0">
+                  <div className="text-sm text-sky-900/60">{item.label}</div>
+                  <div className="mt-1 font-semibold text-sky-950">{item.value}</div>
+                </div>
+              ))}
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-0 sm:py-24">
+      <section className="px-4 py-16 sm:px-0 sm:py-20">
         <div className="grid gap-4 md:grid-cols-2">
           {rights.map((item) => (
             <article key={item.title} className="border border-sky-100 bg-white/80 p-6 shadow-sm">

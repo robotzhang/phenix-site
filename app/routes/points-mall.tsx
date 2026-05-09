@@ -113,7 +113,7 @@ export default function PointsMall() {
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Member Redemption</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">年度兑换统计</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            会员通过链接钱包方式登录后，平台可按钱包地址统计当年积分兑换额，用于会员等级、活动资格和后续权益策略。
+            登录查看兑换记录
           </p>
         </div>
 
@@ -123,9 +123,6 @@ export default function PointsMall() {
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="bg-sky-50 p-5">
               <div className="text-sm text-sky-900/60">会员钱包</div>
-              <div className="mt-3 break-all text-lg font-semibold text-sky-950">
-                通过导航栏连接钱包登录
-              </div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="text-sm text-sky-900/60">年度兑换额</div>

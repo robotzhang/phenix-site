@@ -68,7 +68,7 @@ export default function Nft() {
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">FAQ</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">常见问题</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            会员凭证用于连接 PHENIX 生态权益，不构成投资收益承诺。请在理解风险后独立判断。
+            先了解 PHENIX 为什么存在、适合谁参与，再进一步理解会员权益、服务卡、PHENIX 积分和流通边界。
           </p>
         </div>
         <FQA />

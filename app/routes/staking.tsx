@@ -393,9 +393,9 @@ export default function Staking() {
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">RMB Sell Queue</p>
-            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">未锁仓卡平台出售</h2>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">委托平台出售服务卡</h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              未锁仓的鉴定服务卡可提交平台出售申请，锁仓中的服务卡不能提交平台出售申请。平台按申请时间戳排序处理，支付 RMB 后完成交易。
+              未锁仓的鉴定服务卡，可以向平台申请，委托平台出售。锁仓中的服务卡不能交易。
             </p>
           </div>
 

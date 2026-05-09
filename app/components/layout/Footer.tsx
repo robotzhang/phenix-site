@@ -22,6 +22,7 @@ export function Footer() {
               <Link to="/liquidity" className="hover:text-sky-700">变现机制</Link>
               <Link to="/assets" className="hover:text-sky-700">会员凭证</Link>
               <Link to="/assets" className="hover:text-sky-700">我的资产</Link>
+              <Link to="/faq" className="hover:text-sky-700">FAQ</Link>
             </div>
           </div>
         </div>

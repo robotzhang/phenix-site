@@ -105,7 +105,7 @@ export default function RwaList() {
               return (
                 <Link
                   key={tokenId}
-                  to={`/rwa/${rwa.tokenId}`}
+                  to={`/asset/${rwa.tokenId}`}
                   className="group overflow-hidden border border-sky-100 bg-white/90 shadow-sm transition hover:border-sky-300"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-sky-50">

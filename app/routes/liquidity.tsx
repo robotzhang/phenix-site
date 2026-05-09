@@ -86,7 +86,7 @@ export default function Liquidity() {
             文化艺术品资产价格受市场、资产稀缺性、保存状况、交易渠道和宏观环境影响。PHENIX 的目标是降低信息不对称与流通摩擦，而不是提供固定收益承诺。
           </p>
           <Link
-            to="/rwa"
+            to="/asset"
             className="mt-8 inline-flex items-center gap-2 border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
           >
             浏览资产库

@@ -3,7 +3,6 @@ import type { LoaderFunctionArgs } from "react-router";
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const id = url.searchParams.get("id");
-  const fileHash = url.searchParams.get("hash");
 
   if (!id) {
     return new Response(JSON.stringify({ error: "Missing id" }), {
@@ -12,16 +11,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
   }
 
-  // 动态地址
-  const imageUrl = `https://rwa-cdn.phenixmcga.com/${fileHash}/cover.png`;
+  const imageUrl = `https://phenixmcga.com/member-credential.svg`;
 
   const metadata = {
-    name: `Phenix RWA #${id}`,
-    description: "Your on-chain Phenix RWA asset.",
+    name: `Phenix RDA #${id}`,
+    description: "Your on-chain Phenix RDA credential.",
     image: imageUrl,
     attributes: [
       { trait_type: "Token ID", value: id },
-      { trait_type: "File Hash", value: fileHash },
     ]
   };
 

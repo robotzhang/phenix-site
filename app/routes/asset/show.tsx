@@ -55,8 +55,8 @@ export function meta() {
 }
 
 export default function RwaShow() {
-  const { rwaId } = useParams();
-  const { data: rwa, loading } = useRwaDetail(rwaId);
+  const { assetId } = useParams();
+  const { data: rwa, loading } = useRwaDetail(assetId);
   const adminMetadataMap = useRwaAdminMetadataMap();
 
   if (loading) return <GlobalLoading />;
@@ -65,14 +65,14 @@ export default function RwaShow() {
     return (
       <div className="py-16">
         <Link
-          to="/rwa"
+          to="/asset"
           className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-600 hover:text-neutral-950"
         >
           <ArrowLeft className="h-4 w-4" />
           返回资产库
         </Link>
         <div className="mt-8 border border-neutral-200 bg-white p-8 text-center text-muted-foreground">
-          未找到该 RWA 资产。
+          未找到该资产。
         </div>
       </div>
     );
@@ -87,7 +87,7 @@ export default function RwaShow() {
     <div className="-mx-4 md:mx-0">
       <section className="border-b border-sky-100 bg-white/80 px-4 py-8 sm:px-0 sm:py-12">
         <Link
-          to="/rwa"
+          to="/asset"
           className="inline-flex items-center gap-2 text-sm font-semibold text-sky-900/70 hover:text-sky-700"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -121,7 +121,7 @@ export default function RwaShow() {
             </h1>
             <p className="mt-5 leading-8 text-sky-900/70">
               该资产已形成链上索引，可用于连接线下资产文件、托管记录与后续流通服务。页面展示的信息来自
-              RWA 合约读取结果。
+              资产合约读取结果。
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">

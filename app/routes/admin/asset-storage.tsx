@@ -16,7 +16,10 @@ async function handleRwaAdminStorageRequest(
 ) {
   const url = new URL(request.url);
 
-  if (url.pathname !== RWA_ADMIN_STORAGE_ROUTE) {
+  if (
+    url.pathname !== RWA_ADMIN_STORAGE_ROUTE &&
+    url.pathname !== "/admin/rwa/storage"
+  ) {
     return new Response("Not Found", { status: 404 });
   }
 

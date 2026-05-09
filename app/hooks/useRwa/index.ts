@@ -28,9 +28,14 @@ export interface RWA {
 function formatRwaInfo(rwaData: any, adminMetadataMap: Record<string, { categoryLabel: string; sellerCategoryLabel: string }> = {}): RWA {
   const tokenIdKey = rwaData.tokenId?.toString?.() ?? String(rwaData.tokenId);
   const adminMetadata = adminMetadataMap[tokenIdKey];
+  const tokenURI =
+    typeof rwaData.tokenURI === "string"
+      ? rwaData.tokenURI.replace("/rwa/metadata", "/asset/metadata")
+      : rwaData.tokenURI;
 
   return {
     ...rwaData,
+    tokenURI,
     categoryLabel: adminMetadata?.categoryLabel ?? resolveRwaCategoryLabel(rwaData.asset.name, rwaData.tokenId),
     sellerCategoryLabel: adminMetadata?.sellerCategoryLabel ?? resolveRwaSellerCategoryLabel(rwaData.tokenId),
     imageURL: `https://rwa-cdn.phenixmcga.com/${rwaData.asset.fileHash}/cover.png`,

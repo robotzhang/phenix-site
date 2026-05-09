@@ -58,14 +58,14 @@ export default function Membership() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
-                to="/nft"
+                to="/rda"
                 className="inline-flex w-full items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 sm:w-auto"
               >
                 获取会员凭证
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                to="/rwa"
+                to="/asset"
                 className="inline-flex w-full items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 sm:w-auto"
               >
                 浏览资产库

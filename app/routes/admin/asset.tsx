@@ -157,7 +157,7 @@ function RwaAdminRow({
           <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-wide text-sky-700">
-                RWA #{rwa.tokenId.toString()}
+                Asset #{rwa.tokenId.toString()}
               </div>
               <h3 className="mt-2 text-2xl font-semibold text-sky-950">{rwa.asset.name}</h3>
               <div className="mt-4 grid gap-2 text-sm text-sky-900/70">
@@ -185,7 +185,7 @@ function RwaAdminRow({
 
           <div className="mt-5 flex flex-wrap gap-3">
             <Button asChild variant="outline" size="sm">
-              <Link to={`/rwa/${rwa.tokenId}`}>前台查看</Link>
+              <Link to={`/asset/${rwa.tokenId}`}>前台查看</Link>
             </Button>
             <Button
               variant="outline"
@@ -261,7 +261,7 @@ function RwaAdminRow({
 
 export function meta() {
   return [
-    { title: "RWA 管理后台 | PHENIX" },
+    { title: "资产库管理后台 | PHENIX" },
     { name: "robots", content: "noindex,nofollow" },
   ];
 }
@@ -543,7 +543,7 @@ export default function AdminRwa() {
               Admin Console
             </p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-              RWA 资产库管理
+              资产库管理
             </h1>
             <p className="mt-5 max-w-3xl leading-8 text-sky-900/70">
               添加链上资产、管理标签、更新发布状态，并授权可上架资产的钱包。资产图片默认读取
@@ -631,7 +631,7 @@ export default function AdminRwa() {
             <div>
               <h2 className="text-xl font-semibold text-sky-950">添加资产</h2>
               <p className="text-sm text-sky-900/60">
-                调用 RWA 合约 createRWA，创建后默认状态为已发布。
+                调用资产合约创建链上资产，创建后默认状态为已发布。
               </p>
             </div>
           </div>
@@ -795,7 +795,7 @@ export default function AdminRwa() {
           <div>
             <h2 className="text-2xl font-semibold text-sky-950">资产列表</h2>
             <p className="mt-2 text-sm text-sky-900/60">
-              这里读取的是当前 RWA 合约的链上资产和后台 JSON 标签覆盖。
+              这里读取的是当前资产合约的链上资产和后台 JSON 标签覆盖。
             </p>
           </div>
           <Button variant="outline" onClick={() => refreshAdminReads()}>

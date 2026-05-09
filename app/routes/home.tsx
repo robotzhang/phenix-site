@@ -45,7 +45,7 @@ export default function Home() {
     <div className="-mx-4 md:mx-0">
       <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#edf6fb_100%)] px-4 py-16 text-sky-950 sm:px-8 sm:py-24">
         <img
-          src="/fnft-blue-vivid.png"
+          src="/rda-blue-vivid.png"
           alt="PHENIX"
           className="absolute inset-y-0 right-0 h-full w-full object-cover opacity-16 mix-blend-multiply sm:w-2/3"
         />
@@ -66,7 +66,7 @@ export default function Home() {
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
-              to="/rwa"
+              to="/asset"
               className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
             >
               浏览资产库

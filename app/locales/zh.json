@@ -1,11 +1,11 @@
 {
   "home": {
-    "title": "欢迎来到 F-NFT",
-    "description": "购买 F-NFT，解锁 PHENIX 生态权益。"
+    "title": "欢迎来到 RDA",
+    "description": "获取 RDA，解锁 PHENIX 生态权益。"
   },
   "assets": {
     "title": "我的资产"
   },
-  "buy": "购买 F-NFT",
+  "buy": "获取 RDA",
   "redeem": "兑换"
 }

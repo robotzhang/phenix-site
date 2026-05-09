@@ -33,7 +33,7 @@ export interface RwaAdminMetadataInput {
   status?: number;
 }
 
-export const RWA_ADMIN_STORAGE_ROUTE = "/admin/rwa/storage" as const;
+export const RWA_ADMIN_STORAGE_ROUTE = "/admin/asset/storage" as const;
 
 export function trimAdminStorageString(value: unknown) {
   if (typeof value !== "string") return "";

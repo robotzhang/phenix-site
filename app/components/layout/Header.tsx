@@ -14,7 +14,7 @@ import { Menu } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "首页" },
-  { to: "/rwa", label: "资产库" },
+  { to: "/asset", label: "资产库" },
   { to: "/membership", label: "会员体系" },
   { to: "/points-mall", label: "社区商城" },
   { to: "/custody", label: "托管与确权" },

@@ -17,7 +17,7 @@ export function meta() {
   ];
 }
 
-export default function Nft() {
+export default function Rda() {
   return (
     <div className="-mx-4 md:mx-0">
       <section className="grid gap-10 border-b border-sky-100 bg-white/80 px-4 py-14 sm:px-0 sm:py-20 lg:grid-cols-[1fr_460px] lg:items-start">
@@ -33,7 +33,7 @@ export default function Nft() {
             <Link to="/membership" className="inline-flex items-center justify-center border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
               查看会员体系
             </Link>
-            <Link to="/rwa" className="inline-flex items-center justify-center border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
+            <Link to="/asset" className="inline-flex items-center justify-center border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
               浏览资产库
             </Link>
           </div>

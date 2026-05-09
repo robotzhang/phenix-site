@@ -3,6 +3,7 @@ import type { LoaderFunctionArgs } from "react-router";
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const id = url.searchParams.get("id");
+  const fileHash = url.searchParams.get("hash");
 
   if (!id) {
     return new Response(JSON.stringify({ error: "Missing id" }), {
@@ -11,15 +12,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
   }
 
-  // 你可以替换成自己的图片地址
-  const imageUrl = `https://phenixmcga.com/fnft.jpg`;
+  // 动态地址
+  const imageUrl = `https://rwa-cdn.phenixmcga.com/${fileHash}/cover.png`;
 
   const metadata = {
-    name: `Phenix FNFT #${id}`,
-    description: "Your on-chain Phenix F-NFT asset.",
+    name: `Phenix Asset #${id}`,
+    description: "Your on-chain Phenix asset.",
     image: imageUrl,
     attributes: [
       { trait_type: "Token ID", value: id },
+      { trait_type: "File Hash", value: fileHash },
     ]
   };
 

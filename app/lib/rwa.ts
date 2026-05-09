@@ -64,6 +64,19 @@ export function formatRwaPriceWithCurrency(value: string) {
   return `￥ ${formatRwaPrice(value)} 元`;
 }
 
+export function getRwaSellerCategoryClassName(label: string) {
+  switch (label) {
+    case "平台":
+      return "border-violet-200 bg-violet-50 text-violet-700";
+    case "会员":
+      return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "认证商家":
+      return "border-rose-200 bg-rose-50 text-rose-700";
+    default:
+      return "border-sky-100 bg-white text-sky-900/60";
+  }
+}
+
 export function resolveRwaCategoryLabel(name: string, tokenId: bigint) {
   const normalizedName = name.toLowerCase();
   const matched = CATEGORY_KEYWORDS.find(({ keywords }) =>

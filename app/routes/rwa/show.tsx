@@ -1,6 +1,9 @@
 import GlobalLoading from "@/components/ui/global-loading";
 import { useRwaDetail } from "@/hooks/useRwa";
-import { formatRwaPriceWithCurrency } from "@/lib/rwa";
+import {
+  formatRwaPriceWithCurrency,
+  getRwaSellerCategoryClassName,
+} from "@/lib/rwa";
 import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
 import { Link, useParams } from "react-router";
 import {
@@ -75,6 +78,11 @@ export default function RwaShow() {
     );
   }
 
+  const tokenId = rwa.tokenId.toString();
+  const categoryLabel = adminMetadataMap[tokenId]?.categoryLabel ?? rwa.categoryLabel;
+  const sellerCategoryLabel =
+    adminMetadataMap[tokenId]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel;
+
   return (
     <div className="-mx-4 md:mx-0">
       <section className="border-b border-sky-100 bg-white/80 px-4 py-8 sm:px-0 sm:py-12">
@@ -98,10 +106,14 @@ export default function RwaShow() {
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <span className="border border-sky-100 px-3 py-1 text-sm text-sky-900/60">
-                {adminMetadataMap[rwa.tokenId.toString()]?.categoryLabel ?? rwa.categoryLabel}
+                {categoryLabel}
               </span>
-              <span className="border border-sky-100 px-3 py-1 text-sm text-sky-900/60">
-                {adminMetadataMap[rwa.tokenId.toString()]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel}
+              <span
+                className={`border px-3 py-1 text-sm font-semibold ${getRwaSellerCategoryClassName(
+                  sellerCategoryLabel,
+                )}`}
+              >
+                {sellerCategoryLabel}
               </span>
             </div>
             <h1 className="mt-5 text-4xl font-semibold leading-tight text-sky-950 sm:text-5xl">
@@ -184,8 +196,14 @@ export default function RwaShow() {
           </div>
           <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
             <div className="text-sm text-sky-900/60">卖家类别</div>
-            <div className="text-sm text-sky-950">
-              {adminMetadataMap[rwa.tokenId.toString()]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel}
+            <div>
+              <span
+                className={`inline-flex border px-3 py-1 text-sm font-semibold ${getRwaSellerCategoryClassName(
+                  sellerCategoryLabel,
+                )}`}
+              >
+                {sellerCategoryLabel}
+              </span>
             </div>
           </div>
         </div>

@@ -1,6 +1,9 @@
 import GlobalLoading from "@/components/ui/global-loading";
 import { useRwaList } from "@/hooks/useRwa";
-import { formatRwaPriceWithCurrency } from "@/lib/rwa";
+import {
+  formatRwaPriceWithCurrency,
+  getRwaSellerCategoryClassName,
+} from "@/lib/rwa";
 import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
 import { Link } from "react-router";
 import {
@@ -12,7 +15,7 @@ import {
 } from "lucide-react";
 
 export default function RwaList() {
-  const { data: rwas, loading } = useRwaList();
+  const { data: rwas, loading, error } = useRwaList();
   const adminMetadataMap = useRwaAdminMetadataMap();
   const published = (rwas || []).filter((rwa) => rwa.asset.status === 0).length;
 
@@ -94,57 +97,73 @@ export default function RwaList() {
 
         {(rwas || []).length > 0 && (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {(rwas || []).map((rwa) => (
-              <Link
-                key={rwa.tokenId.toString()}
-                to={`/rwa/${rwa.tokenId}`}
-                className="group overflow-hidden border border-sky-100 bg-white/90 shadow-sm transition hover:border-sky-300"
-              >
-                <div className="aspect-[4/3] overflow-hidden bg-sky-50">
-                  <img
-                    src={rwa.imageURL}
-                    alt={rwa.asset.name}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="inline-flex border border-sky-100 px-2 py-1 text-xs font-semibold text-sky-700">
-                        {adminMetadataMap[rwa.tokenId.toString()]?.categoryLabel ?? rwa.categoryLabel}
+            {(rwas || []).map((rwa) => {
+              const tokenId = rwa.tokenId.toString();
+              const sellerCategoryLabel =
+                adminMetadataMap[tokenId]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel;
+
+              return (
+                <Link
+                  key={tokenId}
+                  to={`/rwa/${rwa.tokenId}`}
+                  className="group overflow-hidden border border-sky-100 bg-white/90 shadow-sm transition hover:border-sky-300"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-sky-50">
+                    <img
+                      src={rwa.imageURL}
+                      alt={rwa.asset.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="inline-flex border border-sky-100 px-2 py-1 text-xs font-semibold text-sky-700">
+                          {adminMetadataMap[tokenId]?.categoryLabel ?? rwa.categoryLabel}
+                        </div>
+                        <h3 className="mt-2 text-xl font-semibold text-sky-950">
+                          {rwa.asset.name}
+                        </h3>
                       </div>
-                      <h3 className="mt-2 text-xl font-semibold text-sky-950">
-                        {rwa.asset.name}
-                      </h3>
+                      <span
+                        className={`shrink-0 border px-2 py-1 text-xs font-semibold ${getRwaSellerCategoryClassName(
+                          sellerCategoryLabel,
+                        )}`}
+                      >
+                        {sellerCategoryLabel}
+                      </span>
                     </div>
-                    <span className="shrink-0 border border-sky-100 px-2 py-1 text-xs text-sky-900/60">
-                      {adminMetadataMap[rwa.tokenId.toString()]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel}
-                    </span>
-                  </div>
-                  <div className="mt-5 border-t border-sky-100 pt-4">
-                    <div className="text-sm text-sky-900/60">会员价</div>
-                    <div className="mt-1 text-2xl font-semibold text-sky-950">
-                      {formatRwaPriceWithCurrency(
-                        rwa.asset.pricePhenixFormatted,
-                      )}
+                    <div className="mt-5 border-t border-sky-100 pt-4">
+                      <div className="text-sm text-sky-900/60">会员价</div>
+                      <div className="mt-1 text-2xl font-semibold text-sky-950">
+                        {formatRwaPriceWithCurrency(
+                          rwa.asset.pricePhenixFormatted,
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-5 flex items-center justify-between text-sm text-sky-900/70">
+                      <span className="max-w-[70%] truncate">
+                        Hash {rwa.asset.fileHash}
+                      </span>
+                      <span className="inline-flex items-center gap-1 font-semibold text-sky-950">
+                        查看详情
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
                     </div>
                   </div>
-                  <div className="mt-5 flex items-center justify-between text-sm text-sky-900/70">
-                    <span className="max-w-[70%] truncate">
-                      Hash {rwa.asset.fileHash}
-                    </span>
-                    <span className="inline-flex items-center gap-1 font-semibold text-sky-950">
-                      查看详情
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         )}
 
-        {(rwas || []).length === 0 && !loading && (
+        {error && !loading && (
+          <div className="mb-5 border border-red-100 bg-red-50 px-5 py-4 text-sm leading-6 text-red-700">
+            资产库读取失败，请刷新页面或稍后再试。
+          </div>
+        )}
+
+        {(rwas || []).length === 0 && !loading && !error && (
           <div className="border border-sky-100 bg-white/90 px-6 py-16 text-center text-sky-900/60">
             文化艺术品正在准备上传中
           </div>

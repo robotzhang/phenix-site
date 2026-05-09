@@ -1,4 +1,5 @@
 import { useReadContract } from "wagmi";
+import { base } from "viem/chains";
 import abi from "@/abi/rwa.json";
 import { PHENIX_DECIMALS, RWA_ADDRESS } from "@/lib/constants";
 import {
@@ -52,6 +53,7 @@ export function useRwaList() {
   const { data, isLoading, error, refetch } = useReadContract({
     address: RWA_ADDRESS,
     abi,
+    chainId: base.id,
     functionName: "getAllRWAs",
   });
   //
@@ -72,6 +74,7 @@ export function useRwaDetail(tokenId?: string) {
   const { data, isLoading, error } = useReadContract({
     address: RWA_ADDRESS,
     abi,
+    chainId: base.id,
     functionName: "getRWA",
     args: tokenId ? [BigInt(tokenId)] : undefined,
     query: { enabled: !!tokenId },

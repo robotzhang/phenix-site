@@ -52,8 +52,8 @@ function formatDateTime(value: string) {
 
 export function meta() {
   return [
-    { title: "质押领积分 | PHENIX" },
-    { name: "description", content: "质押鉴定服务卡，或提交未质押鉴定服务卡的平台出售申请。" },
+    { title: "锁仓领积分 | PHENIX" },
+    { name: "description", content: "锁仓鉴定服务卡，或提交未锁仓鉴定服务卡的平台出售申请。" },
   ];
 }
 
@@ -151,12 +151,12 @@ export default function Staking() {
     }
 
     if (parsedStakeCardCount <= 0) {
-      toast.error("请输入质押数量");
+      toast.error("请输入锁仓数量");
       return;
     }
 
     if (parsedStakeCardCount > operableCards) {
-      toast.error("质押数量不能超过可操作的未质押鉴定服务卡数量");
+      toast.error("锁仓数量不能超过可操作的未锁仓鉴定服务卡数量");
       return;
     }
 
@@ -171,9 +171,9 @@ export default function Staking() {
         months: selectedPlan.months,
         annualRate: selectedPlan.annualRate,
       });
-      toast.success("质押记录已提交");
+      toast.success("锁仓记录已提交");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "质押提交失败");
+      toast.error(error instanceof Error ? error.message : "锁仓提交失败");
     } finally {
       setBusyAction(null);
     }
@@ -191,7 +191,7 @@ export default function Staking() {
     }
 
     if (parsedBuybackCardCount > operableCards) {
-      toast.error("平台出售数量不能超过可操作的未质押鉴定服务卡数量");
+      toast.error("平台出售数量不能超过可操作的未锁仓鉴定服务卡数量");
       return;
     }
 
@@ -218,17 +218,17 @@ export default function Staking() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Phenix Token Points</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            质押服务卡，天天得PHENIX福利
+            锁仓服务卡，天天得PHENIX福利
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            一张鉴定服务卡等值于 1,000 PHENIX 积分，质押服务卡获得 PHENIX 积分！
+            一张鉴定服务卡等值于 1,000 PHENIX 积分，锁仓服务卡获得 PHENIX 积分！
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              to="/rda"
+              to="/membership"
               className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
             >
-              获取会员凭证
+              查看会员体系
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
@@ -254,22 +254,22 @@ export default function Staking() {
         </div>
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <ShieldCheck className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-xl font-semibold text-sky-950">质押中</h2>
+          <h2 className="mt-5 text-xl font-semibold text-sky-950">锁仓中</h2>
           <div className="mt-5 text-5xl font-semibold text-sky-950">
             {isConnected ? activeStakedCards : "-"}
           </div>
           <p className="mt-3 text-sm leading-6 text-sky-900/60">
-            已提交质押记录的鉴定服务卡。
+            已提交锁仓记录的鉴定服务卡。
           </p>
         </div>
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <HandCoins className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-xl font-semibold text-sky-950">未质押</h2>
+          <h2 className="mt-5 text-xl font-semibold text-sky-950">未锁仓</h2>
           <div className="mt-5 text-5xl font-semibold text-sky-950">
             {isConnected ? availableCards : "-"}
           </div>
           <p className="mt-3 text-sm leading-6 text-sky-900/60">
-            未质押卡可继续质押
+            未锁仓卡可继续锁仓
           </p>
         </div>
       </section>
@@ -323,15 +323,15 @@ export default function Staking() {
       <section className="grid gap-8 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Staking Estimate</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">质押领积分</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">锁仓领积分</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            输入计划质押的未质押鉴定服务卡数量，选择质押周期，即可估算对应 PHENIX 积分获得。
+            输入计划锁仓的未锁仓鉴定服务卡数量，选择锁仓周期，即可估算对应 PHENIX 积分获得。
           </p>
         </div>
 
         <div className="border border-sky-100 bg-white p-6 shadow-sm">
           <label className="text-sm font-semibold text-sky-950" htmlFor="stake-card-count">
-            质押鉴定服务卡数量
+            锁仓鉴定服务卡数量
           </label>
           <input
             id="stake-card-count"
@@ -347,14 +347,14 @@ export default function Staking() {
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Coins className="h-4 w-4" />
-                质押基数
+                锁仓基数
               </div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.principal)} PHENIX</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <CalendarDays className="h-4 w-4" />
-                质押周期
+                锁仓周期
               </div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">{selectedPlan.months} 个月</div>
             </div>
@@ -380,11 +380,11 @@ export default function Staking() {
             disabled={!isConnected || busyAction === "stake"}
             className="mt-6 inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
           >
-            {busyAction === "stake" ? "提交中..." : "提交质押"}
+            {busyAction === "stake" ? "提交中..." : "提交锁仓"}
           </button>
 
           <p className="mt-6 text-sm leading-7 text-sky-900/60">
-            测算按 1 张鉴定服务卡 = 1000 PHENIX、每月 30 天估算。最终积分发放以实际质押合约、平台规则与链上记录为准。
+            测算按 1 张鉴定服务卡 = 1000 PHENIX、每月 30 天估算。最终积分发放以实际锁仓合约、平台规则与链上记录为准。
           </p>
         </div>
       </section>
@@ -393,9 +393,9 @@ export default function Staking() {
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">RMB Sell Queue</p>
-            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">未质押卡平台出售</h2>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">未锁仓卡平台出售</h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              未质押的鉴定服务卡可提交平台出售申请，质押中的服务卡不能提交平台出售申请。平台按申请时间戳排序处理，支付 RMB 后完成交易。
+              未锁仓的鉴定服务卡可提交平台出售申请，锁仓中的服务卡不能提交平台出售申请。平台按申请时间戳排序处理，支付 RMB 后完成交易。
             </p>
           </div>
 
@@ -454,7 +454,7 @@ export default function Staking() {
             )}
 
             <p className="mt-6 text-sm leading-7 text-sky-900/60">
-              排队位置按待处理申请的时间戳从早到晚计算。只有可操作的未质押服务卡能进入平台出售队列；平台审核后，以 RMB 支付完成交易。
+              排队位置按待处理申请的时间戳从早到晚计算。只有可操作的未锁仓服务卡能进入平台出售队列；平台审核后，以 RMB 支付完成交易。
             </p>
           </div>
         </div>
@@ -463,10 +463,10 @@ export default function Staking() {
       <section className="px-4 py-16 sm:px-0 sm:py-24">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
-            <h2 className="text-2xl font-semibold text-sky-950">我的质押记录</h2>
+            <h2 className="text-2xl font-semibold text-sky-950">我的锁仓记录</h2>
             <div className="mt-5 space-y-3">
               {userStakes.length === 0 ? (
-                <p className="text-sm leading-7 text-sky-900/60">暂无质押记录。</p>
+                <p className="text-sm leading-7 text-sky-900/60">暂无锁仓记录。</p>
               ) : (
                 userStakes.map((item) => (
                   <div key={item.id} className="border border-sky-100 bg-sky-50 p-4">
@@ -475,7 +475,7 @@ export default function Staking() {
                         {item.cardCount} 张 / {item.months} 个月
                       </div>
                       <div className="text-sm text-sky-700">
-                        {item.status === "active" ? "质押中" : "已释放"}
+                        {item.status === "active" ? "锁仓中" : "已释放"}
                       </div>
                     </div>
                     <div className="mt-2 text-sm text-sky-900/60">

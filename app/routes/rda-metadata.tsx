@@ -14,11 +14,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const imageUrl = `https://phenixmcga.com/member-credential.svg`;
 
   const metadata = {
-    name: `Phenix RDA #${id}`,
-    description: "Your on-chain Phenix RDA credential.",
+    name: `PHENIX 鉴定服务卡 #${id}`,
+    description: "PHENIX 鉴定服务卡链上凭证。",
     image: imageUrl,
     attributes: [
-      { trait_type: "Token ID", value: id },
+      { trait_type: "鉴定服务卡编号", value: id },
     ]
   };
 

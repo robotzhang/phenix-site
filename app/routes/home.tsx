@@ -32,7 +32,7 @@ const milestones = [
 
 export function meta() {
   return [
-    { title: "PHENIX | 华夏文化艺术品资产交易与配置平台" },
+    { title: "PHENIX | 华夏文化艺术品资产配置与交易平台" },
     {
       name: "description",
       content: "构建文化艺术品资产的信任基础设施，让文化艺术品实现可信流通。",
@@ -58,7 +58,7 @@ export default function Home() {
           <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
             PHENIX
             <span className="mt-4 block text-2xl font-medium text-sky-900/90 sm:text-4xl">
-              华夏文化艺术品资产交易与配置平台
+              华夏文化艺术品资产配置与交易平台
             </span>
           </h1>
           <p className="mt-8 max-w-2xl text-lg leading-8 text-sky-900/72 sm:text-xl">

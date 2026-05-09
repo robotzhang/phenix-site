@@ -32,8 +32,8 @@ const tiers = [
 
 const heroHighlights = [
   { label: "服务卡价值", value: "1 张 = 1000 PHENIX" },
-  { label: "积分获取方式", value: "通过质押服务卡获取PHENIX 积分" },
-  { label: "流通路径", value: "未质押的服务卡，可申请平台出售" },
+  { label: "积分获取方式", value: "通过锁仓服务卡获取PHENIX 积分" },
+  { label: "流通路径", value: "未锁仓的服务卡，可申请平台出售" },
 ];
 
 export function meta() {
@@ -58,10 +58,10 @@ export default function Membership() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
-                to="/rda"
+                to="/faq"
                 className="inline-flex w-full items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 sm:w-auto"
               >
-                获取会员凭证
+                查看 FAQ
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
@@ -75,7 +75,7 @@ export default function Membership() {
                 className="inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 sm:w-auto"
               >
                 <Coins className="h-4 w-4" />
-                质押领积分
+                锁仓领积分
               </Link>
             </div>
           </div>

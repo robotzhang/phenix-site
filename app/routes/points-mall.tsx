@@ -59,7 +59,7 @@ export default function PointsMall() {
               className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
               <Coins className="h-4 w-4" />
-              质押领积分
+              锁仓领积分
             </Link>
             <Link
               to="/assets"

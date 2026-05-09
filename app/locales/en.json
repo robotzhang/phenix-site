@@ -1,11 +1,11 @@
 {
   "home": {
-    "title": "Welcome to RDA",
-    "description": "Get RDA to unlock PHENIX ecosystem benefits."
+    "title": "Welcome to Service Card",
+    "description": "Get a service card to unlock PHENIX ecosystem benefits."
   },
   "assets": {
     "title": "My Assets"
   },
-  "buy": "Get RDA",
+  "buy": "Get Service Card",
   "redeem": "Redeem"
 }

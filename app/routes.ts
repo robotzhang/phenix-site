@@ -18,6 +18,7 @@ export default [
   route("admin/rwa/storage", "./routes/legacy/admin-rwa-storage.tsx"),
   route("admin/rwa", "./routes/legacy/admin-rwa.tsx"),
   route("membership", "./routes/membership.tsx"),
+  route("faq", "./routes/faq.tsx"),
   route("points-mall", "./routes/points-mall.tsx"),
   route("staking/storage", "./routes/staking-storage.tsx"),
   route("staking", "./routes/staking.tsx"),

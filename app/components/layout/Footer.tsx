@@ -20,7 +20,7 @@ export function Footer() {
             </div>
             <div className="flex flex-col gap-2">
               <Link to="/liquidity" className="hover:text-sky-700">变现机制</Link>
-              <Link to="/rda" className="hover:text-sky-700">会员凭证</Link>
+              <Link to="/assets" className="hover:text-sky-700">会员凭证</Link>
               <Link to="/assets" className="hover:text-sky-700">我的资产</Link>
             </div>
           </div>

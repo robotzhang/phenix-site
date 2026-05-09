@@ -14,6 +14,7 @@ export function meta() {
   return [
     { title: "PHENIX 会员凭证" },
     { name: "description", content: "获取 PHENIX 会员凭证，进入文化艺术品资产配置与可信流通生态。" },
+    { name: "robots", content: "noindex,nofollow" },
   ];
 }
 

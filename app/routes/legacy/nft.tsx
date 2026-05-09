@@ -1,7 +1,5 @@
-import { redirect } from "react-router";
-
 export function loader() {
-  throw redirect("/rda", 301);
+  throw new Response("Not Found", { status: 404 });
 }
 
 export default function LegacyNft() {

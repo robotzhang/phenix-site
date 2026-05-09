@@ -1,11 +1,11 @@
 {
   "home": {
-    "title": "欢迎来到 RDA",
-    "description": "获取 RDA，解锁 PHENIX 生态权益。"
+    "title": "欢迎来到鉴定服务卡",
+    "description": "获取鉴定服务卡，解锁 PHENIX 生态权益。"
   },
   "assets": {
     "title": "我的资产"
   },
-  "buy": "获取 RDA",
+  "buy": "获取鉴定服务卡",
   "redeem": "兑换"
 }

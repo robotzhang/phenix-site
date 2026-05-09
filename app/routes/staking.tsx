@@ -454,7 +454,7 @@ export default function Staking() {
             )}
 
             <p className="mt-6 text-sm leading-7 text-sky-900/60">
-              排队位置按待处理申请的时间戳从早到晚计算。只有可操作的未锁仓服务卡能进入平台出售队列；平台审核后，以 RMB 支付完成交易。
+              未锁仓的服务卡，可以申请委托平台出售
             </p>
           </div>
         </div>

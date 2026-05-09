@@ -58,10 +58,10 @@ export default function Membership() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
-                to="/faq"
+                to="/assets"
                 className="inline-flex w-full items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 sm:w-auto"
               >
-                查看 FAQ
+                会员凭证入口
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link

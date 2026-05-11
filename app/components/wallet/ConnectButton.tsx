@@ -1,14 +1,53 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { useConnectModal, useAccountModal } from "@rainbow-me/rainbowkit";
 import { LoaderCircle, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button"; // 你的 LoaderCircle 组件
 import { Link } from "react-router";
 
+type RainbowKitHooks = {
+  useConnectModal: () => { openConnectModal?: () => void };
+  useAccountModal: () => { openAccountModal?: () => void };
+};
+
 export default function WalletConnectButton() {
+  const [rainbowKitHooks, setRainbowKitHooks] = useState<RainbowKitHooks | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    void import("@rainbow-me/rainbowkit").then((module) => {
+      if (active) {
+        setRainbowKitHooks({
+          useConnectModal: module.useConnectModal,
+          useAccountModal: module.useAccountModal,
+        });
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!rainbowKitHooks) {
+    return <WalletConnectButtonFallback />;
+  }
+
+  return <WalletConnectButtonInner hooks={rainbowKitHooks} />;
+}
+
+function WalletConnectButtonFallback() {
+  return (
+    <div className="w-36 h-9 rounded-md bg-white border dark:bg-gray-700 flex items-center justify-center animate-pulse">
+      <LoaderCircle className="w-4 h-4 text-gray-500 animate-spin" />
+    </div>
+  );
+}
+
+function WalletConnectButtonInner({ hooks }: { hooks: RainbowKitHooks }) {
   const { address, isConnected, isReconnecting, isConnecting } = useAccount();
-  const { openConnectModal } = useConnectModal();
-  const { openAccountModal } = useAccountModal();
+  const { openConnectModal } = hooks.useConnectModal();
+  hooks.useAccountModal();
   const [mounted, setMounted] = useState(false);
 
   // SSR 安全挂载

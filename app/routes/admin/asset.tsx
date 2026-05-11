@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Link } from "react-router";
 import { base } from "viem/chains";
 import { isAddress, parseEventLogs, parseUnits } from "viem";
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 
 import rwaAbi from "@/abi/rwa.json";
+import ConnectButton from "@/components/wallet/ConnectButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import GlobalLoading from "@/components/ui/global-loading";

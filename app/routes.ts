@@ -20,6 +20,7 @@ export default [
   route("membership", "./routes/membership.tsx"),
   route("faq", "./routes/faq.tsx"),
   route("points-mall", "./routes/points-mall.tsx"),
+  route("points-redemption", "./routes/points-redemption.tsx"),
   route("community-code", "./routes/community-code.tsx"),
   route("staking/storage", "./routes/staking-storage.tsx"),
   route("staking", "./routes/staking.tsx"),

@@ -14,7 +14,6 @@ import { Providers } from '@/components/wallet/Providers';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useScrollHeader } from "@/lib/useScrollHeader";
-import '@rainbow-me/rainbowkit/styles.css';
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -29,6 +28,10 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://unpkg.com/@rainbow-me/rainbowkit@2.2.9/styles.css",
   },
 ];
 

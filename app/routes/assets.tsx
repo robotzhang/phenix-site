@@ -4,7 +4,7 @@ import { formatUnits, type Abi } from "viem";
 import fnftAbi from "@/abi/fnft.json";
 import erc20Abi from "@/abi/erc20.json";
 import { FNFT_ADDRESS, USDT_ADDRESS } from "@/lib/constants";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import ConnectButton from "@/components/wallet/ConnectButton";
 import { Button } from "@/components/ui/button";
 import { BadgeCheck, IdCard, WalletCards } from "lucide-react";
 

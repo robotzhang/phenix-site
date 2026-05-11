@@ -130,6 +130,15 @@ export default function PointsMall() {
             </article>
           ))}
         </div>
+
+        <div className="mt-5">
+          <Link
+            to="/points-redemption"
+            className="inline-flex min-w-[132px] items-center justify-center border border-red-400 px-8 py-3 text-sm font-semibold text-red-500 transition hover:bg-red-50"
+          >
+            积分兑换
+          </Link>
+        </div>
       </section>
 
       <section className="grid gap-8 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.8fr_1.2fr]">

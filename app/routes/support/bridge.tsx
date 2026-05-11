@@ -7,16 +7,10 @@ import {
   useWalletClient,
   usePublicClient,
 } from "wagmi";
-import {
-  RainbowKitProvider,
-  ConnectButton,
-  getDefaultConfig,
-} from "@rainbow-me/rainbowkit";
-import "@rainbow-me/rainbowkit/styles.css";
 import { ethers } from "ethers";
-import { QueryClient } from "@tanstack/react-query";
-import { mainnet, base } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
 import { Card } from "@/components/ui/card";
+import ConnectButton from "@/components/wallet/ConnectButton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -127,7 +121,7 @@ function BridgePage() {
           <h2 className="text-2xl font-semibold">Bridge</h2>
         </div>
         <div>
-          <ConnectButton showBalance={false} accountStatus="avatar" />
+          <ConnectButton />
         </div>
       </div>
 

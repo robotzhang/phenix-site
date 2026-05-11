@@ -4,6 +4,7 @@ import {
   BookOpenCheck,
   Coins,
   Gift,
+  HeartHandshake,
   ShoppingBag,
   TicketPercent,
   Users,
@@ -23,7 +24,7 @@ const scenarios = [
   },
   {
     icon: Users,
-    title: "兑换康养产品",
+    title: "康养产品",
     text: "积分可用于兑换平台提供的绿色产品，支持会员共同参与精选商品与服务。",
   },
 ];
@@ -79,6 +80,29 @@ export default function PointsMall() {
             <p className="mt-3 leading-7 text-sky-900/70">{item.text}</p>
           </article>
         ))}
+      </section>
+
+      <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Community Code</p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">社区会员守则</h2>
+          </div>
+          <div className="border border-sky-100 bg-white p-6 shadow-sm">
+            <HeartHandshake className="h-7 w-7 text-sky-700" />
+            <h3 className="mt-5 text-2xl font-semibold text-sky-950">“龙凤呈祥社区”会员守则</h3>
+            <p className="mt-4 leading-8 text-sky-900/70">
+              单独查看社区使命、核心价值关键词与礼仪文化要求。
+            </p>
+            <Link
+              to="/community-code"
+              className="mt-6 inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+            >
+              查看会员守则
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </section>
 
       <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">

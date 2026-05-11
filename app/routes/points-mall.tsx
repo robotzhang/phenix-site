@@ -5,7 +5,6 @@ import {
   Coins,
   Gift,
   HeartHandshake,
-  ShoppingBag,
   TicketPercent,
   Users,
   WalletCards,
@@ -27,12 +26,6 @@ const scenarios = [
     title: "康养产品",
     text: "积分可用于兑换平台提供的绿色产品，支持会员共同参与精选商品与服务。",
   },
-];
-
-const products = [
-  { type: "课程", name: "文化艺术品资产配置入门课", points: "800 PHENIX", status: "即将上线" },
-  { type: "虚拟物品", name: "会员专属线上资料包", points: "300 PHENIX", status: "即将上线" },
-  { type: "康养产品", name: "精选绿色产品兑换权益", points: "1200 PHENIX", status: "规划中" },
 ];
 
 export function meta() {
@@ -74,12 +67,32 @@ export default function PointsMall() {
 
       <section className="grid gap-4 px-4 py-16 sm:px-0 sm:py-24 md:grid-cols-3">
         {scenarios.map((item) => (
-          <article key={item.title} className="border border-sky-100 bg-white/80 p-6 shadow-sm">
-            <item.icon className="h-7 w-7 text-sky-700" />
+          <article
+            key={item.title}
+            className="flex min-h-[260px] flex-col border border-sky-100 bg-white/80 p-6 shadow-sm"
+          >
+            <div className="flex h-12 w-12 items-center justify-center border border-sky-100 bg-sky-50">
+              <item.icon className="h-6 w-6 text-sky-700" />
+            </div>
             <h2 className="mt-5 text-xl font-semibold text-sky-950">{item.title}</h2>
             <p className="mt-3 leading-7 text-sky-900/70">{item.text}</p>
           </article>
         ))}
+      </section>
+
+      <section className="border-t border-sky-100 bg-sky-50/60 px-4 py-10 sm:px-0">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Points Mall</p>
+            <h2 className="mt-2 text-2xl font-semibold text-sky-950">积分商城</h2>
+          </div>
+          <Link
+            to="/points-redemption"
+            className="inline-flex w-fit min-w-[132px] items-center justify-center border border-sky-300 bg-white px-8 py-3 text-sm font-semibold text-sky-700 shadow-sm transition hover:border-sky-400 hover:bg-sky-50 hover:text-sky-900"
+          >
+            积分兑换
+          </Link>
+        </div>
       </section>
 
       <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
@@ -102,42 +115,6 @@ export default function PointsMall() {
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
-        <div className="mb-10 max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Catalog Preview</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">积分商品目录</h2>
-        </div>
-
-        <div className="grid gap-4">
-          {products.map((product) => (
-            <article
-              key={product.name}
-              className="grid gap-4 border border-sky-100 bg-white p-5 shadow-sm sm:grid-cols-[120px_1fr_auto_auto] sm:items-center"
-            >
-              <div className="inline-flex w-fit items-center gap-2 border border-sky-100 bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-700">
-                <ShoppingBag className="h-4 w-4" />
-                {product.type}
-              </div>
-              <div>
-                <h3 className="font-semibold text-sky-950">{product.name}</h3>
-                <p className="mt-1 text-sm text-sky-900/60">支持使用 PHENIX 积分兑换</p>
-              </div>
-              <div className="font-semibold text-sky-950">{product.points}</div>
-              <div className="text-sm text-sky-700">{product.status}</div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-5">
-          <Link
-            to="/points-redemption"
-            className="inline-flex min-w-[132px] items-center justify-center border border-red-400 px-8 py-3 text-sm font-semibold text-red-500 transition hover:bg-red-50"
-          >
-            积分兑换
-          </Link>
         </div>
       </section>
 

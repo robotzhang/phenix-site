@@ -99,19 +99,19 @@ export default function PointsMall() {
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Community Code</p>
-            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">社区会员守则</h2>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">社区成员守则</h2>
           </div>
           <div className="border border-sky-100 bg-white p-6 shadow-sm">
             <HeartHandshake className="h-7 w-7 text-sky-700" />
-            <h3 className="mt-5 text-2xl font-semibold text-sky-950">“龙凤呈祥社区”会员守则</h3>
+            <h3 className="mt-5 text-2xl font-semibold text-sky-950">“龙凤呈祥社区”成员守则</h3>
             <p className="mt-4 leading-8 text-sky-900/70">
-              单独查看社区使命、核心价值关键词与礼仪文化要求。
+              社区基本原则：平等、实干、共赢。
             </p>
             <Link
               to="/community-code"
               className="mt-6 inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
             >
-              查看会员守则
+              查看成员守则
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

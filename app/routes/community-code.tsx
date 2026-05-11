@@ -27,8 +27,8 @@ const etiquetteItems = ["问候礼仪", "沟通礼仪", "服务礼仪"];
 
 export function meta() {
   return [
-    { title: "社区会员守则 | PHENIX" },
-    { name: "description", content: "龙凤呈祥社区会员守则，包含核心使命、价值关键词与礼仪文化。" },
+    { title: "社区成员守则 | PHENIX" },
+    { name: "description", content: "龙凤呈祥社区成员守则，包含核心使命、价值关键词与礼仪文化。" },
   ];
 }
 
@@ -39,7 +39,7 @@ export default function CommunityCode() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Community Code</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            “龙凤呈祥社区”会员守则
+            “龙凤呈祥社区”成员守则
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
             以“传承中华文脉、引领健康生活、实现圈层共富”为核心使命。

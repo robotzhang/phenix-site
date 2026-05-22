@@ -437,6 +437,7 @@ export default function AdminRwa() {
   const [sellerCategoryLabel, setSellerCategoryLabel] = useState<string>(RWA_SELLER_CATEGORY_LABELS[0]);
   const [productImageURLs, setProductImageURLs] = useState<string[]>([]);
   const [uploadingProductImages, setUploadingProductImages] = useState(false);
+  const [draggingProductImages, setDraggingProductImages] = useState(false);
   const [issuerAddress, setIssuerAddress] = useState("");
   const [busyAction, setBusyAction] = useState<string | null>(null);
 
@@ -732,6 +733,9 @@ export default function AdminRwa() {
     setProductImageURLs((current) => current.filter((item) => item !== imageURL));
   };
 
+  const productUploadDisabled =
+    uploadingProductImages || productImageURLs.length >= MAX_PRODUCT_IMAGES;
+
   return (
     <div className="-mx-4 md:mx-0">
       <section className="border-b border-sky-100 bg-white/80 px-4 py-10 sm:px-0 sm:py-14">
@@ -875,7 +879,7 @@ export default function AdminRwa() {
             </div>
 
             <div className="grid gap-3">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
                 <div>
                   <div className="text-sm font-medium text-sky-950">
                     产品图片 ({productImageURLs.length}/{MAX_PRODUCT_IMAGES})
@@ -884,26 +888,59 @@ export default function AdminRwa() {
                     上传 {MIN_PRODUCT_IMAGES}-{MAX_PRODUCT_IMAGES} 张图片，第一张作为封面。
                   </p>
                 </div>
-                <label className="inline-flex w-fit cursor-pointer items-center justify-center gap-2 border border-sky-300 px-4 py-2 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
-                  {uploadingProductImages ? (
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <ImagePlus className="h-4 w-4" />
-                  )}
-                  上传图片
-                  <input
-                    type="file"
-                    className="sr-only"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    disabled={uploadingProductImages || productImageURLs.length >= MAX_PRODUCT_IMAGES}
-                    onChange={(event) => {
-                      void handleUploadProductImages(event.target.files);
-                      event.target.value = "";
-                    }}
-                  />
-                </label>
               </div>
+
+              <label
+                className={`flex min-h-[150px] cursor-pointer flex-col items-center justify-center border border-dashed px-5 py-6 text-center transition ${
+                  draggingProductImages
+                    ? "border-sky-500 bg-sky-100"
+                    : "border-sky-200 bg-sky-50/60 hover:border-sky-400 hover:bg-sky-50"
+                } ${productUploadDisabled ? "cursor-not-allowed opacity-60" : ""}`}
+                onDragEnter={(event) => {
+                  event.preventDefault();
+                  if (!productUploadDisabled) setDraggingProductImages(true);
+                }}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  if (!productUploadDisabled) setDraggingProductImages(true);
+                }}
+                onDragLeave={(event) => {
+                  event.preventDefault();
+                  setDraggingProductImages(false);
+                }}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  setDraggingProductImages(false);
+                  if (!productUploadDisabled) {
+                    void handleUploadProductImages(event.dataTransfer.files);
+                  }
+                }}
+              >
+                <span className="flex h-12 w-12 items-center justify-center border border-sky-200 bg-white text-sky-700 shadow-sm">
+                  {uploadingProductImages ? (
+                    <LoaderCircle className="h-6 w-6 animate-spin" />
+                  ) : (
+                    <ImagePlus className="h-6 w-6" />
+                  )}
+                </span>
+                <span className="mt-4 text-base font-semibold text-sky-950">
+                  {productUploadDisabled ? "图片数量已达上限" : "点击上传产品图片"}
+                </span>
+                <span className="mt-2 text-sm leading-6 text-sky-900/60">
+                  支持拖拽图片到这里，JPG / PNG / WebP，最多 {MAX_PRODUCT_IMAGES} 张
+                </span>
+                <input
+                  type="file"
+                  className="sr-only"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  disabled={productUploadDisabled}
+                  onChange={(event) => {
+                    void handleUploadProductImages(event.target.files);
+                    event.target.value = "";
+                  }}
+                />
+              </label>
 
               {productImageURLs.length > 0 ? (
                 <div className="grid gap-3 sm:grid-cols-5">
@@ -924,7 +961,7 @@ export default function AdminRwa() {
                   ))}
                 </div>
               ) : (
-                <div className="border border-dashed border-sky-200 bg-sky-50/60 p-5 text-sm leading-6 text-sky-900/60">
+                <div className="border border-sky-100 bg-white/70 p-4 text-sm leading-6 text-sky-900/60">
                   还没有上传产品图片。图片会自动压缩后保存到后台，并同步到前台资产详情页轮播展示。
                 </div>
               )}

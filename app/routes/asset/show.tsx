@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import GlobalLoading from "@/components/ui/global-loading";
 import { useRwaDetail } from "@/hooks/useRwa";
 import {
@@ -8,6 +9,8 @@ import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
 import { Link, useParams } from "react-router";
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   ExternalLink,
   FileCheck2,
   LockKeyhole,
@@ -58,6 +61,11 @@ export default function RwaShow() {
   const { assetId } = useParams();
   const { data: rwa, loading } = useRwaDetail(assetId);
   const adminMetadataMap = useRwaAdminMetadataMap();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [assetId]);
 
   if (loading) return <GlobalLoading />;
 
@@ -82,6 +90,20 @@ export default function RwaShow() {
   const categoryLabel = adminMetadataMap[tokenId]?.categoryLabel ?? rwa.categoryLabel;
   const sellerCategoryLabel =
     adminMetadataMap[tokenId]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel;
+  const imageURLs =
+    adminMetadataMap[tokenId]?.imageURLs && adminMetadataMap[tokenId].imageURLs.length > 0
+      ? adminMetadataMap[tokenId].imageURLs
+      : rwa.imageURLs;
+  const selectedImageURL = imageURLs[selectedImageIndex] ?? imageURLs[0] ?? rwa.imageURL;
+  const hasMultipleImages = imageURLs.length > 1;
+
+  const showPreviousImage = () => {
+    setSelectedImageIndex((current) => (current - 1 + imageURLs.length) % imageURLs.length);
+  };
+
+  const showNextImage = () => {
+    setSelectedImageIndex((current) => (current + 1) % imageURLs.length);
+  };
 
   return (
     <div className="-mx-4 md:mx-0">
@@ -95,12 +117,57 @@ export default function RwaShow() {
         </Link>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_0.95fr]">
-          <div className="overflow-hidden border border-sky-100 bg-sky-50 shadow-sm">
-            <img
-              src={rwa.imageURL}
-              alt={rwa.asset.name}
-              className="aspect-[4/3] h-full w-full object-cover"
-            />
+          <div>
+            <div className="relative overflow-hidden border border-sky-100 bg-sky-50 shadow-sm">
+              <img
+                src={selectedImageURL}
+                alt={rwa.asset.name}
+                className="aspect-[4/3] h-full w-full object-cover"
+              />
+              {hasMultipleImages ? (
+                <>
+                  <button
+                    type="button"
+                    aria-label="上一张产品图片"
+                    className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/80 bg-white/90 text-sky-950 shadow-sm transition hover:bg-white"
+                    onClick={showPreviousImage}
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="下一张产品图片"
+                    className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/80 bg-white/90 text-sky-950 shadow-sm transition hover:bg-white"
+                    onClick={showNextImage}
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                  <div className="absolute bottom-3 right-3 border border-white/80 bg-white/90 px-3 py-1 text-sm font-semibold text-sky-950 shadow-sm">
+                    {selectedImageIndex + 1} / {imageURLs.length}
+                  </div>
+                </>
+              ) : null}
+            </div>
+
+            {hasMultipleImages ? (
+              <div className="mt-3 grid grid-cols-5 gap-2">
+                {imageURLs.map((imageURL, index) => (
+                  <button
+                    type="button"
+                    key={imageURL}
+                    className={`overflow-hidden border bg-sky-50 transition ${
+                      index === selectedImageIndex
+                        ? "border-sky-500"
+                        : "border-sky-100 hover:border-sky-300"
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
+                    aria-label={`查看第 ${index + 1} 张产品图片`}
+                  >
+                    <img src={imageURL} alt="" className="aspect-square w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div>

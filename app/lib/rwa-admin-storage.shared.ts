@@ -9,6 +9,7 @@ export interface RwaAdminMetadata {
   pricePhenix?: string;
   fileHash?: string;
   imageURL?: string;
+  imageURLs?: string[];
   tokenURI?: string;
   status?: number;
 }
@@ -29,11 +30,13 @@ export interface RwaAdminMetadataInput {
   pricePhenix?: string;
   fileHash?: string;
   imageURL?: string;
+  imageURLs?: string[];
   tokenURI?: string;
   status?: number;
 }
 
 export const RWA_ADMIN_STORAGE_ROUTE = "/admin/asset/storage" as const;
+export const RWA_ADMIN_IMAGE_ROUTE = "/admin/asset/image" as const;
 
 export function trimAdminStorageString(value: unknown) {
   if (typeof value !== "string") return "";
@@ -47,6 +50,20 @@ export function cloneRwaAdminMetadataMap(map: RwaAdminMetadataMap) {
       { ...metadata },
     ]),
   ) as RwaAdminMetadataMap;
+}
+
+export function normalizeRwaAdminImageURLs(value: unknown) {
+  if (!Array.isArray(value)) return undefined;
+
+  const imageURLs = Array.from(
+    new Set(
+      value
+        .map((item) => trimAdminStorageString(item))
+        .filter(Boolean),
+    ),
+  );
+
+  return imageURLs.length > 0 ? imageURLs.slice(0, 5) : undefined;
 }
 
 export function emptyRwaAdminStorageDocument(
@@ -101,6 +118,7 @@ export function normalizeRwaAdminStorageDocument(
       pricePhenix: trimAdminStorageString(value.pricePhenix) || undefined,
       fileHash: trimAdminStorageString(value.fileHash) || undefined,
       imageURL: trimAdminStorageString(value.imageURL) || undefined,
+      imageURLs: normalizeRwaAdminImageURLs(value.imageURLs),
       tokenURI: trimAdminStorageString(value.tokenURI) || undefined,
       status: typeof value.status === "number" ? value.status : undefined,
     };

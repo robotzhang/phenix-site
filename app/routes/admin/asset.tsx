@@ -8,6 +8,7 @@ import {
   BadgeCheck,
   CircleAlert,
   ExternalLink,
+  ImagePlus,
   LoaderCircle,
   LockKeyhole,
   Plus,
@@ -33,12 +34,17 @@ import {
 import {
   removeRwaAdminMetadata,
   saveRwaAdminMetadata,
+  uploadRwaAdminImage,
   useRwaAdminMetadataMap,
 } from "@/lib/rwa-admin-storage";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
 const CATEGORY_DATALIST_ID = "rwa-category-options";
 const SELLER_DATALIST_ID = "rwa-seller-options";
+const MIN_PRODUCT_IMAGES = 2;
+const MAX_PRODUCT_IMAGES = 5;
+const MAX_UPLOAD_IMAGE_BYTES = 420_000;
+const IMAGE_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 const statusLabels: Record<number, string> = {
   0: "已发布",
@@ -59,6 +65,64 @@ function getStatusLabel(status: number) {
   return statusLabels[status] ?? `状态 ${status}`;
 }
 
+function getDefaultRwaImageURL(fileHash: string) {
+  return `https://rwa-cdn.phenixmcga.com/${fileHash}/cover.png`;
+}
+
+function normalizeImageURLList(value: string[]) {
+  return Array.from(new Set(value.map((item) => item.trim()).filter(Boolean))).slice(
+    0,
+    MAX_PRODUCT_IMAGES,
+  );
+}
+
+async function compressProductImage(file: File) {
+  if (!IMAGE_UPLOAD_TYPES.has(file.type)) {
+    throw new Error(`${file.name} 不是支持的图片格式`);
+  }
+
+  const bitmap = await createImageBitmap(file);
+  const maxSide = 1280;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    bitmap.close();
+    throw new Error("图片压缩失败");
+  }
+
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+
+  const outputType = file.type === "image/png" ? "image/png" : "image/jpeg";
+  const qualitySteps = outputType === "image/png" ? [0.92] : [0.82, 0.72, 0.62, 0.52];
+
+  for (const quality of qualitySteps) {
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(resolve, outputType, quality);
+    });
+
+    if (blob && blob.size <= MAX_UPLOAD_IMAGE_BYTES) {
+      return new File([blob], file.name, { type: outputType });
+    }
+  }
+
+  const fallbackBlob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, outputType, 0.5);
+  });
+
+  if (!fallbackBlob || fallbackBlob.size > MAX_UPLOAD_IMAGE_BYTES) {
+    throw new Error(`${file.name} 压缩后仍然过大，请换一张更小的图片`);
+  }
+
+  return new File([fallbackBlob], file.name, { type: outputType });
+}
+
 function RwaAdminRow({
   rwa,
   canManage,
@@ -70,6 +134,7 @@ function RwaAdminRow({
     categoryLabel: string;
     sellerCategoryLabel: string;
     imageURL: string;
+    imageURLs: string[];
     tokenURI: string;
     asset: {
       name: string;
@@ -83,12 +148,15 @@ function RwaAdminRow({
 }) {
   const [categoryLabel, setCategoryLabel] = useState(rwa.categoryLabel);
   const [sellerCategoryLabel, setSellerCategoryLabel] = useState(rwa.sellerCategoryLabel);
+  const [imageURLs, setImageURLs] = useState<string[]>(() => normalizeImageURLList(rwa.imageURLs));
   const [busyAction, setBusyAction] = useState<"save" | "reset" | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     setCategoryLabel(rwa.categoryLabel);
     setSellerCategoryLabel(rwa.sellerCategoryLabel);
-  }, [rwa.categoryLabel, rwa.sellerCategoryLabel, rwa.tokenId]);
+    setImageURLs(normalizeImageURLList(rwa.imageURLs));
+  }, [rwa.categoryLabel, rwa.imageURLs, rwa.sellerCategoryLabel, rwa.tokenId]);
 
   const handleSaveMetadata = async () => {
     const nextCategory = categoryLabel.trim();
@@ -104,11 +172,18 @@ function RwaAdminRow({
       return;
     }
 
+    if (imageURLs.length < MIN_PRODUCT_IMAGES) {
+      toast.error(`请至少上传 ${MIN_PRODUCT_IMAGES} 张产品图片`);
+      return;
+    }
+
     try {
       setBusyAction("save");
       await saveRwaAdminMetadata(rwa.tokenId, {
         categoryLabel: nextCategory,
         sellerCategoryLabel: nextSellerCategory,
+        imageURLs,
+        imageURL: imageURLs[0],
       });
 
       toast.success(`#${rwa.tokenId.toString()} 标签已保存`);
@@ -117,6 +192,38 @@ function RwaAdminRow({
     } finally {
       setBusyAction(null);
     }
+  };
+
+  const handleUploadImages = async (files: FileList | null) => {
+    if (!files?.length) return;
+
+    const nextFiles = Array.from(files);
+    const remaining = MAX_PRODUCT_IMAGES - imageURLs.length;
+    if (remaining <= 0) {
+      toast.error(`每个产品最多上传 ${MAX_PRODUCT_IMAGES} 张图片`);
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const uploaded: string[] = [];
+
+      for (const file of nextFiles.slice(0, remaining)) {
+        const compressed = await compressProductImage(file);
+        uploaded.push(await uploadRwaAdminImage(compressed));
+      }
+
+      setImageURLs((current) => normalizeImageURLList([...current, ...uploaded]));
+      toast.success(`已上传 ${uploaded.length} 张产品图片`);
+    } catch (error) {
+      toast.error(normalizeError(error));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeImageURL = (imageURL: string) => {
+    setImageURLs((current) => current.filter((item) => item !== imageURL));
   };
 
   const handleResetMetadata = async () => {
@@ -137,7 +244,7 @@ function RwaAdminRow({
       <div className="grid gap-0 lg:grid-cols-[220px_1fr_320px]">
         <div className="border-b border-sky-100 bg-sky-50/60 lg:border-b-0 lg:border-r">
           <div className="aspect-[4/3] overflow-hidden">
-            <img src={rwa.imageURL} alt={rwa.asset.name} className="h-full w-full object-cover" />
+            <img src={imageURLs[0] ?? rwa.imageURL} alt={rwa.asset.name} className="h-full w-full object-cover" />
           </div>
         </div>
 
@@ -205,6 +312,54 @@ function RwaAdminRow({
           </div>
 
           <div className="mt-4 grid gap-4">
+            <div className="grid gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-medium text-sky-950">
+                  产品图片 ({imageURLs.length}/{MAX_PRODUCT_IMAGES})
+                </span>
+                <label className="inline-flex cursor-pointer items-center justify-center gap-2 border border-sky-300 px-3 py-2 text-xs font-semibold text-sky-950 transition hover:bg-sky-50">
+                  {uploading ? (
+                    <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <ImagePlus className="h-3.5 w-3.5" />
+                  )}
+                  上传
+                  <input
+                    type="file"
+                    className="sr-only"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    disabled={uploading || imageURLs.length >= MAX_PRODUCT_IMAGES}
+                    onChange={(event) => {
+                      void handleUploadImages(event.target.files);
+                      event.target.value = "";
+                    }}
+                  />
+                </label>
+              </div>
+
+              {imageURLs.length > 0 ? (
+                <div className="grid grid-cols-3 gap-2">
+                  {imageURLs.map((imageURL, index) => (
+                    <div key={imageURL} className="group relative overflow-hidden border border-sky-100 bg-sky-50">
+                      <img src={imageURL} alt={`产品图 ${index + 1}`} className="aspect-square w-full object-cover" />
+                      <button
+                        type="button"
+                        className="absolute right-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm opacity-0 transition group-hover:opacity-100"
+                        onClick={() => removeImageURL(imageURL)}
+                      >
+                        删除
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="border border-dashed border-sky-200 bg-sky-50/60 p-4 text-sm leading-6 text-sky-900/60">
+                  上传 2-5 张产品图片，第一张会作为资产封面。
+                </div>
+              )}
+            </div>
+
             <label className="grid gap-2">
               <span className="text-sm font-medium text-sky-950">资产类别</span>
               <Input
@@ -280,6 +435,8 @@ export default function AdminRwa() {
   const [fileHash, setFileHash] = useState("");
   const [categoryLabel, setCategoryLabel] = useState<string>(RWA_CATEGORY_LABELS[0]);
   const [sellerCategoryLabel, setSellerCategoryLabel] = useState<string>(RWA_SELLER_CATEGORY_LABELS[0]);
+  const [productImageURLs, setProductImageURLs] = useState<string[]>([]);
+  const [uploadingProductImages, setUploadingProductImages] = useState(false);
   const [issuerAddress, setIssuerAddress] = useState("");
   const [busyAction, setBusyAction] = useState<string | null>(null);
 
@@ -317,10 +474,12 @@ export default function AdminRwa() {
   const labeledCount = useMemo(() => Object.keys(adminMetadataMap).length, [adminMetadataMap]);
 
   const imagePreviewUrl = useMemo(() => {
+    if (productImageURLs[0]) return productImageURLs[0];
+
     const hash = fileHash.trim();
     if (!hash) return "";
-    return `https://rwa-cdn.phenixmcga.com/${hash}/cover.png`;
-  }, [fileHash]);
+    return getDefaultRwaImageURL(hash);
+  }, [fileHash, productImageURLs]);
 
   const refreshAdminReads = async () => {
     await Promise.all([refetch(), ownerRead.refetch(), issuerRead.refetch()]);
@@ -393,6 +552,11 @@ export default function AdminRwa() {
       return;
     }
 
+    if (productImageURLs.length < MIN_PRODUCT_IMAGES) {
+      toast.error(`请上传 ${MIN_PRODUCT_IMAGES}-${MAX_PRODUCT_IMAGES} 张产品图片`);
+      return;
+    }
+
     try {
       setBusyAction("create");
       const price = parseUnits(pricePhenix, PHENIX_DECIMALS);
@@ -444,9 +608,11 @@ export default function AdminRwa() {
 
       const saved = createdTokenId
         ? await saveRwaAdminMetadata(createdTokenId, {
-            categoryLabel: nextCategory,
-            sellerCategoryLabel: nextSellerCategory,
-          })
+          categoryLabel: nextCategory,
+          sellerCategoryLabel: nextSellerCategory,
+          imageURLs: productImageURLs,
+          imageURL: productImageURLs[0],
+        })
         : false;
 
       await refreshAdminReads();
@@ -462,6 +628,7 @@ export default function AdminRwa() {
       setAssetName("");
       setPricePhenix("");
       setFileHash("");
+      setProductImageURLs([]);
     } catch (error) {
       toast.error(normalizeError(error));
     } finally {
@@ -532,6 +699,37 @@ export default function AdminRwa() {
     } finally {
       setBusyAction(null);
     }
+  };
+
+  const handleUploadProductImages = async (files: FileList | null) => {
+    if (!files?.length) return;
+
+    const remaining = MAX_PRODUCT_IMAGES - productImageURLs.length;
+    if (remaining <= 0) {
+      toast.error(`每个产品最多上传 ${MAX_PRODUCT_IMAGES} 张图片`);
+      return;
+    }
+
+    try {
+      setUploadingProductImages(true);
+      const uploaded: string[] = [];
+
+      for (const file of Array.from(files).slice(0, remaining)) {
+        const compressed = await compressProductImage(file);
+        uploaded.push(await uploadRwaAdminImage(compressed));
+      }
+
+      setProductImageURLs((current) => normalizeImageURLList([...current, ...uploaded]));
+      toast.success(`已上传 ${uploaded.length} 张产品图片`);
+    } catch (error) {
+      toast.error(normalizeError(error));
+    } finally {
+      setUploadingProductImages(false);
+    }
+  };
+
+  const removeProductImageURL = (imageURL: string) => {
+    setProductImageURLs((current) => current.filter((item) => item !== imageURL));
   };
 
   return (
@@ -674,6 +872,62 @@ export default function AdminRwa() {
                   placeholder="资产文件包目录名或 hash"
                 />
               </label>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="text-sm font-medium text-sky-950">
+                    产品图片 ({productImageURLs.length}/{MAX_PRODUCT_IMAGES})
+                  </div>
+                  <p className="mt-1 text-sm text-sky-900/60">
+                    上传 {MIN_PRODUCT_IMAGES}-{MAX_PRODUCT_IMAGES} 张图片，第一张作为封面。
+                  </p>
+                </div>
+                <label className="inline-flex w-fit cursor-pointer items-center justify-center gap-2 border border-sky-300 px-4 py-2 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
+                  {uploadingProductImages ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <ImagePlus className="h-4 w-4" />
+                  )}
+                  上传图片
+                  <input
+                    type="file"
+                    className="sr-only"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    disabled={uploadingProductImages || productImageURLs.length >= MAX_PRODUCT_IMAGES}
+                    onChange={(event) => {
+                      void handleUploadProductImages(event.target.files);
+                      event.target.value = "";
+                    }}
+                  />
+                </label>
+              </div>
+
+              {productImageURLs.length > 0 ? (
+                <div className="grid gap-3 sm:grid-cols-5">
+                  {productImageURLs.map((imageURL, index) => (
+                    <div key={imageURL} className="group relative overflow-hidden border border-sky-100 bg-sky-50">
+                      <img src={imageURL} alt={`产品图 ${index + 1}`} className="aspect-square w-full object-cover" />
+                      <div className="absolute left-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm">
+                        {index === 0 ? "封面" : index + 1}
+                      </div>
+                      <button
+                        type="button"
+                        className="absolute right-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm opacity-0 transition group-hover:opacity-100"
+                        onClick={() => removeProductImageURL(imageURL)}
+                      >
+                        删除
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="border border-dashed border-sky-200 bg-sky-50/60 p-5 text-sm leading-6 text-sky-900/60">
+                  还没有上传产品图片。图片会自动压缩后保存到后台，并同步到前台资产详情页轮播展示。
+                </div>
+              )}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   cloneRwaAdminMetadataMap,
   emptyRwaAdminStorageDocument,
+  RWA_ADMIN_IMAGE_ROUTE,
   normalizeRwaAdminStorageDocument,
   RWA_ADMIN_STORAGE_ROUTE,
   type RwaAdminMetadataInput,
@@ -125,6 +126,48 @@ export async function saveRwaAdminMetadata(
 
 export async function removeRwaAdminMetadata(tokenId: bigint) {
   return mutateMetadata("DELETE", tokenId);
+}
+
+export async function uploadRwaAdminImage(file: Blob) {
+  const response = await fetch(RWA_ADMIN_IMAGE_ROUTE, {
+    method: "PUT",
+    headers: {
+      "Content-Type": file.type || "application/octet-stream",
+      Accept: "application/json",
+    },
+    body: file,
+  });
+
+  if (!response.ok) {
+    const fallback = `上传产品图片失败 (${response.status})`;
+
+    try {
+      const result = await response.json();
+      throw new Error(
+        result && typeof result === "object" && "error" in result
+          ? String((result as { error?: unknown }).error || fallback)
+          : fallback,
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message !== fallback) {
+        throw error;
+      }
+
+      throw new Error(fallback);
+    }
+  }
+
+  const result = await response.json();
+  const imageURL =
+    result && typeof result === "object" && "imageURL" in result
+      ? String((result as { imageURL?: unknown }).imageURL || "")
+      : "";
+
+  if (!imageURL) {
+    throw new Error("上传产品图片失败，未返回图片地址");
+  }
+
+  return imageURL;
 }
 
 export function useRwaAdminMetadataMap() {

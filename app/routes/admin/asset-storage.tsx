@@ -1,6 +1,9 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
-import { RWA_ADMIN_STORAGE_ROUTE } from "@/lib/rwa-admin-storage.shared";
+import {
+  RWA_ADMIN_IMAGE_ROUTE,
+  RWA_ADMIN_STORAGE_ROUTE,
+} from "@/lib/rwa-admin-storage.shared";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   return handleRwaAdminStorageRequest(request, context);
@@ -18,6 +21,8 @@ async function handleRwaAdminStorageRequest(
 
   if (
     url.pathname !== RWA_ADMIN_STORAGE_ROUTE &&
+    url.pathname !== RWA_ADMIN_IMAGE_ROUTE &&
+    !url.pathname.startsWith(`${RWA_ADMIN_IMAGE_ROUTE}/`) &&
     url.pathname !== "/admin/rwa/storage"
   ) {
     return new Response("Not Found", { status: 404 });

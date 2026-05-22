@@ -16,6 +16,7 @@ export interface RWA {
   sellerCategoryLabel: string;
   tokenURI: string;
   imageURL: string;
+  imageURLs: string[];
   asset: {
     name: string;
     pricePhenix: bigint;
@@ -25,9 +26,22 @@ export interface RWA {
   };
 }
 
-function formatRwaInfo(rwaData: any, adminMetadataMap: Record<string, { categoryLabel: string; sellerCategoryLabel: string }> = {}): RWA {
+function formatRwaInfo(
+  rwaData: any,
+  adminMetadataMap: Record<string, {
+    categoryLabel: string;
+    sellerCategoryLabel: string;
+    imageURLs?: string[];
+    imageURL?: string;
+  }> = {},
+): RWA {
   const tokenIdKey = rwaData.tokenId?.toString?.() ?? String(rwaData.tokenId);
   const adminMetadata = adminMetadataMap[tokenIdKey];
+  const fallbackImageURL = `https://rwa-cdn.phenixmcga.com/${rwaData.asset.fileHash}/cover.png`;
+  const imageURLs =
+    adminMetadata?.imageURLs && adminMetadata.imageURLs.length > 0
+      ? adminMetadata.imageURLs
+      : [adminMetadata?.imageURL || fallbackImageURL];
   const tokenURI =
     typeof rwaData.tokenURI === "string"
       ? rwaData.tokenURI.replace("/rwa/metadata", "/asset/metadata")
@@ -38,7 +52,8 @@ function formatRwaInfo(rwaData: any, adminMetadataMap: Record<string, { category
     tokenURI,
     categoryLabel: adminMetadata?.categoryLabel ?? resolveRwaCategoryLabel(rwaData.asset.name, rwaData.tokenId),
     sellerCategoryLabel: adminMetadata?.sellerCategoryLabel ?? resolveRwaSellerCategoryLabel(rwaData.tokenId),
-    imageURL: `https://rwa-cdn.phenixmcga.com/${rwaData.asset.fileHash}/cover.png`,
+    imageURL: imageURLs[0],
+    imageURLs,
     asset: {
       ...rwaData.asset,
       pricePhenixFormatted: formatUnits(

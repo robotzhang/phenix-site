@@ -13,6 +13,8 @@ export default [
   route("rwa", "./routes/legacy/rwa-list.tsx"),
   route("rwa/metadata", "./routes/legacy/rwa-metadata.tsx"),
   route("rwa/:assetId", "./routes/legacy/rwa-show.tsx"),
+  route("admin/asset/image", "./routes/admin/asset-image.tsx"),
+  route("admin/asset/image/*", "./routes/admin/asset-image-file.tsx"),
   route("admin/asset/storage", "./routes/admin/asset-storage.tsx"),
   route("admin/asset", "./routes/admin/asset.tsx"),
   route("admin/rwa/storage", "./routes/legacy/admin-rwa-storage.tsx"),

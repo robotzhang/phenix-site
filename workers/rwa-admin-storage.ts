@@ -2,11 +2,15 @@ import { DurableObject } from "cloudflare:workers";
 
 import {
   emptyRwaAdminStorageDocument,
+  normalizeRwaAdminImageURLs,
   normalizeRwaAdminStorageDocument,
   trimAdminStorageString,
   type RwaAdminMetadata,
   type RwaAdminStorageDocument,
 } from "@/lib/rwa-admin-storage.shared";
+
+const MAX_IMAGE_BYTES = 450_000;
+const SUPPORTED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 function jsonResponse(body: unknown, init?: ResponseInit) {
   return new Response(JSON.stringify(body), {
@@ -42,9 +46,30 @@ function readMetadataPayload(raw: unknown) {
     pricePhenix: trimAdminStorageString(payload.pricePhenix) || undefined,
     fileHash: trimAdminStorageString(payload.fileHash) || undefined,
     imageURL: trimAdminStorageString(payload.imageURL) || undefined,
+    imageURLs: normalizeRwaAdminImageURLs(payload.imageURLs),
     tokenURI: trimAdminStorageString(payload.tokenURI) || undefined,
     status: typeof payload.status === "number" ? payload.status : undefined,
   };
+}
+
+function getImageContentType(request: Request) {
+  return request.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase() ?? "";
+}
+
+function buildImageKey(contentType: string) {
+  const extension = contentType === "image/png" ? "png" : contentType === "image/webp" ? "webp" : "jpg";
+  const random =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  return `asset-image:${random}.${extension}`;
+}
+
+function resolveImageKey(pathname: string) {
+  const prefix = "/admin/asset/image/";
+  if (!pathname.startsWith(prefix)) return "";
+  return decodeURIComponent(pathname.slice(prefix.length));
 }
 
 export class RwaAdminStorage extends DurableObject {
@@ -65,8 +90,56 @@ export class RwaAdminStorage extends DurableObject {
   }
 
   async fetch(request: Request) {
+    const url = new URL(request.url);
+
     if (request.method === "GET") {
+      const imageKey = resolveImageKey(url.pathname);
+
+      if (imageKey) {
+        const stored = await this.ctx.storage.get<{
+          body: ArrayBuffer;
+          contentType: string;
+        }>(imageKey);
+
+        if (!stored) {
+          return new Response("Not Found", { status: 404 });
+        }
+
+        return new Response(stored.body, {
+          headers: {
+            "Content-Type": stored.contentType,
+            "Cache-Control": "public, max-age=31536000, immutable",
+          },
+        });
+      }
+
       return jsonResponse(await this.readDocument());
+    }
+
+    if (request.method === "PUT") {
+      const contentType = getImageContentType(request);
+
+      if (!SUPPORTED_IMAGE_TYPES.has(contentType)) {
+        return jsonResponse(
+          { error: "仅支持 JPG、PNG 或 WebP 图片" },
+          { status: 415 },
+        );
+      }
+
+      const body = await request.arrayBuffer();
+      if (body.byteLength > MAX_IMAGE_BYTES) {
+        return jsonResponse(
+          { error: "图片过大，请压缩到 450KB 以内" },
+          { status: 413 },
+        );
+      }
+
+      const key = buildImageKey(contentType);
+      await this.ctx.storage.put(key, { body, contentType });
+
+      return jsonResponse({
+        imageURL: `/admin/asset/image/${encodeURIComponent(key)}`,
+      });
     }
 
     if (request.method === "POST") {
@@ -96,6 +169,7 @@ export class RwaAdminStorage extends DurableObject {
         pricePhenix: payload.pricePhenix ?? previous?.pricePhenix,
         fileHash: payload.fileHash ?? previous?.fileHash,
         imageURL: payload.imageURL ?? previous?.imageURL,
+        imageURLs: payload.imageURLs ?? previous?.imageURLs,
         tokenURI: payload.tokenURI ?? previous?.tokenURI,
         status: payload.status ?? previous?.status,
       };
@@ -127,7 +201,7 @@ export class RwaAdminStorage extends DurableObject {
       {
         status: 405,
         headers: {
-          Allow: "GET, POST, DELETE",
+      Allow: "GET, POST, DELETE",
         },
       },
     );

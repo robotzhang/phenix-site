@@ -30,12 +30,36 @@ export const config = createConfig({
 
 export async function createClientWalletConfig(): Promise<Config> {
   const { getDefaultConfig } = await import("@rainbow-me/rainbowkit");
+  const {
+    coinbaseWallet,
+    metaMaskWallet,
+    rabbyWallet,
+    rainbowWallet,
+    walletConnectWallet,
+  } = await import("@rainbow-me/rainbowkit/wallets");
 
   return getDefaultConfig({
     appName,
     projectId: WALLET_CONNECT_PROJECT_ID,
     chains,
     transports,
+    wallets: [
+      {
+        groupName: "推荐钱包",
+        wallets: [
+          rabbyWallet,
+          metaMaskWallet,
+          walletConnectWallet,
+        ],
+      },
+      {
+        groupName: "更多钱包",
+        wallets: [
+          rainbowWallet,
+          coinbaseWallet,
+        ],
+      },
+    ],
     ssr: true,
   });
 }

@@ -3,16 +3,31 @@ import {
   ArrowRight,
   BadgeCheck,
   Blocks,
+  BriefcaseBusiness,
+  Building2,
   CircleDollarSign,
+  FileCheck2,
+  Gavel,
+  Gem,
+  Landmark,
   LockKeyhole,
   Network,
+  Repeat2,
+  ShieldCheck,
   Sparkles,
+  WalletCards,
 } from "lucide-react";
 
-const painPoints = [
+const heroStats = [
+  { value: "Base", label: "链上存证网络" },
+  { value: "4 层", label: "鉴定、托管、确权、流通" },
+  { value: "3 类", label: "典当、拍卖、回收通道" },
+];
+
+const marketSignals = [
   { title: "交易难", text: "文化艺术品交易周期长，优质资产难以快速进入可信流通。" },
-  { title: "流通难", text: "缺少标准化确权、托管与交易机制，资产常被长期沉淀。" },
-  { title: "变现难", text: "退出渠道分散且不可预期，投资人与持有人缺少清晰路径。" },
+  { title: "确权难", text: "真伪、来源、托管与交易记录分散，持有人缺少可持续沉淀的资产索引。" },
+  { title: "退出难", text: "典当、拍卖、回收等渠道割裂，投资人与持有人缺少清晰路径。" },
 ];
 
 const solutionItems = [
@@ -20,6 +35,54 @@ const solutionItems = [
   { icon: LockKeyhole, title: "第三方托管", text: "联合金融、安保、保险等机构建立分离式托管体系，提升资产安全与公信力。" },
   { icon: Blocks, title: "数字确权存证", text: "通过链上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
   { icon: CircleDollarSign, title: "可预期退出", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的流通与变现路径。" },
+];
+
+const platformPaths = [
+  {
+    icon: Gem,
+    to: "/asset",
+    label: "Asset Pool",
+    title: "文化艺术品资产库",
+    text: "查看上链资产、文件包 hash、资产状态与会员价格，形成可验证的资产索引。",
+    accent: "border-amber-200 bg-amber-50/70 text-amber-900",
+  },
+  {
+    icon: WalletCards,
+    to: "/membership",
+    label: "Membership",
+    title: "会员服务体系",
+    text: "通过会员凭证、服务卡和积分体系连接资产配置、生态活动与长期服务。",
+    accent: "border-sky-200 bg-sky-50/80 text-sky-900",
+  },
+  {
+    icon: Building2,
+    to: "/custody",
+    label: "Custody",
+    title: "托管与确权",
+    text: "把鉴定、托管、保险、链上存证拆分给专业角色协作，降低信息不对称。",
+    accent: "border-emerald-200 bg-emerald-50/70 text-emerald-900",
+  },
+  {
+    icon: Network,
+    to: "/liquidity",
+    label: "Liquidity",
+    title: "流通与变现机制",
+    text: "连接典当、拍卖、回收等渠道，为真实资产建立更可追踪的退出服务链路。",
+    accent: "border-cyan-200 bg-cyan-50/70 text-cyan-900",
+  },
+];
+
+const operatingSteps = [
+  { step: "01", title: "资产入库", text: "围绕真伪、稀缺性、来源材料与流通能力完成初筛。" },
+  { step: "02", title: "托管确权", text: "建立第三方托管、文件包 hash、链上 Token ID 与资产状态记录。" },
+  { step: "03", title: "会员配置", text: "向会员开放资产信息、服务卡、积分与生态服务入口。" },
+  { step: "04", title: "流通退出", text: "通过典当、拍卖、回收等合作渠道推进价格发现与交易服务。" },
+];
+
+const channelItems = [
+  { icon: Landmark, title: "典当机构", text: "围绕短期资金需求、赎回机制和资产评估提供快速流通路径。" },
+  { icon: Gavel, title: "拍卖渠道", text: "连接专业买家网络与公开竞价场景，推动资产价值发现。" },
+  { icon: Repeat2, title: "回收机构", text: "布局长期回收与再流通网络，为资产持有人提供退出选项。" },
 ];
 
 const flywheel = ["资产库扩容", "会员规模增长", "圈层价值增强", "流通效率提升", "平台公信力增强", "更多资产进入"];
@@ -43,49 +106,60 @@ export function meta() {
 export default function Home() {
   return (
     <div className="-mx-4 md:mx-0">
-      <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#edf6fb_100%)] px-4 py-16 text-sky-950 sm:px-8 sm:py-24">
+      <section className="relative overflow-hidden border-b border-sky-100 bg-sky-950 px-4 py-10 text-white sm:min-h-[calc(100vh-8rem)] sm:px-8 sm:py-14">
         <img
           src="/rda-blue-vivid.png"
           alt="PHENIX"
-          className="absolute inset-y-0 right-0 h-full w-full object-cover opacity-16 mix-blend-multiply sm:w-2/3"
+          className="absolute inset-0 h-full w-full object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(242,248,251,0.96),rgba(242,248,251,0.76),rgba(242,248,251,0.28))]" />
-        <div className="relative z-10 flex min-h-[calc(100vh-12rem)] max-w-4xl flex-col justify-center">
-          <div className="mb-6 inline-flex w-fit items-center gap-2 border border-sky-200 bg-white/70 px-3 py-1 text-sm text-sky-800 shadow-sm backdrop-blur">
-            <Sparkles className="h-4 w-4 text-sky-600" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,34,55,0.94),rgba(6,42,67,0.78),rgba(6,42,67,0.24))]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(6,42,67,0),rgba(247,251,253,0.98))]" />
+
+        <div className="relative z-10 max-w-5xl pt-20 sm:flex sm:min-h-[calc(100vh-17rem)] sm:flex-col sm:justify-center sm:pt-0">
+          <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/25 bg-white/10 px-3 py-1 text-sm text-white shadow-sm backdrop-blur">
+            <Sparkles className="h-4 w-4 text-amber-200" />
             文化艺术品资产流通体系构建者
           </div>
           <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
             PHENIX
-            <span className="mt-4 block text-2xl font-medium text-sky-900/90 sm:text-4xl">
+            <span className="mt-4 block text-2xl font-medium text-white/90 sm:text-4xl">
               华夏文化艺术品资产配置与交易平台
             </span>
           </h1>
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-sky-900/72 sm:text-xl">
-            构建文化艺术品资产的信任基础设施，让文化艺术品实现可信流通。
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:mt-8 sm:text-xl">
+            以严选资产库、第三方托管、链上确权与流通通道为基础，构建文化艺术品资产可信流通的运营系统。
           </p>
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
             <Link
               to="/asset"
-              className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+              className="inline-flex items-center justify-center gap-2 border border-white bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
             >
               浏览资产库
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/membership"
-              className="inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-900 transition hover:bg-sky-50/80"
+              className="inline-flex items-center justify-center gap-2 border border-white/45 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               了解会员体系
             </Link>
           </div>
         </div>
+
+        <div className="relative z-10 mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
+          {heroStats.map((item) => (
+            <div key={item.label} className="border border-white/20 bg-white/10 p-4 backdrop-blur">
+              <div className="text-2xl font-semibold text-white">{item.value}</div>
+              <div className="mt-1 text-sm text-white/72">{item.label}</div>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-0 sm:py-24">
+      <section className="px-4 py-14 sm:px-0 sm:py-20">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Market Opportunity</p>
+            <p className="text-sm font-semibold uppercase text-sky-700">Market Opportunity</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
               行业缺的不是需求，而是系统。
             </h2>
@@ -96,8 +170,8 @@ export default function Home() {
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
-          {painPoints.map((item) => (
-            <article key={item.title} className="border border-sky-100 bg-white/80 p-6 shadow-sm">
+          {marketSignals.map((item) => (
+            <article key={item.title} className="border border-sky-100 bg-white/85 p-6 shadow-sm">
               <h3 className="text-xl font-semibold text-sky-950">{item.title}</h3>
               <p className="mt-4 leading-7 text-sky-900/70">{item.text}</p>
             </article>
@@ -105,10 +179,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
+      <section className="border-y border-sky-100 bg-white/70 px-4 py-14 sm:px-0 sm:py-20">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Our Solution</p>
+            <p className="text-sm font-semibold uppercase text-sky-700">Our Solution</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
               信任驱动型文化艺术品资产流通平台
             </h2>
@@ -119,7 +193,7 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2">
             {solutionItems.map((item) => (
               <article key={item.title} className="border border-sky-100 bg-white/80 p-6 shadow-sm">
-                <item.icon className="h-6 w-6 text-sky-700" />
+                <item.icon className="h-6 w-6 text-emerald-700" />
                 <h3 className="mt-5 text-lg font-semibold text-sky-950">{item.title}</h3>
                 <p className="mt-3 leading-7 text-sky-900/70">{item.text}</p>
               </article>
@@ -128,10 +202,142 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-0 sm:py-24">
+      <section className="px-4 py-14 sm:px-0 sm:py-20">
+        <div className="mb-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
+            <p className="text-sm font-semibold uppercase text-sky-700">Platform Entrances</p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
+              从资产到服务，四个入口直接进入。
+            </h2>
+          </div>
+          <p className="text-base leading-8 text-sky-900/70 sm:text-lg">
+            官网不只展示项目，也承载会员使用路径。资产库、会员体系、托管确权与流通机制共同组成 PHENIX 的服务中台。
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {platformPaths.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="group border border-sky-100 bg-white/85 p-6 shadow-sm transition hover:border-sky-300 hover:bg-white"
+            >
+              <div className="flex items-start justify-between gap-5">
+                <div className={`flex h-12 w-12 shrink-0 items-center justify-center border ${item.accent}`}>
+                  <item.icon className="h-6 w-6" />
+                </div>
+                <span className="text-sm font-semibold text-sky-700">{item.label}</span>
+              </div>
+              <h3 className="mt-8 text-2xl font-semibold text-sky-950">{item.title}</h3>
+              <p className="mt-4 leading-7 text-sky-900/70">{item.text}</p>
+              <div className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-sky-950">
+                进入
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-10 border-y border-sky-100 bg-[linear-gradient(180deg,#f8fbfd_0%,#edf6f5_100%)] px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.82fr_1.18fr]">
+        <div>
+          <p className="text-sm font-semibold uppercase text-emerald-700">Operating Model</p>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
+            把分散交易，组织成可追踪的服务链路。
+          </h2>
+          <p className="mt-6 leading-8 text-sky-900/70">
+            PHENIX 的核心不是单一资产展示，而是把线下鉴定、第三方托管、链上记录和流通渠道接入同一套会员服务流程。
+          </p>
+        </div>
+        <div className="grid gap-3">
+          {operatingSteps.map((item) => (
+            <article key={item.step} className="grid gap-4 border border-sky-100 bg-white/85 p-5 shadow-sm sm:grid-cols-[72px_1fr]">
+              <div className="text-2xl font-semibold text-emerald-700">{item.step}</div>
+              <div>
+                <h3 className="text-xl font-semibold text-sky-950">{item.title}</h3>
+                <p className="mt-2 leading-7 text-sky-900/70">{item.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-4 py-14 sm:px-0 sm:py-20">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase text-amber-700">Member Service</p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
+              会员不是旁观者，而是资产生态的参与者。
+            </h2>
+            <p className="mt-6 leading-8 text-sky-900/70">
+              服务卡、锁仓积分、资产配置与社区商城共同形成会员入口。平台通过真实资产、真实服务和真实交易记录，帮助会员长期参与文化艺术品流通生态。
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/staking"
+                className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
+              >
+                锁仓领积分
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/points-mall"
+                className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
+              >
+                查看社区商城
+              </Link>
+            </div>
+          </div>
+          <div className="overflow-hidden border border-sky-100 bg-white/85 shadow-sm">
+            <img src="/fnft-blue-vivid.png" alt="PHENIX service card" className="aspect-[4/3] w-full object-cover" />
+            <div className="grid grid-cols-3 border-t border-sky-100">
+              <div className="border-r border-sky-100 p-4">
+                <div className="text-sm text-sky-900/60">服务卡</div>
+                <div className="mt-2 font-semibold text-sky-950">会员入口</div>
+              </div>
+              <div className="border-r border-sky-100 p-4">
+                <div className="text-sm text-sky-900/60">积分</div>
+                <div className="mt-2 font-semibold text-sky-950">锁仓获取</div>
+              </div>
+              <div className="p-4">
+                <div className="text-sm text-sky-900/60">商城</div>
+                <div className="mt-2 font-semibold text-sky-950">权益兑换</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-sky-100 bg-white/70 px-4 py-14 sm:px-0 sm:py-20">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-sm font-semibold uppercase text-sky-700">Liquidity Channels</p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
+              退出路径提前建设，流通服务才可预期。
+            </h2>
+            <p className="mt-6 leading-8 text-sky-900/70">
+              PHENIX 不承诺收益，而是减少资产流通中的信息断点。典当、拍卖和回收通道共同服务于不同周期、不同需求的资产退出场景。
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+            {channelItems.map((item) => (
+              <article key={item.title} className="border border-sky-100 bg-white/85 p-5 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <item.icon className="mt-1 h-6 w-6 shrink-0 text-amber-700" />
+                  <div>
+                    <h3 className="font-semibold text-sky-950">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-sky-900/70">{item.text}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-14 sm:px-0 sm:py-20">
         <div className="grid gap-10 lg:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Growth Flywheel</p>
+            <p className="text-sm font-semibold uppercase text-sky-700">Growth Flywheel</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
               资产、会员与公信力形成正循环。
             </h2>
@@ -147,10 +353,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-t border-sky-100 px-4 py-16 sm:px-0 sm:py-24">
+      <section className="border-t border-sky-100 px-4 py-14 sm:px-0 sm:py-20">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Development Plan</p>
+            <p className="text-sm font-semibold uppercase text-sky-700">Development Plan</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">三阶段战略路径</h2>
           </div>
           <Link to="/custody" className="inline-flex items-center gap-2 text-sm font-semibold text-sky-900 hover:text-sky-700">
@@ -169,10 +375,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mb-10 border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] px-4 py-12 text-sky-950 sm:px-8">
+      <section className="mb-10 border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#eef8f2_100%)] px-4 py-12 text-sky-950 sm:px-8">
         <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
           <div>
-            <h2 className="text-2xl font-semibold sm:text-3xl">面向合格机构投资者与战略伙伴</h2>
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="h-6 w-6 text-emerald-700" />
+              <h2 className="text-2xl font-semibold sm:text-3xl">面向合格机构投资者与战略伙伴</h2>
+            </div>
             <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
               PHENIX 不公开募资，不承诺收益。平台以真实资产、真实交易、真实服务为基础，欢迎长期认同文化艺术品资产流通价值的伙伴共同参与基础设施建设。
             </p>
@@ -182,7 +391,7 @@ export default function Home() {
             className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
           >
             了解流通机制
-            <Network className="h-4 w-4" />
+            <BriefcaseBusiness className="h-4 w-4" />
           </Link>
         </div>
       </section>

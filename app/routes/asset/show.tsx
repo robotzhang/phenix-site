@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import GlobalLoading from "@/components/ui/global-loading";
+import {
+  formatProductAssetPrice,
+  getProductAssetById,
+  getProductAssetDisplayName,
+} from "@/data/product-assets";
 import { useRwaDetail } from "@/hooks/useRwa";
 import {
   formatRwaPriceWithCurrency,
@@ -9,11 +14,14 @@ import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
 import { Link, useParams } from "react-router";
 import {
   ArrowLeft,
+  BadgeCheck,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
   FileCheck2,
   LockKeyhole,
+  PackageCheck,
+  Ruler,
   ShieldCheck,
   WalletCards,
 } from "lucide-react";
@@ -59,13 +67,247 @@ export function meta() {
 
 export default function RwaShow() {
   const { assetId } = useParams();
-  const { data: rwa, loading } = useRwaDetail(assetId);
+  const productAsset = getProductAssetById(assetId);
+  const shouldReadChainAsset = !productAsset && !!assetId && /^\d+$/.test(assetId);
+  const { data: rwa, loading } = useRwaDetail(shouldReadChainAsset ? assetId : undefined);
   const adminMetadataMap = useRwaAdminMetadataMap();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     setSelectedImageIndex(0);
   }, [assetId]);
+
+  if (productAsset) {
+    const displayName = getProductAssetDisplayName(productAsset);
+    const imageURLs = [...productAsset.imageURLs, ...productAsset.certificateURLs];
+    const selectedImageURL =
+      imageURLs[selectedImageIndex] ?? imageURLs[0] ?? productAsset.imageURL;
+    const hasMultipleImages = imageURLs.length > 1;
+
+    const showPreviousImage = () => {
+      setSelectedImageIndex((current) => (current - 1 + imageURLs.length) % imageURLs.length);
+    };
+
+    const showNextImage = () => {
+      setSelectedImageIndex((current) => (current + 1) % imageURLs.length);
+    };
+
+    return (
+      <div className="-mx-4 md:mx-0">
+        <section className="border-b border-sky-100 bg-white/80 px-4 py-8 sm:px-0 sm:py-12">
+          <Link
+            to="/asset"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-sky-900/70 hover:text-sky-700"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            返回资产库
+          </Link>
+
+          <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_0.95fr]">
+            <div>
+              <div className="relative overflow-hidden border border-sky-100 bg-sky-50 shadow-sm">
+                <img
+                  src={selectedImageURL}
+                  alt={displayName}
+                  className="aspect-[4/3] h-full w-full object-cover"
+                />
+                {hasMultipleImages ? (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="上一张产品图片"
+                      className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/80 bg-white/90 text-sky-950 shadow-sm transition hover:bg-white"
+                      onClick={showPreviousImage}
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="下一张产品图片"
+                      className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/80 bg-white/90 text-sky-950 shadow-sm transition hover:bg-white"
+                      onClick={showNextImage}
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                    <div className="absolute bottom-3 right-3 border border-white/80 bg-white/90 px-3 py-1 text-sm font-semibold text-sky-950 shadow-sm">
+                      {selectedImageIndex + 1} / {imageURLs.length}
+                    </div>
+                  </>
+                ) : null}
+              </div>
+
+              {hasMultipleImages ? (
+                <div className="mt-3 grid grid-cols-5 gap-2">
+                  {imageURLs.map((imageURL, index) => {
+                    const isCertificate = productAsset.certificateURLs.includes(imageURL);
+
+                    return (
+                      <button
+                        type="button"
+                        key={imageURL}
+                        className={`relative overflow-hidden border bg-sky-50 transition ${
+                          index === selectedImageIndex
+                            ? "border-sky-500"
+                            : "border-sky-100 hover:border-sky-300"
+                        }`}
+                        onClick={() => setSelectedImageIndex(index)}
+                        aria-label={`查看第 ${index + 1} 张产品图片`}
+                      >
+                        <img src={imageURL} alt="" className="aspect-square w-full object-cover" />
+                        {isCertificate ? (
+                          <span className="absolute bottom-1 right-1 bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                            证书
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="border border-sky-100 px-3 py-1 text-sm text-sky-900/60">
+                  {productAsset.categoryLabel}
+                </span>
+                <span
+                  className={`border px-3 py-1 text-sm font-semibold ${getRwaSellerCategoryClassName(
+                    productAsset.sellerCategoryLabel,
+                  )}`}
+                >
+                  {productAsset.sellerCategoryLabel}
+                </span>
+                {productAsset.certificateURLs.length > 0 ? (
+                  <span className="inline-flex items-center gap-1 border border-emerald-100 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700">
+                    <BadgeCheck className="h-4 w-4" />
+                    含证书影像
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-5 text-sm font-semibold text-sky-700">{productAsset.id}</div>
+              <h1 className="mt-2 text-4xl font-semibold leading-tight text-sky-950 sm:text-5xl">
+                {displayName}
+              </h1>
+              <p className="mt-5 leading-8 text-sky-900/70">
+                该资产来自 PHENIX 产品目录，已整理产品影像、规格、会员价与文件包 hash。
+                页面用于资产库展示、会员配置沟通和后续托管确权材料索引。
+              </p>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                <div className="border border-sky-100 bg-white/80 p-5 shadow-sm">
+                  <div className="text-sm text-sky-900/60">会员价</div>
+                  <div className="mt-2 text-3xl font-semibold text-sky-950">
+                    {formatProductAssetPrice(productAsset.priceCny)}
+                  </div>
+                </div>
+                <div className="border border-sky-100 bg-white/80 p-5 shadow-sm">
+                  <div className="text-sm text-sky-900/60">资产编号</div>
+                  <div className="mt-2 break-all text-2xl font-semibold text-sky-950">
+                    {productAsset.id}
+                  </div>
+                </div>
+                <div className="border border-sky-100 bg-white/80 p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-sm text-sky-900/60">
+                    <PackageCheck className="h-4 w-4 text-sky-700" />
+                    规格
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-sky-950">
+                    {productAsset.spec}
+                  </div>
+                </div>
+                <div className="border border-sky-100 bg-white/80 p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-sm text-sky-900/60">
+                    <Ruler className="h-4 w-4 text-sky-700" />
+                    尺寸
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-sky-950">
+                    {productAsset.size || "待补充"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 border border-sky-100 bg-white/80 p-5 shadow-sm">
+                <div className="text-sm text-sky-900/60">资产文件包 hash</div>
+                <div className="mt-2 break-all font-mono text-sm text-sky-950">
+                  {productAsset.fileHash}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 px-4 py-12 sm:px-0 sm:py-16 md:grid-cols-2 lg:grid-cols-4">
+          {trustRecords.map((item) => (
+            <article
+              key={item.title}
+              className="border border-sky-100 bg-white/80 p-5 shadow-sm"
+            >
+              <item.icon className="h-5 w-5 text-sky-700" />
+              <h2 className="mt-4 font-semibold text-sky-950">{item.title}</h2>
+              <p className="mt-3 text-sm leading-6 text-sky-900/70">
+                {item.text}
+              </p>
+            </article>
+          ))}
+        </section>
+
+        <section className="grid gap-8 border-y border-sky-100 bg-white/70 px-4 py-12 sm:px-0 sm:py-16 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
+              Product Record
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950">产品目录记录</h2>
+            <p className="mt-5 leading-8 text-sky-900/70">
+              产品目录记录用于展示真实资产信息，并与后续链上确权、第三方托管、保险及流通资料建立索引关系。
+            </p>
+          </div>
+          <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
+            <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+              <div className="text-sm text-sky-900/60">资产名称</div>
+              <div className="font-semibold text-sky-950">{displayName}</div>
+            </div>
+            <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+              <div className="text-sm text-sky-900/60">文件包 hash</div>
+              <div className="break-all font-mono text-sm text-sky-950">
+                {productAsset.fileHash}
+              </div>
+            </div>
+            <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+              <div className="text-sm text-sky-900/60">证书影像</div>
+              <div className="text-sm font-semibold text-sky-950">
+                {productAsset.certificateURLs.length > 0
+                  ? `${productAsset.certificateURLs.length} 张`
+                  : "暂无"}
+              </div>
+            </div>
+            <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+              <div className="text-sm text-sky-900/60">卖家类别</div>
+              <div>
+                <span
+                  className={`inline-flex border px-3 py-1 text-sm font-semibold ${getRwaSellerCategoryClassName(
+                    productAsset.sellerCategoryLabel,
+                  )}`}
+                >
+                  {productAsset.sellerCategoryLabel}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-12 sm:px-0 sm:py-16">
+          <div className="border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] p-8 text-sky-950 shadow-sm">
+            <h2 className="text-2xl font-semibold">风险提示</h2>
+            <p className="mt-4 max-w-4xl leading-7 text-sky-900/70">
+              文化艺术品资产价格受市场需求、稀缺性、保存状态、交易渠道和宏观环境影响。PHENIX
+              展示资产信息与服务路径，不公开募资，不承诺收益。
+            </p>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   if (loading) return <GlobalLoading />;
 

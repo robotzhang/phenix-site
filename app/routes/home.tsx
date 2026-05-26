@@ -6,6 +6,7 @@ import {
   BriefcaseBusiness,
   Building2,
   CircleDollarSign,
+  ClipboardCheck,
   FileCheck2,
   Gavel,
   Gem,
@@ -17,11 +18,12 @@ import {
   Sparkles,
   WalletCards,
 } from "lucide-react";
+import { PRODUCT_ASSETS } from "@/data/product-assets";
 
 const heroStats = [
-  { value: "Base", label: "线上存证网络" },
-  { value: "4 层", label: "鉴定、托管、确权、流通" },
-  { value: "3 类", label: "典当、拍卖、回收通道" },
+  { value: String(PRODUCT_ASSETS.length), label: "严选文化艺术品" },
+  { value: "4 层", label: "鉴定、托管、确权、流通协同" },
+  { value: "3 类", label: "典当、拍卖、回收服务通道" },
 ];
 
 const marketSignals = [
@@ -35,6 +37,12 @@ const solutionItems = [
   { icon: LockKeyhole, title: "第三方托管", text: "联合金融、安保、保险等机构建立分离式托管体系，提升资产安全与公信力。" },
   { icon: Blocks, title: "数字确权存证", text: "通过线上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
   { icon: CircleDollarSign, title: "可预期退出", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的流通与变现路径。" },
+];
+
+const trustPrinciples = [
+  { icon: ClipboardCheck, title: "真实资产", text: "以实物资产、影像资料、文件包 hash 与证书索引作为展示基础。" },
+  { icon: ShieldCheck, title: "审慎表达", text: "不公开募资，不承诺收益，不将文化艺术品包装为面向公众销售的金融产品。" },
+  { icon: FileCheck2, title: "规则先行", text: "资产服务以鉴定、托管、合作机构规则和实际交付能力为准。" },
 ];
 
 const platformPaths = [
@@ -95,10 +103,10 @@ const milestones = [
 
 export function meta() {
   return [
-    { title: "PHENIX | 华夏文化艺术品资产配置与交易平台" },
+    { title: "PHENIX | 华夏文化艺术品资产服务与流通协同平台" },
     {
       name: "description",
-      content: "构建文化艺术品资产的信任基础设施，让文化艺术品实现可信流通。",
+      content: "构建文化艺术品资产的信任基础设施，以严选资产、托管确权与合规流通服务支持真实资产长期沉淀。",
     },
   ];
 }
@@ -106,51 +114,72 @@ export function meta() {
 export default function Home() {
   return (
     <div className="-mx-4 md:mx-0">
-      <section className="relative overflow-hidden border-b border-sky-100 bg-sky-950 px-4 py-10 text-white sm:min-h-[calc(100vh-8rem)] sm:px-8 sm:py-14">
+      <section className="relative overflow-hidden border-b border-sky-100 bg-sky-950 px-4 pb-8 pt-10 text-white sm:min-h-[calc(100vh-8rem)] sm:px-8 sm:py-14">
         <img
           src="/rda-blue-vivid.png"
           alt="PHENIX"
-          className="absolute inset-0 h-full w-full object-cover opacity-80"
+          className="absolute inset-0 h-full w-full object-cover opacity-75"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,34,55,0.94),rgba(6,42,67,0.78),rgba(6,42,67,0.24))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(95deg,rgba(5,22,34,0.96),rgba(8,52,68,0.82),rgba(95,73,34,0.2))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(220,183,107,0.24),rgba(220,183,107,0)_34%)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(6,42,67,0),rgba(247,251,253,0.98))]" />
 
-        <div className="relative z-10 max-w-5xl pt-20 sm:flex sm:min-h-[calc(100vh-17rem)] sm:flex-col sm:justify-center sm:pt-0">
-          <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/25 bg-white/10 px-3 py-1 text-sm text-white shadow-sm backdrop-blur">
-            <Sparkles className="h-4 w-4 text-amber-200" />
-            文化艺术品资产流通体系构建者
+        <div className="relative z-10 grid gap-8 pt-20 lg:min-h-[calc(100vh-17rem)] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:pt-0">
+          <div className="max-w-5xl">
+            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/25 bg-white/10 px-3 py-1 text-sm text-white shadow-sm backdrop-blur">
+              <Sparkles className="h-4 w-4 text-amber-200" />
+              文化艺术品真实资产服务网络
+            </div>
+            <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
+              PHENIX
+              <span className="mt-4 block text-[1.55rem] font-medium leading-tight text-white/90 sm:text-4xl">
+                华夏文化艺术品资产服务与流通协同平台
+              </span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:mt-8 sm:text-xl">
+              以严选资产库、第三方托管、线上确权与渠道协同为基础，帮助文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
+            </p>
+            <p className="mt-5 max-w-2xl border-l border-amber-200/70 pl-4 text-sm leading-7 text-white/[0.68]">
+              PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台围绕真实资产提供信息展示、托管协同与流通服务支持。
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
+              <Link
+                to="/asset"
+                className="inline-flex items-center justify-center gap-2 border border-white bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+              >
+                浏览资产库
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/custody"
+                className="inline-flex items-center justify-center gap-2 border border-white/45 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                查看托管确权
+              </Link>
+            </div>
           </div>
-          <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-            PHENIX
-            <span className="mt-4 block text-2xl font-medium text-white/90 sm:text-4xl">
-              华夏文化艺术品资产配置与交易平台
-            </span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:mt-8 sm:text-xl">
-            以严选资产库、第三方托管、线上确权与流通通道为基础，构建文化艺术品资产可信流通的运营系统。
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
-            <Link
-              to="/asset"
-              className="inline-flex items-center justify-center gap-2 border border-white bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
-            >
-              浏览资产库
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/membership"
-              className="inline-flex items-center justify-center gap-2 border border-white/45 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              了解会员体系
-            </Link>
+
+          <div className="hidden border border-white/[0.18] bg-white/[0.08] p-5 shadow-2xl backdrop-blur-md lg:block">
+            <div className="text-sm font-semibold uppercase text-amber-100/90">Trust Infrastructure</div>
+            <div className="mt-5 space-y-4">
+              {trustPrinciples.map((item) => (
+                <div key={item.title} className="border border-white/[0.12] bg-white/[0.08] p-4">
+                  <div className="flex items-center gap-3">
+                    <item.icon className="h-5 w-5 text-amber-200" />
+                    <h2 className="font-semibold text-white">{item.title}</h2>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-white/[0.68]">{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="relative z-10 mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
+        <div className="relative z-10 mt-8 grid max-w-5xl gap-3 sm:mt-10 sm:grid-cols-3">
           {heroStats.map((item) => (
-            <div key={item.label} className="border border-white/20 bg-white/10 p-4 backdrop-blur">
+            <div key={item.label} className="border border-white/[0.18] bg-white/[0.09] p-4 backdrop-blur">
               <div className="text-2xl font-semibold text-white">{item.value}</div>
-              <div className="mt-1 text-sm text-white/72">{item.label}</div>
+              <div className="mt-1 text-sm leading-5 text-white/[0.72]">{item.label}</div>
             </div>
           ))}
         </div>
@@ -161,7 +190,7 @@ export default function Home() {
           <div>
             <p className="text-sm font-semibold uppercase text-sky-700">Market Opportunity</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
-              行业缺的不是需求，而是系统。
+              行业缺的不是故事，而是可信服务系统。
             </h2>
           </div>
           <p className="text-base leading-8 text-sky-900/70 sm:text-lg">
@@ -184,10 +213,10 @@ export default function Home() {
           <div>
             <p className="text-sm font-semibold uppercase text-sky-700">Our Solution</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
-              信任驱动型文化艺术品资产流通平台
+              信任驱动型文化艺术品资产服务平台
             </h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              PHENIX 以资产为纽带、以资源为价值，连接高净值人群、优质文化艺术品资产与专业服务网络。
+              PHENIX 以资产为纽带、以规则为边界，连接文化艺术品持有人、会员与专业服务机构。
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -315,7 +344,7 @@ export default function Home() {
               退出路径提前建设，流通服务才可预期。
             </h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              PHENIX 不承诺收益，而是减少资产流通中的信息断点。典当、拍卖和回收通道共同服务于不同周期、不同需求的资产退出场景。
+              PHENIX 不承诺收益，而是减少资产流通中的信息断点。典当、拍卖和回收通道共同服务于不同周期、不同需求的资产服务场景。
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
@@ -380,10 +409,10 @@ export default function Home() {
           <div>
             <div className="flex items-center gap-3">
               <ShieldCheck className="h-6 w-6 text-emerald-700" />
-              <h2 className="text-2xl font-semibold sm:text-3xl">面向合格机构投资者与战略伙伴</h2>
+              <h2 className="text-2xl font-semibold sm:text-3xl">面向合规机构与长期战略伙伴</h2>
             </div>
             <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
-              PHENIX 不公开募资，不承诺收益。平台以真实资产、真实交易、真实服务为基础，欢迎长期认同文化艺术品资产流通价值的伙伴共同参与基础设施建设。
+              PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台以真实资产、真实资料、真实服务为基础，欢迎长期认同文化艺术品可信流通价值的伙伴共同参与基础设施建设。
             </p>
           </div>
           <Link

@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 import clsx from "clsx";
 
@@ -56,6 +57,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const { scrolled } = useScrollHeader(50);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   //
   return (
     <Providers>
@@ -63,14 +66,14 @@ export default function App() {
         <header 
           className={
             clsx(
-              "transition-colors duration-500 text-sky-900/75 fixed top-0 left-0 h-14 sm:h-16 px-4 sm:px-6 right-0 w-full z-20",
-              scrolled ? "bg-white/85 backdrop-blur-md border-b border-b-sky-100" : "border-b border-b-transparent",
+              "transition-colors duration-500 fixed top-0 left-0 h-14 sm:h-16 px-4 sm:px-6 right-0 w-full z-20",
+              scrolled || !isHome ? "bg-white/[0.88] backdrop-blur-md border-b border-b-sky-100 shadow-sm shadow-sky-950/[0.05]" : "border-b border-b-transparent",
             )
           }
         >
-          <Header />
+          <Header scrolled={scrolled || !isHome} />
         </header>
-        <main className="flex-1 container pt-14 sm:pt-16">
+        <main className={clsx("flex-1 container", isHome ? "pt-0" : "pt-14 sm:pt-16")}>
           <Outlet />
         </main>
         <footer>

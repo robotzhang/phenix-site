@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: Arial,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  --font-sans: Inter,Arial,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 
 html,
@@ -56,6 +56,7 @@ body {
 
 :root {
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   --radius: 0.625rem;
   --background: oklch(0.984 0.01 235);
   --foreground: oklch(0.235 0.035 255);
@@ -134,10 +135,24 @@ body {
 }
 
 .container {
-  @apply max-w-7xl m-auto px-4 md:px-0;
+  @apply max-w-7xl m-auto px-4 md:px-6 xl:px-0;
 }
 
 body {
   background:
-    linear-gradient(180deg, rgba(247, 251, 253, 1) 0%, rgba(239, 247, 252, 1) 100%);
+    linear-gradient(180deg, rgba(247, 251, 253, 1) 0%, rgba(241, 248, 247, 1) 48%, rgba(237, 244, 249, 1) 100%);
+}
+
+::selection {
+  background: rgba(14, 116, 144, 0.18);
+  color: rgb(8, 47, 73);
+}
+
+img {
+  max-width: 100%;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
 }

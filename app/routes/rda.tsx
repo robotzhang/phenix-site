@@ -28,7 +28,7 @@ export default function Rda() {
             PHENIX 会员凭证
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            会员凭证是进入 PHENIX 文化艺术品资产配置生态的链上入口。它连接资产配置服务、圈层资源、项目合作机会与优先流通支持。
+            会员凭证是进入 PHENIX 文化艺术品资产配置生态的线上入口。它连接资产配置服务、圈层资源、项目合作机会与优先流通支持。
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/membership" className="inline-flex items-center justify-center border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
@@ -54,7 +54,7 @@ export default function Rda() {
           <div className="mb-5 flex items-center gap-3 border-b border-sky-100 pb-5">
             <BadgeCheck className="h-5 w-5 text-sky-700" />
             <div>
-              <h2 className="font-semibold text-sky-950">获取链上会员凭证</h2>
+              <h2 className="font-semibold text-sky-950">获取线上会员凭证</h2>
               <p className="text-sm text-sky-900/60">线上直接采购鉴定服务卡，买满10张的，联系我们领取黄金会员卡。</p>
             </div>
           </div>

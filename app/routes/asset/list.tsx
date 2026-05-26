@@ -1,9 +1,14 @@
 import {
-  PRODUCT_ASSETS,
   formatProductAssetPrice,
   getProductAssetDisplayName,
+  mergeProductAssetsWithAdminMetadata,
 } from "@/data/product-assets";
-import { getRwaSellerCategoryClassName } from "@/lib/rwa";
+import { useRwaList } from "@/hooks/useRwa";
+import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
+import {
+  formatRwaPriceWithCurrency,
+  getRwaSellerCategoryClassName,
+} from "@/lib/rwa";
 import { Link } from "react-router";
 import {
   ArrowRight,
@@ -28,10 +33,23 @@ export function meta() {
 }
 
 export default function RwaList() {
-  const certificateCount = PRODUCT_ASSETS.reduce(
+  const adminMetadataMap = useRwaAdminMetadataMap();
+  const { data: onlineAssets } = useRwaList();
+  const productAssets = mergeProductAssetsWithAdminMetadata(adminMetadataMap);
+  const publishedOnlineAssets = onlineAssets.filter((asset) => asset.asset.status === 0);
+  const certificateCount = productAssets.reduce(
     (count, asset) => count + asset.certificateURLs.length,
     0,
   );
+  const categoryLabels = Array.from(
+    new Set(
+      [
+        ...productAssets.map((asset) => asset.categoryLabel),
+        ...publishedOnlineAssets.map((asset) => asset.categoryLabel),
+      ].filter(Boolean),
+    ),
+  );
+  const assetCount = productAssets.length + publishedOnlineAssets.length;
 
   return (
     <div className="-mx-4 md:mx-0">
@@ -52,7 +70,7 @@ export default function RwaList() {
           <div className="grid grid-cols-3 border border-sky-100 bg-white/90 shadow-sm">
             <div className="border-r border-sky-100 p-4">
               <div className="text-2xl font-semibold text-sky-950">
-                {PRODUCT_ASSETS.length}
+                {assetCount}
               </div>
               <div className="mt-1 text-sm text-sky-900/60">精选资产</div>
             </div>
@@ -63,8 +81,12 @@ export default function RwaList() {
               <div className="mt-1 text-sm text-sky-900/60">证书影像</div>
             </div>
             <div className="p-4">
-              <div className="text-2xl font-semibold text-sky-950">2 类</div>
-              <div className="mt-1 text-sm text-sky-900/60">古玉 / 沉香</div>
+              <div className="text-2xl font-semibold text-sky-950">
+                {categoryLabels.length} 类
+              </div>
+              <div className="mt-1 text-sm text-sky-900/60">
+                {categoryLabels.slice(0, 2).join(" / ") || "待入库"}
+              </div>
             </div>
           </div>
         </div>
@@ -112,7 +134,7 @@ export default function RwaList() {
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {PRODUCT_ASSETS.map((asset) => (
+          {productAssets.map((asset) => (
             <Link
               key={asset.id}
               to={`/asset/${asset.id}`}
@@ -184,6 +206,68 @@ export default function RwaList() {
               </div>
             </Link>
           ))}
+
+          {publishedOnlineAssets.map((asset) => {
+            const tokenId = asset.tokenId.toString();
+            const displayCode =
+              asset.asset.name.match(/[A-Z]{2,4}\d{4,}/i)?.[0]?.toUpperCase() ??
+              `A${tokenId}`;
+
+            return (
+              <Link
+                key={`online-${tokenId}`}
+                to={`/asset/${tokenId}`}
+                className="group overflow-hidden border border-sky-100 bg-white/90 shadow-sm transition hover:border-sky-300"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-sky-50">
+                  <img
+                    src={asset.imageURL}
+                    alt={asset.asset.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute left-3 top-3 border border-white/80 bg-white/90 px-2 py-1 text-xs font-semibold text-sky-950 shadow-sm">
+                    {displayCode}
+                  </div>
+                </div>
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="inline-flex border border-sky-100 px-2 py-1 text-xs font-semibold text-sky-700">
+                        {asset.categoryLabel}
+                      </div>
+                      <h3 className="mt-2 text-xl font-semibold leading-snug text-sky-950">
+                        {asset.asset.name}
+                      </h3>
+                    </div>
+                    <span
+                      className={`shrink-0 border px-2 py-1 text-xs font-semibold ${getRwaSellerCategoryClassName(
+                        asset.sellerCategoryLabel,
+                      )}`}
+                    >
+                      {asset.sellerCategoryLabel}
+                    </span>
+                  </div>
+                  <div className="mt-5 border-t border-sky-100 pt-4">
+                    <div className="text-sm text-sky-900/60">会员价</div>
+                    <div className="mt-1 text-2xl font-semibold text-sky-950">
+                      {formatRwaPriceWithCurrency(asset.asset.pricePhenixFormatted)}
+                    </div>
+                  </div>
+                  <div className="mt-5 flex items-center justify-between text-sm text-sky-900/70">
+                    <span className="max-w-[68%] truncate">
+                      Hash {asset.asset.fileHash}
+                    </span>
+                    <span className="inline-flex items-center gap-1 font-semibold text-sky-950">
+                      查看详情
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </div>

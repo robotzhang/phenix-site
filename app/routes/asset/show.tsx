@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import GlobalLoading from "@/components/ui/global-loading";
 import {
   formatProductAssetPrice,
-  getProductAssetById,
   getProductAssetDisplayName,
+  getMergedProductAssetById,
 } from "@/data/product-assets";
 import { useRwaDetail } from "@/hooks/useRwa";
 import {
@@ -35,12 +35,12 @@ const trustRecords = [
   {
     icon: FileCheck2,
     title: "文件包 hash",
-    text: "资产文件包作为链上索引，用于关联线下鉴定、托管与影像材料。",
+    text: "资产文件包作为线上索引，用于关联线下鉴定、托管与影像材料。",
   },
   {
     icon: LockKeyhole,
     title: "数字确权",
-    text: "Token ID、持有人地址与状态记录共同形成可追踪的权属凭证。",
+    text: "线上存证、持有人信息与状态记录共同形成可追踪的权属凭证。",
   },
   {
     icon: ShieldCheck,
@@ -60,17 +60,17 @@ export function meta() {
     {
       name: "description",
       content:
-        "查看 PHENIX 链上文化艺术品资产的确权记录、资产文件包 hash 与流通信息。",
+        "查看 PHENIX 线上文化艺术品资产的确权记录、资产文件包 hash 与流通信息。",
     },
   ];
 }
 
 export default function RwaShow() {
   const { assetId } = useParams();
-  const productAsset = getProductAssetById(assetId);
+  const adminMetadataMap = useRwaAdminMetadataMap();
+  const productAsset = getMergedProductAssetById(assetId, adminMetadataMap);
   const shouldReadChainAsset = !productAsset && !!assetId && /^\d+$/.test(assetId);
   const { data: rwa, loading } = useRwaDetail(shouldReadChainAsset ? assetId : undefined);
-  const adminMetadataMap = useRwaAdminMetadataMap();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
@@ -259,7 +259,7 @@ export default function RwaShow() {
             </p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950">产品目录记录</h2>
             <p className="mt-5 leading-8 text-sky-900/70">
-              产品目录记录用于展示真实资产信息，并与后续链上确权、第三方托管、保险及流通资料建立索引关系。
+              产品目录记录用于展示真实资产信息，并与后续线上确权、第三方托管、保险及流通资料建立索引关系。
             </p>
           </div>
           <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
@@ -429,7 +429,7 @@ export default function RwaShow() {
               {rwa.asset.name}
             </h1>
             <p className="mt-5 leading-8 text-sky-900/70">
-              该资产已形成链上索引，可用于连接线下资产文件、托管记录与后续流通服务。页面展示的信息来自
+              该资产已形成线上索引，可用于连接线下资产文件、托管记录与后续流通服务。页面展示的信息来自
               资产合约读取结果。
             </p>
 
@@ -478,10 +478,10 @@ export default function RwaShow() {
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
             Asset Record
           </p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950">链上记录</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950">线上记录</h2>
           <p className="mt-5 leading-8 text-sky-900/70">
-            PHENIX 使用链上信息作为资产索引，并通过文件包 hash
-            关联线下资料。链上凭证不等同于收益承诺，也不替代专业鉴定与托管文件。
+            PHENIX 使用线上信息作为资产索引，并通过文件包 hash
+            关联线下资料。线上凭证不等同于收益承诺，也不替代专业鉴定与托管文件。
           </p>
         </div>
         <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
@@ -521,10 +521,10 @@ export default function RwaShow() {
       <section className="px-4 py-12 sm:px-0 sm:py-16">
         <div className="border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] p-8 text-sky-950 shadow-sm">
           <h2 className="text-2xl font-semibold">风险提示</h2>
-          <p className="mt-4 max-w-4xl leading-7 text-sky-900/70">
-            文化艺术品资产价格受市场需求、稀缺性、保存状态、交易渠道和宏观环境影响。PHENIX
-            展示链上资产信息与服务路径，不公开募资，不承诺收益。
-          </p>
+            <p className="mt-4 max-w-4xl leading-7 text-sky-900/70">
+              文化艺术品资产价格受市场需求、稀缺性、保存状态、交易渠道和宏观环境影响。PHENIX
+              展示资产信息与服务路径，不公开募资，不承诺收益。
+            </p>
         </div>
       </section>
     </div>

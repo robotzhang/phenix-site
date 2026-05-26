@@ -19,14 +19,14 @@ const custodyLayers = [
   },
   {
     icon: FileCheck2,
-    title: "链上存证",
+    title: "线上存证",
     text: "记录资产文件包 hash、所有权与关键流通信息，形成透明、可追溯的数字凭证。",
   },
 ];
 
 const records = [
   "资产名称与文件包 hash",
-  "链上 Token ID 与持有人地址",
+  "线上存证与持有人信息",
   "资产状态与流通记录",
   "托管、鉴定、保险等线下文件索引",
 ];
@@ -34,7 +34,7 @@ const records = [
 export function meta() {
   return [
     { title: "托管与确权 | PHENIX" },
-    { name: "description", content: "PHENIX 通过第三方托管、数字确权与链上存证构建文化艺术品资产可信流通基础设施。" },
+    { name: "description", content: "PHENIX 通过第三方托管、数字确权与线上存证构建文化艺术品资产可信流通基础设施。" },
   ];
 }
 
@@ -48,7 +48,7 @@ export default function Custody() {
             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-6xl">分离式第三方托管</h1>
           </div>
           <p className="text-lg leading-8 text-sky-900/70">
-            PHENIX 联合金融机构、安保机构与保险机构，建立资产保管、资金监管、风险保障和链上存证相互分离的托管体系，提升文化艺术品资产的国际流通能力与全球公信力。
+            PHENIX 联合金融机构、安保机构与保险机构，建立资产保管、资金监管、风险保障和线上存证相互分离的托管体系，提升文化艺术品资产的国际流通能力与全球公信力。
           </p>
         </div>
       </section>
@@ -70,7 +70,7 @@ export default function Custody() {
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">On-chain Proof</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">让关键资产信息可追溯</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            链上记录不是替代线下鉴定与托管，而是把核心信息组织成可验证、可追踪、可持续沉淀的资产索引。
+            线上记录不是替代线下鉴定与托管，而是把核心信息组织成可验证、可追踪、可持续沉淀的资产索引。
           </p>
         </div>
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">

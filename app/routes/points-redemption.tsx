@@ -114,7 +114,7 @@ export default function PointsRedemption() {
             </h1>
           </div>
           <p className="text-lg leading-8 text-sky-900/70">
-            选择产品查看权益详情，后续可接入外部权益链接、商品详情页或链上积分扣减流程。当前页面先展示兑换路径和确认信息。
+            选择产品查看权益详情，后续可接入外部权益链接、商品详情页或线上积分扣减流程。当前页面先展示兑换路径和确认信息。
           </p>
         </div>
       </section>

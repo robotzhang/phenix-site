@@ -15,7 +15,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const metadata = {
     name: `PHENIX 鉴定服务卡 #${id}`,
-    description: "PHENIX 鉴定服务卡链上凭证。",
+    description: "PHENIX 鉴定服务卡线上凭证。",
     image: imageUrl,
     attributes: [
       { trait_type: "鉴定服务卡编号", value: id },

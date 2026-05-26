@@ -384,7 +384,7 @@ export default function Staking() {
           </button>
 
           <p className="mt-6 text-sm leading-7 text-sky-900/60">
-            测算按 1 张鉴定服务卡 = 1000 PHENIX、每月 30 天估算。最终积分发放以实际锁仓合约、平台规则与链上记录为准。
+            测算按 1 张鉴定服务卡 = 1000 PHENIX、每月 30 天估算。最终积分发放以实际锁仓合约、平台规则与线上记录为准。
           </p>
         </div>
       </section>

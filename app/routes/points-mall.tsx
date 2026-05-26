@@ -28,6 +28,12 @@ const scenarios = [
   },
 ];
 
+const communityMemberHighlights = [
+  { label: "服务卡价值", value: "1 张 = 1000 PHENIX" },
+  { label: "积分获取方式", value: "通过锁仓服务卡获取PHENIX 积分" },
+  { label: "流通路径", value: "未锁仓的服务卡，可申请平台出售" },
+];
+
 export function meta() {
   return [
     { title: "社区商城 | PHENIX" },
@@ -78,6 +84,30 @@ export default function PointsMall() {
             <p className="mt-3 leading-7 text-sky-900/70">{item.text}</p>
           </article>
         ))}
+      </section>
+
+      <section className="border-y border-sky-100 bg-sky-50/70 px-4 py-12 sm:px-0 sm:py-16">
+        <aside className="border border-sky-100 bg-white/90 p-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-sky-200 bg-white text-sky-700">
+              <WalletCards className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">Community Member Path</p>
+              <h2 className="mt-1 text-xl font-semibold text-sky-950">
+                龙凤呈祥社区成员权益路径
+              </h2>
+            </div>
+          </div>
+          <div className="mt-6 grid gap-3">
+            {communityMemberHighlights.map((item) => (
+              <div key={item.label} className="border-b border-sky-100 pb-3 last:border-b-0 last:pb-0">
+                <div className="text-sm text-sky-900/60">{item.label}</div>
+                <div className="mt-1 font-semibold text-sky-950">{item.value}</div>
+              </div>
+            ))}
+          </div>
+        </aside>
       </section>
 
       <section className="border-t border-sky-100 bg-sky-50/60 px-4 py-10 sm:px-0">

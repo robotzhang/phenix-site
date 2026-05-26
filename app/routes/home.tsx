@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 const heroStats = [
-  { value: "Base", label: "链上存证网络" },
+  { value: "Base", label: "线上存证网络" },
   { value: "4 层", label: "鉴定、托管、确权、流通" },
   { value: "3 类", label: "典当、拍卖、回收通道" },
 ];
@@ -33,7 +33,7 @@ const marketSignals = [
 const solutionItems = [
   { icon: BadgeCheck, title: "严选资产库", text: "多层鉴定与专家评审，优先筛选稀缺性强、具备长期流通潜力的文化艺术品资产。" },
   { icon: LockKeyhole, title: "第三方托管", text: "联合金融、安保、保险等机构建立分离式托管体系，提升资产安全与公信力。" },
-  { icon: Blocks, title: "数字确权存证", text: "通过链上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
+  { icon: Blocks, title: "数字确权存证", text: "通过线上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
   { icon: CircleDollarSign, title: "可预期退出", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的流通与变现路径。" },
 ];
 
@@ -43,7 +43,7 @@ const platformPaths = [
     to: "/asset",
     label: "Asset Pool",
     title: "文化艺术品资产库",
-    text: "查看上链资产、文件包 hash、资产状态与会员价格，形成可验证的资产索引。",
+    text: "查看Phenix严选文化艺术品库，及其实时的资产状态及交易信息。",
     accent: "border-amber-200 bg-amber-50/70 text-amber-900",
   },
   {
@@ -59,7 +59,7 @@ const platformPaths = [
     to: "/custody",
     label: "Custody",
     title: "托管与确权",
-    text: "把鉴定、托管、保险、链上存证拆分给专业角色协作，降低信息不对称。",
+    text: "把鉴定、托管、保险、线上存证拆分给专业角色协作，降低信息不对称。",
     accent: "border-emerald-200 bg-emerald-50/70 text-emerald-900",
   },
   {
@@ -74,7 +74,7 @@ const platformPaths = [
 
 const operatingSteps = [
   { step: "01", title: "资产入库", text: "围绕真伪、稀缺性、来源材料与流通能力完成初筛。" },
-  { step: "02", title: "托管确权", text: "建立第三方托管、文件包 hash、链上 Token ID 与资产状态记录。" },
+  { step: "02", title: "托管确权", text: "建立第三方托管、文件包 hash、线上存证与资产状态记录。" },
   { step: "03", title: "会员配置", text: "向会员开放资产信息、服务卡、积分与生态服务入口。" },
   { step: "04", title: "流通退出", text: "通过典当、拍卖、回收等合作渠道推进价格发现与交易服务。" },
 ];
@@ -127,7 +127,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:mt-8 sm:text-xl">
-            以严选资产库、第三方托管、链上确权与流通通道为基础，构建文化艺术品资产可信流通的运营系统。
+            以严选资产库、第三方托管、线上确权与流通通道为基础，构建文化艺术品资产可信流通的运营系统。
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
             <Link
@@ -245,7 +245,7 @@ export default function Home() {
             把分散交易，组织成可追踪的服务链路。
           </h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            PHENIX 的核心不是单一资产展示，而是把线下鉴定、第三方托管、链上记录和流通渠道接入同一套会员服务流程。
+            PHENIX 的核心不是单一资产展示，而是把线下鉴定、第三方托管、线上记录和流通渠道接入同一套会员服务流程。
           </p>
         </div>
         <div className="grid gap-3">

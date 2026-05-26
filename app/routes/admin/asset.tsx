@@ -8,11 +8,14 @@ import {
   BadgeCheck,
   CircleAlert,
   ExternalLink,
+  FileCheck2,
   ImagePlus,
   LoaderCircle,
   LockKeyhole,
+  PackageCheck,
   Plus,
   RefreshCw,
+  Ruler,
   ShieldCheck,
   Tag,
   UserPlus,
@@ -23,6 +26,15 @@ import ConnectButton from "@/components/wallet/ConnectButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import GlobalLoading from "@/components/ui/global-loading";
+import {
+  PRODUCT_ASSETS,
+  formatProductAssetPrice,
+  getProductAssetDisplayName,
+  getProductAssetStorageKey,
+  mergeProductAssetsWithAdminMetadata,
+  normalizeProductAssetCode,
+  type ProductAsset,
+} from "@/data/product-assets";
 import { useRwaList } from "@/hooks/useRwa";
 import { useSafeContractWrite } from "@/hooks/useSafeContractWrite";
 import { PHENIX_DECIMALS, RWA_ADDRESS } from "@/lib/constants";
@@ -33,6 +45,7 @@ import {
 } from "@/lib/rwa";
 import {
   removeRwaAdminMetadata,
+  refreshRwaAdminMetadataMap,
   saveRwaAdminMetadata,
   uploadRwaAdminImage,
   useRwaAdminMetadataMap,
@@ -43,8 +56,24 @@ const CATEGORY_DATALIST_ID = "rwa-category-options";
 const SELLER_DATALIST_ID = "rwa-seller-options";
 const MIN_PRODUCT_IMAGES = 2;
 const MAX_PRODUCT_IMAGES = 5;
+const MIN_CATALOG_IMAGES = 1;
+const MAX_CATALOG_IMAGES = 8;
+const MAX_CERTIFICATE_IMAGES = 6;
 const MAX_UPLOAD_IMAGE_BYTES = 420_000;
 const IMAGE_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+interface ProductAssetFormState {
+  assetCode: string;
+  name: string;
+  categoryLabel: string;
+  sellerCategoryLabel: string;
+  spec: string;
+  size: string;
+  priceCny: string;
+  fileHash: string;
+  imageURLs: string[];
+  certificateURLs: string[];
+}
 
 const statusLabels: Record<number, string> = {
   0: "已发布",
@@ -69,11 +98,46 @@ function getDefaultRwaImageURL(fileHash: string) {
   return `https://rwa-cdn.phenixmcga.com/${fileHash}/cover.png`;
 }
 
-function normalizeImageURLList(value: string[]) {
+function normalizeImageURLList(value: string[], maxItems = MAX_PRODUCT_IMAGES) {
   return Array.from(new Set(value.map((item) => item.trim()).filter(Boolean))).slice(
     0,
-    MAX_PRODUCT_IMAGES,
+    maxItems,
   );
+}
+
+function createEmptyProductAssetForm(): ProductAssetFormState {
+  return {
+    assetCode: "",
+    name: "",
+    categoryLabel: RWA_CATEGORY_LABELS[0],
+    sellerCategoryLabel: RWA_SELLER_CATEGORY_LABELS[0],
+    spec: "",
+    size: "",
+    priceCny: "",
+    fileHash: "",
+    imageURLs: [],
+    certificateURLs: [],
+  };
+}
+
+function createProductAssetFormFromAsset(asset: ProductAsset): ProductAssetFormState {
+  return {
+    assetCode: asset.id,
+    name: getProductAssetDisplayName(asset),
+    categoryLabel: asset.categoryLabel,
+    sellerCategoryLabel: asset.sellerCategoryLabel,
+    spec: asset.spec,
+    size: asset.size,
+    priceCny: String(asset.priceCny || ""),
+    fileHash: asset.fileHash,
+    imageURLs: normalizeImageURLList(asset.imageURLs, MAX_CATALOG_IMAGES),
+    certificateURLs: normalizeImageURLList(asset.certificateURLs, MAX_CERTIFICATE_IMAGES),
+  };
+}
+
+function parsePositiveCurrency(value: string) {
+  const parsed = Number(value.replace(/[,\s￥¥]/g, ""));
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
 async function compressProductImage(file: File) {
@@ -121,6 +185,226 @@ async function compressProductImage(file: File) {
   }
 
   return new File([fallbackBlob], file.name, { type: outputType });
+}
+
+function ProductAssetImageUploader({
+  title,
+  description,
+  imageURLs,
+  maxImages,
+  uploading,
+  dragging,
+  onDraggingChange,
+  onUpload,
+  onRemove,
+  onCover,
+}: {
+  title: string;
+  description: string;
+  imageURLs: string[];
+  maxImages: number;
+  uploading: boolean;
+  dragging: boolean;
+  onDraggingChange: (dragging: boolean) => void;
+  onUpload: (files: FileList | null) => void;
+  onRemove: (imageURL: string) => void;
+  onCover?: (imageURL: string) => void;
+}) {
+  const uploadDisabled = uploading || imageURLs.length >= maxImages;
+
+  return (
+    <div className="grid gap-3">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="text-sm font-medium text-sky-950">
+            {title} ({imageURLs.length}/{maxImages})
+          </div>
+          <p className="text-sm leading-6 text-sky-900/60">{description}</p>
+        </div>
+      </div>
+
+      <label
+        className={`flex min-h-[128px] cursor-pointer flex-col items-center justify-center border border-dashed px-5 py-6 text-center transition ${
+          dragging
+            ? "border-sky-500 bg-sky-100"
+            : "border-sky-200 bg-sky-50/60 hover:border-sky-400 hover:bg-sky-50"
+        } ${uploadDisabled ? "cursor-not-allowed opacity-60" : ""}`}
+        onDragEnter={(event) => {
+          event.preventDefault();
+          if (!uploadDisabled) onDraggingChange(true);
+        }}
+        onDragOver={(event) => {
+          event.preventDefault();
+          if (!uploadDisabled) onDraggingChange(true);
+        }}
+        onDragLeave={(event) => {
+          event.preventDefault();
+          onDraggingChange(false);
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          onDraggingChange(false);
+          if (!uploadDisabled) onUpload(event.dataTransfer.files);
+        }}
+      >
+        <span className="flex h-11 w-11 items-center justify-center border border-sky-200 bg-white text-sky-700 shadow-sm">
+          {uploading ? (
+            <LoaderCircle className="h-5 w-5 animate-spin" />
+          ) : (
+            <ImagePlus className="h-5 w-5" />
+          )}
+        </span>
+        <span className="mt-3 text-sm font-semibold text-sky-950">
+          {uploadDisabled ? "图片数量已达上限" : "点击或拖拽上传"}
+        </span>
+        <span className="mt-1 text-xs leading-5 text-sky-900/60">
+          JPG / PNG / WebP，上传前会自动压缩
+        </span>
+        <input
+          type="file"
+          className="sr-only"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          disabled={uploadDisabled}
+          onChange={(event) => {
+            onUpload(event.target.files);
+            event.target.value = "";
+          }}
+        />
+      </label>
+
+      {imageURLs.length > 0 ? (
+        <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          {imageURLs.map((imageURL, index) => (
+            <div
+              key={imageURL}
+              className="group relative overflow-hidden border border-sky-100 bg-sky-50"
+            >
+              <img
+                src={imageURL}
+                alt={`${title} ${index + 1}`}
+                className="aspect-square w-full object-cover"
+              />
+              <div className="absolute left-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm">
+                {index === 0 && onCover ? "封面" : index + 1}
+              </div>
+              <div className="absolute inset-x-1 top-1 flex justify-end gap-1 opacity-0 transition group-hover:opacity-100">
+                {onCover && index > 0 ? (
+                  <button
+                    type="button"
+                    className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
+                    onClick={() => onCover(imageURL)}
+                  >
+                    设封面
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
+                  onClick={() => onRemove(imageURL)}
+                >
+                  删除
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="border border-sky-100 bg-white/70 p-4 text-sm leading-6 text-sky-900/60">
+          暂无图片。
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProductAssetAdminCard({
+  asset,
+  onEdit,
+}: {
+  asset: ProductAsset;
+  onEdit: (asset: ProductAsset) => void;
+}) {
+  return (
+    <article className="border border-sky-100 bg-white/90 shadow-sm">
+      <div className="grid gap-0 lg:grid-cols-[220px_1fr_260px]">
+        <div className="border-b border-sky-100 bg-sky-50/60 lg:border-b-0 lg:border-r">
+          <div className="relative aspect-[4/3] overflow-hidden">
+            <img
+              src={asset.imageURL}
+              alt={getProductAssetDisplayName(asset)}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute left-3 top-3 border border-white/80 bg-white/90 px-2 py-1 text-xs font-semibold text-sky-950 shadow-sm">
+              {asset.id}
+            </div>
+            {asset.certificateURLs.length > 0 ? (
+              <div className="absolute bottom-3 right-3 inline-flex items-center gap-1 border border-emerald-100 bg-white/90 px-2 py-1 text-xs font-semibold text-emerald-700 shadow-sm">
+                <BadgeCheck className="h-3.5 w-3.5" />
+                证书
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="min-w-0 border-b border-sky-100 p-5 lg:border-b-0 lg:border-r">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex border border-sky-100 px-2 py-1 text-xs font-semibold text-sky-700">
+              {asset.categoryLabel}
+            </span>
+            <span className="inline-flex border border-sky-100 px-2 py-1 text-xs text-sky-900/60">
+              {asset.sellerCategoryLabel}
+            </span>
+            <span className="inline-flex border border-sky-100 px-2 py-1 text-xs text-sky-900/60">
+              产品资产
+            </span>
+          </div>
+          <h3 className="mt-3 text-2xl font-semibold leading-snug text-sky-950">
+            {getProductAssetDisplayName(asset)}
+          </h3>
+          <div className="mt-4 grid gap-2 text-sm text-sky-900/70 sm:grid-cols-2">
+            <div className="flex gap-2">
+              <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
+              {asset.spec || "规格待补"}
+            </div>
+            {asset.size ? (
+              <div className="flex gap-2">
+                <Ruler className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
+                {asset.size}
+              </div>
+            ) : null}
+            <div className="truncate font-mono sm:col-span-2">Hash {asset.fileHash || "待补"}</div>
+          </div>
+        </div>
+
+        <div className="p-5">
+          <div className="text-sm text-sky-900/60">会员价</div>
+          <div className="mt-2 text-2xl font-semibold text-sky-950">
+            {formatProductAssetPrice(asset.priceCny)}
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+            <div className="border border-sky-100 p-3">
+              <div className="text-sky-900/60">产品图</div>
+              <div className="mt-1 font-semibold text-sky-950">{asset.imageURLs.length}</div>
+            </div>
+            <div className="border border-sky-100 p-3">
+              <div className="text-sky-900/60">证书图</div>
+              <div className="mt-1 font-semibold text-sky-950">{asset.certificateURLs.length}</div>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-2">
+            <Button className="w-full" variant="outline" onClick={() => onEdit(asset)}>
+              <Tag className="h-4 w-4" />
+              编辑资料
+            </Button>
+            <Button asChild className="w-full" variant="outline">
+              <Link to={`/asset/${asset.id}`}>前台查看</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
 }
 
 function RwaAdminRow({
@@ -436,7 +720,14 @@ export default function AdminRwa() {
   const [categoryLabel, setCategoryLabel] = useState<string>(RWA_CATEGORY_LABELS[0]);
   const [sellerCategoryLabel, setSellerCategoryLabel] = useState<string>(RWA_SELLER_CATEGORY_LABELS[0]);
   const [productImageURLs, setProductImageURLs] = useState<string[]>([]);
+  const [catalogForm, setCatalogForm] = useState<ProductAssetFormState>(() =>
+    createEmptyProductAssetForm(),
+  );
+  const [uploadingCatalogImages, setUploadingCatalogImages] = useState(false);
+  const [uploadingCertificateImages, setUploadingCertificateImages] = useState(false);
   const [uploadingProductImages, setUploadingProductImages] = useState(false);
+  const [draggingCatalogImages, setDraggingCatalogImages] = useState(false);
+  const [draggingCertificateImages, setDraggingCertificateImages] = useState(false);
   const [draggingProductImages, setDraggingProductImages] = useState(false);
   const [issuerAddress, setIssuerAddress] = useState("");
   const [busyAction, setBusyAction] = useState<string | null>(null);
@@ -474,6 +765,15 @@ export default function AdminRwa() {
 
   const labeledCount = useMemo(() => Object.keys(adminMetadataMap).length, [adminMetadataMap]);
 
+  const productAssets = useMemo(
+    () => mergeProductAssetsWithAdminMetadata(adminMetadataMap),
+    [adminMetadataMap],
+  );
+  const productCertificateCount = useMemo(
+    () => productAssets.reduce((count, asset) => count + asset.certificateURLs.length, 0),
+    [productAssets],
+  );
+
   const imagePreviewUrl = useMemo(() => {
     if (productImageURLs[0]) return productImageURLs[0];
 
@@ -483,7 +783,12 @@ export default function AdminRwa() {
   }, [fileHash, productImageURLs]);
 
   const refreshAdminReads = async () => {
-    await Promise.all([refetch(), ownerRead.refetch(), issuerRead.refetch()]);
+    await Promise.all([
+      refetch(),
+      ownerRead.refetch(),
+      issuerRead.refetch(),
+      refreshRwaAdminMetadataMap(),
+    ]);
   };
 
   const ensureReady = async () => {
@@ -507,7 +812,7 @@ export default function AdminRwa() {
     }
 
     if (!publicClient) {
-      toast.error("链上客户端未就绪");
+      toast.error("线上客户端未就绪");
       return false;
     }
 
@@ -623,7 +928,7 @@ export default function AdminRwa() {
       } else if (createdTokenId) {
         toast.success(`资产 #${createdTokenId.toString()} 已创建并保存标签`);
       } else {
-        toast.success("资产已提交上链");
+        toast.success("资产已提交上线");
       }
 
       setAssetName("");
@@ -673,7 +978,7 @@ export default function AdminRwa() {
     }
 
     if (!publicClient) {
-      toast.error("链上客户端未就绪");
+      toast.error("线上客户端未就绪");
       return;
     }
 
@@ -695,6 +1000,176 @@ export default function AdminRwa() {
 
       await write(simulation.request);
       await refreshAdminReads();
+    } catch (error) {
+      toast.error(normalizeError(error));
+    } finally {
+      setBusyAction(null);
+    }
+  };
+
+  const handleUploadCatalogImages = async (
+    files: FileList | null,
+    target: "product" | "certificate",
+  ) => {
+    if (!files?.length) return;
+
+    const currentURLs =
+      target === "product" ? catalogForm.imageURLs : catalogForm.certificateURLs;
+    const maxImages =
+      target === "product" ? MAX_CATALOG_IMAGES : MAX_CERTIFICATE_IMAGES;
+    const remaining = maxImages - currentURLs.length;
+
+    if (remaining <= 0) {
+      toast.error(`最多上传 ${maxImages} 张图片`);
+      return;
+    }
+
+    try {
+      if (target === "product") {
+        setUploadingCatalogImages(true);
+      } else {
+        setUploadingCertificateImages(true);
+      }
+
+      const uploaded: string[] = [];
+      for (const file of Array.from(files).slice(0, remaining)) {
+        const compressed = await compressProductImage(file);
+        uploaded.push(await uploadRwaAdminImage(compressed));
+      }
+
+      setCatalogForm((current) => ({
+        ...current,
+        [target === "product" ? "imageURLs" : "certificateURLs"]: normalizeImageURLList(
+          [...currentURLs, ...uploaded],
+          maxImages,
+        ),
+      }));
+      toast.success(`已上传 ${uploaded.length} 张${target === "product" ? "产品图片" : "证书图片"}`);
+    } catch (error) {
+      toast.error(normalizeError(error));
+    } finally {
+      setUploadingCatalogImages(false);
+      setUploadingCertificateImages(false);
+    }
+  };
+
+  const removeCatalogImageURL = (
+    imageURL: string,
+    target: "product" | "certificate",
+  ) => {
+    setCatalogForm((current) => ({
+      ...current,
+      [target === "product" ? "imageURLs" : "certificateURLs"]: current[
+        target === "product" ? "imageURLs" : "certificateURLs"
+      ].filter((item) => item !== imageURL),
+    }));
+  };
+
+  const setCatalogCoverImage = (imageURL: string) => {
+    setCatalogForm((current) => ({
+      ...current,
+      imageURLs: [
+        imageURL,
+        ...current.imageURLs.filter((item) => item !== imageURL),
+      ],
+    }));
+  };
+
+  const handleEditProductAsset = (asset: ProductAsset) => {
+    setCatalogForm(createProductAssetFormFromAsset(asset));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const resetCatalogForm = () => {
+    setCatalogForm(createEmptyProductAssetForm());
+  };
+
+  const handleSaveProductAsset = async () => {
+    const assetCode = normalizeProductAssetCode(catalogForm.assetCode);
+    const name = catalogForm.name.trim();
+    const category = catalogForm.categoryLabel.trim();
+    const sellerCategory = catalogForm.sellerCategoryLabel.trim();
+    const spec = catalogForm.spec.trim();
+    const size = catalogForm.size.trim();
+    const priceCny = catalogForm.priceCny.trim();
+    const fileHash = catalogForm.fileHash.trim();
+    const imageURLs = normalizeImageURLList(catalogForm.imageURLs, MAX_CATALOG_IMAGES);
+    const certificateURLs = normalizeImageURLList(
+      catalogForm.certificateURLs,
+      MAX_CERTIFICATE_IMAGES,
+    );
+
+    if (!assetCode) {
+      toast.error("请输入资产编号");
+      return;
+    }
+
+    if (!name) {
+      toast.error("请输入资产名称");
+      return;
+    }
+
+    if (!category) {
+      toast.error("请输入资产类别");
+      return;
+    }
+
+    if (!sellerCategory) {
+      toast.error("请输入来源标签");
+      return;
+    }
+
+    if (!spec) {
+      toast.error("请输入规格");
+      return;
+    }
+
+    if (!parsePositiveCurrency(priceCny)) {
+      toast.error("请输入正确的人民币会员价");
+      return;
+    }
+
+    if (!fileHash) {
+      toast.error("请输入文件包 hash");
+      return;
+    }
+
+    if (imageURLs.length < MIN_CATALOG_IMAGES) {
+      toast.error("请至少上传 1 张产品图片");
+      return;
+    }
+
+    try {
+      setBusyAction("save-product");
+      await saveRwaAdminMetadata(getProductAssetStorageKey(assetCode), {
+        assetKind: "product",
+        assetCode,
+        name,
+        categoryLabel: category,
+        sellerCategoryLabel: sellerCategory,
+        spec,
+        size,
+        priceCny,
+        fileHash,
+        imageURL: imageURLs[0],
+        imageURLs,
+        certificateURLs,
+      });
+      await refreshRwaAdminMetadataMap();
+      setCatalogForm((current) => ({
+        ...current,
+        assetCode,
+        name,
+        categoryLabel: category,
+        sellerCategoryLabel: sellerCategory,
+        spec,
+        size,
+        priceCny,
+        fileHash,
+        imageURLs,
+        certificateURLs,
+      }));
+      toast.success(`${assetCode} 已保存到资产库资料`);
     } catch (error) {
       toast.error(normalizeError(error));
     } finally {
@@ -748,12 +1223,8 @@ export default function AdminRwa() {
               资产库管理
             </h1>
             <p className="mt-5 max-w-3xl leading-8 text-sky-900/70">
-              添加链上资产、管理标签、更新发布状态，并授权可上架资产的钱包。资产图片默认读取
-              <span className="font-mono text-sky-950">
-                {" "}
-                rwa-cdn.phenixmcga.com/&lt;hash&gt;/cover.png
-              </span>
-              。
+              管理 Phenix 严选资产入库资料，维护产品图片、证书影像、资产名称、资产编号、规格、会员价、文件包
+              hash 与确权资料。保存后的后台资料会同步到前台资产库展示。
             </p>
           </div>
 
@@ -789,25 +1260,23 @@ export default function AdminRwa() {
 
       <section className="grid gap-4 border-b border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#edf6fb_100%)] px-4 py-6 text-sky-950 sm:px-8 md:grid-cols-5">
         <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">合约</div>
-          <div className="mt-2 font-mono text-sm font-semibold">{shortAddress(RWA_ADDRESS)}</div>
+          <div className="text-sm text-sky-900/60">产品资产</div>
+          <div className="mt-2 text-2xl font-semibold">{productAssets.length}</div>
         </div>
         <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">Owner</div>
-          <div className="mt-2 font-mono text-sm font-semibold">
-            {owner ? shortAddress(owner) : "读取中"}
-          </div>
+          <div className="text-sm text-sky-900/60">证书影像</div>
+          <div className="mt-2 text-2xl font-semibold">{productCertificateCount}</div>
         </div>
         <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">资产总数</div>
+          <div className="text-sm text-sky-900/60">线上资产</div>
           <div className="mt-2 text-2xl font-semibold">{rwas.length}</div>
         </div>
         <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">已发布</div>
+          <div className="text-sm text-sky-900/60">线上已发布</div>
           <div className="mt-2 text-2xl font-semibold">{published}</div>
         </div>
         <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">已标注</div>
+          <div className="text-sm text-sky-900/60">后台覆盖</div>
           <div className="mt-2 text-2xl font-semibold">{labeledCount}</div>
         </div>
       </section>
@@ -826,14 +1295,315 @@ export default function AdminRwa() {
         </section>
       )}
 
+      <section className="grid gap-6 px-4 py-8 sm:px-0 lg:grid-cols-[1.18fr_0.82fr]">
+        <div className="border border-sky-100 bg-white/90 p-5 shadow-sm">
+          <div className="mb-5 flex items-center gap-3 border-b border-sky-100 pb-5">
+            <FileCheck2 className="h-5 w-5 text-sky-700" />
+            <div>
+              <h2 className="text-xl font-semibold text-sky-950">产品资产入库资料</h2>
+              <p className="text-sm text-sky-900/60">
+                用于前台资产库展示和后续第三方托管、第三方典当资料索引。
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">资产编号</span>
+                <Input
+                  value={catalogForm.assetCode}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      assetCode: event.target.value.toUpperCase(),
+                    }))
+                  }
+                  placeholder="例如：PAJ000001"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">资产名称</span>
+                <Input
+                  value={catalogForm.name}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      name: event.target.value,
+                    }))
+                  }
+                  placeholder="例如：和田玉 螭龙玉璧 青灰 宋"
+                />
+              </label>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">资产类别</span>
+                <Input
+                  list={CATEGORY_DATALIST_ID}
+                  value={catalogForm.categoryLabel}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      categoryLabel: event.target.value,
+                    }))
+                  }
+                  placeholder="古玉 / 沉香"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">来源标签</span>
+                <Input
+                  list={SELLER_DATALIST_ID}
+                  value={catalogForm.sellerCategoryLabel}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      sellerCategoryLabel: event.target.value,
+                    }))
+                  }
+                  placeholder="平台 / 认证商家"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">规格</span>
+                <Input
+                  value={catalogForm.spec}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      spec: event.target.value,
+                    }))
+                  }
+                  placeholder="例如：50克"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">尺寸</span>
+                <Input
+                  value={catalogForm.size}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      size: event.target.value,
+                    }))
+                  }
+                  placeholder="可缺省"
+                />
+              </label>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">人民币会员价</span>
+                <Input
+                  inputMode="decimal"
+                  value={catalogForm.priceCny}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      priceCny: event.target.value,
+                    }))
+                  }
+                  placeholder="例如：420000"
+                />
+              </label>
+
+              <label className="grid gap-2">
+                <span className="text-sm font-medium text-sky-950">文件包 hash</span>
+                <Input
+                  value={catalogForm.fileHash}
+                  onChange={(event) =>
+                    setCatalogForm((current) => ({
+                      ...current,
+                      fileHash: event.target.value,
+                    }))
+                  }
+                  placeholder="资料包 hash / 文件包编号"
+                />
+              </label>
+            </div>
+
+            <ProductAssetImageUploader
+              title="产品图片"
+              description="第一张作为资产封面，可上传多角度图片。"
+              imageURLs={catalogForm.imageURLs}
+              maxImages={MAX_CATALOG_IMAGES}
+              uploading={uploadingCatalogImages}
+              dragging={draggingCatalogImages}
+              onDraggingChange={setDraggingCatalogImages}
+              onUpload={(files) => void handleUploadCatalogImages(files, "product")}
+              onRemove={(imageURL) => removeCatalogImageURL(imageURL, "product")}
+              onCover={setCatalogCoverImage}
+            />
+
+            <ProductAssetImageUploader
+              title="证书 / 确权资料图片"
+              description="上传证书、确权资料、托管文件截图等影像。"
+              imageURLs={catalogForm.certificateURLs}
+              maxImages={MAX_CERTIFICATE_IMAGES}
+              uploading={uploadingCertificateImages}
+              dragging={draggingCertificateImages}
+              onDraggingChange={setDraggingCertificateImages}
+              onUpload={(files) => void handleUploadCatalogImages(files, "certificate")}
+              onRemove={(imageURL) => removeCatalogImageURL(imageURL, "certificate")}
+            />
+
+            <div className="grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+              <div className="border border-sky-100 bg-sky-50/70 p-4 text-sm leading-6 text-sky-900/70">
+                保存后会写入后台 JSON 存储，并以资产编号覆盖或新增前台资产库条目。
+              </div>
+              <Button
+                variant="outline"
+                className="h-full"
+                onClick={resetCatalogForm}
+                disabled={busyAction === "save-product"}
+              >
+                清空表单
+              </Button>
+              <Button
+                className="h-full bg-sky-800 text-white hover:bg-sky-700"
+                onClick={handleSaveProductAsset}
+                disabled={busyAction === "save-product"}
+              >
+                {busyAction === "save-product" ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <BadgeCheck className="h-4 w-4" />
+                )}
+                保存入库资料
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="border border-sky-100 bg-white/90 p-5 shadow-sm">
+          <div className="mb-5 flex items-center gap-3 border-b border-sky-100 pb-5">
+            <ShieldCheck className="h-5 w-5 text-sky-700" />
+            <div>
+              <h2 className="text-xl font-semibold text-sky-950">资产卡片预览</h2>
+              <p className="text-sm text-sky-900/60">按前台资产库展示字段即时预览。</p>
+            </div>
+          </div>
+
+          <div className="overflow-hidden border border-sky-100 bg-white shadow-sm">
+            <div className="relative aspect-[4/3] overflow-hidden bg-sky-50">
+              {catalogForm.imageURLs[0] ? (
+                <img
+                  src={catalogForm.imageURLs[0]}
+                  alt="资产封面预览"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-sky-900/50">
+                  上传产品图片后显示封面
+                </div>
+              )}
+              <div className="absolute left-3 top-3 border border-white/80 bg-white/90 px-2 py-1 text-xs font-semibold text-sky-950 shadow-sm">
+                {normalizeProductAssetCode(catalogForm.assetCode) || "资产编号"}
+              </div>
+              {catalogForm.certificateURLs.length > 0 ? (
+                <div className="absolute bottom-3 right-3 inline-flex items-center gap-1 border border-emerald-100 bg-white/90 px-2 py-1 text-xs font-semibold text-emerald-700 shadow-sm">
+                  <BadgeCheck className="h-3.5 w-3.5" />
+                  证书
+                </div>
+              ) : null}
+            </div>
+            <div className="p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="inline-flex border border-sky-100 px-2 py-1 text-xs font-semibold text-sky-700">
+                    {catalogForm.categoryLabel || "资产类别"}
+                  </div>
+                  <h3 className="mt-2 text-xl font-semibold leading-snug text-sky-950">
+                    {catalogForm.name || "资产名称"}
+                  </h3>
+                </div>
+                <span className="shrink-0 border border-violet-100 bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-700">
+                  {catalogForm.sellerCategoryLabel || "来源"}
+                </span>
+              </div>
+              <div className="mt-5 grid gap-3 border-t border-sky-100 pt-4 sm:grid-cols-2">
+                <div className="flex gap-2 text-sm text-sky-900/70">
+                  <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
+                  <span>{catalogForm.spec || "规格"}</span>
+                </div>
+                {catalogForm.size ? (
+                  <div className="flex gap-2 text-sm text-sky-900/70">
+                    <Ruler className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
+                    <span>{catalogForm.size}</span>
+                  </div>
+                ) : null}
+              </div>
+              <div className="mt-5">
+                <div className="text-sm text-sky-900/60">会员价</div>
+                <div className="mt-1 text-2xl font-semibold text-sky-950">
+                  {parsePositiveCurrency(catalogForm.priceCny)
+                    ? formatProductAssetPrice(parsePositiveCurrency(catalogForm.priceCny))
+                    : "¥0"}
+                </div>
+              </div>
+              <div className="mt-5 text-sm text-sky-900/70">
+                <span className="block truncate">Hash {catalogForm.fileHash || "待补"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
+            <div className="border border-sky-100 p-3">
+              <div className="text-sky-900/60">产品图</div>
+              <div className="mt-1 font-semibold text-sky-950">{catalogForm.imageURLs.length}</div>
+            </div>
+            <div className="border border-sky-100 p-3">
+              <div className="text-sky-900/60">证书图</div>
+              <div className="mt-1 font-semibold text-sky-950">{catalogForm.certificateURLs.length}</div>
+            </div>
+            <div className="border border-sky-100 p-3">
+              <div className="text-sky-900/60">状态</div>
+              <div className="mt-1 font-semibold text-sky-950">待保存</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 pb-12 sm:px-0">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold text-sky-950">产品资产列表</h2>
+            <p className="mt-2 text-sm text-sky-900/60">
+              展示静态产品目录和后台保存的入库资料，点击编辑可补充图片、证书和标签字段。
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => void refreshAdminReads()}>
+            <RefreshCw className="h-4 w-4" />
+            刷新
+          </Button>
+        </div>
+
+        <div className="grid gap-4">
+          {productAssets.map((asset) => (
+            <ProductAssetAdminCard
+              key={asset.id}
+              asset={asset}
+              onEdit={handleEditProductAsset}
+            />
+          ))}
+        </div>
+      </section>
+
       <section className="grid gap-6 px-4 py-8 sm:px-0 lg:grid-cols-[1.08fr_0.92fr]">
         <div className="border border-sky-100 bg-white/90 p-5 shadow-sm">
           <div className="mb-5 flex items-center gap-3 border-b border-sky-100 pb-5">
             <Plus className="h-5 w-5 text-sky-700" />
             <div>
-              <h2 className="text-xl font-semibold text-sky-950">添加资产</h2>
+              <h2 className="text-xl font-semibold text-sky-950">线上内部资产</h2>
               <p className="text-sm text-sky-900/60">
-                调用资产合约创建链上资产，创建后默认状态为已发布。
+                保留合约资产创建、标签覆盖和状态管理能力，供内部确权流程使用。
               </p>
             </div>
           </div>
@@ -1027,7 +1797,7 @@ export default function AdminRwa() {
                   ) : (
                     <BadgeCheck className="h-4 w-4" />
                   )}
-                  添加到资产库
+                  创建线上资产
                 </Button>
               </div>
             </div>
@@ -1084,9 +1854,9 @@ export default function AdminRwa() {
       <section className="px-4 pb-12 sm:px-0">
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-sky-950">资产列表</h2>
+            <h2 className="text-2xl font-semibold text-sky-950">线上内部资产列表</h2>
             <p className="mt-2 text-sm text-sky-900/60">
-              这里读取的是当前资产合约的链上资产和后台 JSON 标签覆盖。
+              这里读取的是当前资产合约的内部资产和后台 JSON 标签覆盖。
             </p>
           </div>
           <Button variant="outline" onClick={() => refreshAdminReads()}>
@@ -1097,14 +1867,14 @@ export default function AdminRwa() {
 
         <div className="mb-4 flex items-center gap-2 border border-sky-100 bg-white/80 px-3 py-2 text-sm text-sky-900/60 shadow-sm">
           <CircleAlert className="h-4 w-4" />
-          后台 JSON 标签覆盖会同步到前台页面，刷新和新增后都会重新读取最新数据。
+          后台 JSON 标签覆盖会同步到线上资产详情，刷新和新增后都会重新读取最新数据。
         </div>
 
         {loading && <GlobalLoading />}
 
         {rwas.length === 0 && !loading && (
           <div className="border border-sky-100 bg-white/90 px-6 py-16 text-center text-sky-900/60">
-            暂无链上资产，添加第一件资产后会显示在这里。
+            暂无线上资产，添加第一件资产后会显示在这里。
           </div>
         )}
 

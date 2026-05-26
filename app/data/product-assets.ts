@@ -1,3 +1,8 @@
+import type {
+  RwaAdminMetadata,
+  RwaAdminMetadataMap,
+} from "@/lib/rwa-admin-storage.shared";
+
 export interface ProductAsset {
   id: string;
   name: string;
@@ -11,6 +16,8 @@ export interface ProductAsset {
   imageURLs: string[];
   certificateURLs: string[];
 }
+
+export const PRODUCT_ASSET_STORAGE_PREFIX = "product:";
 
 export const PRODUCT_ASSETS: ProductAsset[] = [
   {
@@ -318,6 +325,115 @@ export const PRODUCT_ASSETS: ProductAsset[] = [
 export const PRODUCT_ASSET_MAP = Object.fromEntries(
   PRODUCT_ASSETS.map((asset) => [asset.id, asset]),
 ) as Record<string, ProductAsset>;
+
+export function normalizeProductAssetCode(value: string) {
+  return value.trim().replace(/\s+/g, "").toUpperCase();
+}
+
+export function getProductAssetStorageKey(assetId: string) {
+  return `${PRODUCT_ASSET_STORAGE_PREFIX}${normalizeProductAssetCode(assetId)}`;
+}
+
+export function getProductAssetIdFromStorageKey(key: string) {
+  return key.startsWith(PRODUCT_ASSET_STORAGE_PREFIX)
+    ? normalizeProductAssetCode(key.slice(PRODUCT_ASSET_STORAGE_PREFIX.length))
+    : "";
+}
+
+function normalizeProductAssetURLs(value?: string[]) {
+  if (!value) return [];
+  return Array.from(new Set(value.map((item) => item.trim()).filter(Boolean)));
+}
+
+function parseProductAssetPriceCny(value?: string) {
+  if (!value) return undefined;
+
+  const parsed = Number(value.replace(/[,\s￥¥]/g, ""));
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+function isProductAdminMetadata(metadata: RwaAdminMetadata) {
+  return (
+    metadata.assetKind === "product" ||
+    metadata.tokenId.startsWith(PRODUCT_ASSET_STORAGE_PREFIX)
+  );
+}
+
+function buildProductAssetFromMetadata(
+  metadata: RwaAdminMetadata,
+  fallback?: ProductAsset,
+) {
+  const id =
+    normalizeProductAssetCode(metadata.assetCode ?? "") ||
+    getProductAssetIdFromStorageKey(metadata.tokenId) ||
+    fallback?.id;
+
+  if (!id) return undefined;
+
+  const imageURLs = normalizeProductAssetURLs(metadata.imageURLs);
+  const certificateURLs = normalizeProductAssetURLs(metadata.certificateURLs);
+  const imageURL = imageURLs[0] ?? metadata.imageURL?.trim() ?? fallback?.imageURL ?? "";
+
+  if (!imageURL) return undefined;
+
+  const displayName = metadata.name?.trim() || fallback?.name || id;
+  const normalizedName = displayName.startsWith(id)
+    ? displayName
+    : `${id} ${displayName}`;
+
+  return {
+    id,
+    name: normalizedName,
+    categoryLabel: metadata.categoryLabel || fallback?.categoryLabel || "文化艺术品",
+    sellerCategoryLabel: metadata.sellerCategoryLabel || fallback?.sellerCategoryLabel || "平台",
+    spec: metadata.spec?.trim() || fallback?.spec || "",
+    size: metadata.size?.trim() || fallback?.size || "",
+    priceCny: parseProductAssetPriceCny(metadata.priceCny) ?? fallback?.priceCny ?? 0,
+    fileHash: metadata.fileHash?.trim() || fallback?.fileHash || "",
+    imageURL,
+    imageURLs: imageURLs.length > 0 ? imageURLs : fallback?.imageURLs ?? [imageURL],
+    certificateURLs:
+      certificateURLs.length > 0 ? certificateURLs : fallback?.certificateURLs ?? [],
+  } satisfies ProductAsset;
+}
+
+function sortProductAssets(a: ProductAsset, b: ProductAsset) {
+  return a.id.localeCompare(b.id, "zh-CN", { numeric: true });
+}
+
+export function mergeProductAssetsWithAdminMetadata(
+  adminMetadataMap: RwaAdminMetadataMap = {},
+) {
+  const byId = new Map<string, ProductAsset>(
+    PRODUCT_ASSETS.map((asset) => [asset.id, asset]),
+  );
+
+  for (const metadata of Object.values(adminMetadataMap)) {
+    if (!isProductAdminMetadata(metadata)) continue;
+
+    const id =
+      normalizeProductAssetCode(metadata.assetCode ?? "") ||
+      getProductAssetIdFromStorageKey(metadata.tokenId);
+    const nextAsset = buildProductAssetFromMetadata(metadata, byId.get(id));
+
+    if (nextAsset) {
+      byId.set(nextAsset.id, nextAsset);
+    }
+  }
+
+  return Array.from(byId.values()).sort(sortProductAssets);
+}
+
+export function getMergedProductAssetById(
+  id: string | undefined,
+  adminMetadataMap: RwaAdminMetadataMap = {},
+) {
+  if (!id) return undefined;
+  const normalizedId = normalizeProductAssetCode(id);
+  return mergeProductAssetsWithAdminMetadata(adminMetadataMap).find(
+    (asset) => asset.id === normalizedId,
+  );
+}
 
 export function getProductAssetDisplayName(asset: ProductAsset) {
   return asset.name.replace(new RegExp(`^${asset.id}\\s*`), "").trim();

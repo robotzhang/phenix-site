@@ -69,7 +69,7 @@ async function refreshMetadataCache(force = false) {
 
 async function mutateMetadata(
   method: "POST" | "DELETE",
-  tokenId: bigint,
+  tokenId: bigint | string,
   payload?: Partial<RwaAdminMetadataInput>,
 ) {
   const response = await fetch(RWA_ADMIN_STORAGE_ROUTE, {
@@ -117,14 +117,14 @@ export async function refreshRwaAdminMetadataMap() {
 }
 
 export async function saveRwaAdminMetadata(
-  tokenId: bigint,
+  tokenId: bigint | string,
   metadata: RwaAdminMetadataInput,
 ) {
   const document = await mutateMetadata("POST", tokenId, metadata);
   return document;
 }
 
-export async function removeRwaAdminMetadata(tokenId: bigint) {
+export async function removeRwaAdminMetadata(tokenId: bigint | string) {
   return mutateMetadata("DELETE", tokenId);
 }
 

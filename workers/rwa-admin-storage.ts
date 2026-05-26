@@ -2,7 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 
 import {
   emptyRwaAdminStorageDocument,
-  normalizeRwaAdminImageURLs,
+  normalizeRwaAdminAssetURLs,
   normalizeRwaAdminStorageDocument,
   trimAdminStorageString,
   type RwaAdminMetadata,
@@ -34,6 +34,12 @@ function readMetadataPayload(raw: unknown) {
   const tokenId = trimAdminStorageString(payload.tokenId);
   const categoryLabel = trimAdminStorageString(payload.categoryLabel);
   const sellerCategoryLabel = trimAdminStorageString(payload.sellerCategoryLabel);
+  const assetKind: RwaAdminMetadata["assetKind"] =
+    payload.assetKind === "product"
+      ? "product"
+      : payload.assetKind === "chain"
+        ? "chain"
+        : undefined;
 
   if (!tokenId) return null;
 
@@ -41,12 +47,18 @@ function readMetadataPayload(raw: unknown) {
     tokenId,
     categoryLabel,
     sellerCategoryLabel,
+    assetKind,
+    assetCode: trimAdminStorageString(payload.assetCode) || undefined,
     name: trimAdminStorageString(payload.name) || undefined,
     recipient: trimAdminStorageString(payload.recipient) || undefined,
     pricePhenix: trimAdminStorageString(payload.pricePhenix) || undefined,
+    priceCny: trimAdminStorageString(payload.priceCny) || undefined,
+    spec: trimAdminStorageString(payload.spec) || undefined,
+    size: trimAdminStorageString(payload.size) || undefined,
     fileHash: trimAdminStorageString(payload.fileHash) || undefined,
     imageURL: trimAdminStorageString(payload.imageURL) || undefined,
-    imageURLs: normalizeRwaAdminImageURLs(payload.imageURLs),
+    imageURLs: normalizeRwaAdminAssetURLs(payload.imageURLs),
+    certificateURLs: normalizeRwaAdminAssetURLs(payload.certificateURLs, 6),
     tokenURI: trimAdminStorageString(payload.tokenURI) || undefined,
     status: typeof payload.status === "number" ? payload.status : undefined,
   };
@@ -164,12 +176,18 @@ export class RwaAdminStorage extends DurableObject {
         sellerCategoryLabel: payload.sellerCategoryLabel,
         createdAt: previous?.createdAt ?? now,
         updatedAt: now,
+        assetKind: payload.assetKind ?? previous?.assetKind,
+        assetCode: payload.assetCode ?? previous?.assetCode,
         name: payload.name ?? previous?.name,
         recipient: payload.recipient ?? previous?.recipient,
         pricePhenix: payload.pricePhenix ?? previous?.pricePhenix,
+        priceCny: payload.priceCny ?? previous?.priceCny,
+        spec: payload.spec ?? previous?.spec,
+        size: payload.size ?? previous?.size,
         fileHash: payload.fileHash ?? previous?.fileHash,
         imageURL: payload.imageURL ?? previous?.imageURL,
         imageURLs: payload.imageURLs ?? previous?.imageURLs,
+        certificateURLs: payload.certificateURLs ?? previous?.certificateURLs,
         tokenURI: payload.tokenURI ?? previous?.tokenURI,
         status: payload.status ?? previous?.status,
       };

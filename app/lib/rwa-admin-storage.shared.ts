@@ -4,12 +4,18 @@ export interface RwaAdminMetadata {
   sellerCategoryLabel: string;
   createdAt: string;
   updatedAt: string;
+  assetKind?: "chain" | "product";
+  assetCode?: string;
   name?: string;
   recipient?: string;
   pricePhenix?: string;
+  priceCny?: string;
+  spec?: string;
+  size?: string;
   fileHash?: string;
   imageURL?: string;
   imageURLs?: string[];
+  certificateURLs?: string[];
   tokenURI?: string;
   status?: number;
 }
@@ -25,12 +31,18 @@ export interface RwaAdminStorageDocument {
 export interface RwaAdminMetadataInput {
   categoryLabel: string;
   sellerCategoryLabel: string;
+  assetKind?: "chain" | "product";
+  assetCode?: string;
   name?: string;
   recipient?: string;
   pricePhenix?: string;
+  priceCny?: string;
+  spec?: string;
+  size?: string;
   fileHash?: string;
   imageURL?: string;
   imageURLs?: string[];
+  certificateURLs?: string[];
   tokenURI?: string;
   status?: number;
 }
@@ -64,6 +76,20 @@ export function normalizeRwaAdminImageURLs(value: unknown) {
   );
 
   return imageURLs.length > 0 ? imageURLs.slice(0, 5) : undefined;
+}
+
+export function normalizeRwaAdminAssetURLs(value: unknown, maxItems = 8) {
+  if (!Array.isArray(value)) return undefined;
+
+  const urls = Array.from(
+    new Set(
+      value
+        .map((item) => trimAdminStorageString(item))
+        .filter(Boolean),
+    ),
+  );
+
+  return urls.length > 0 ? urls.slice(0, maxItems) : undefined;
 }
 
 export function emptyRwaAdminStorageDocument(
@@ -113,12 +139,18 @@ export function normalizeRwaAdminStorageDocument(
       sellerCategoryLabel,
       createdAt,
       updatedAt,
+      assetKind: value.assetKind === "product" ? "product" : value.assetKind === "chain" ? "chain" : undefined,
+      assetCode: trimAdminStorageString(value.assetCode) || undefined,
       name: trimAdminStorageString(value.name) || undefined,
       recipient: trimAdminStorageString(value.recipient) || undefined,
       pricePhenix: trimAdminStorageString(value.pricePhenix) || undefined,
+      priceCny: trimAdminStorageString(value.priceCny) || undefined,
+      spec: trimAdminStorageString(value.spec) || undefined,
+      size: trimAdminStorageString(value.size) || undefined,
       fileHash: trimAdminStorageString(value.fileHash) || undefined,
       imageURL: trimAdminStorageString(value.imageURL) || undefined,
-      imageURLs: normalizeRwaAdminImageURLs(value.imageURLs),
+      imageURLs: normalizeRwaAdminAssetURLs(value.imageURLs),
+      certificateURLs: normalizeRwaAdminAssetURLs(value.certificateURLs, 6),
       tokenURI: trimAdminStorageString(value.tokenURI) || undefined,
       status: typeof value.status === "number" ? value.status : undefined,
     };

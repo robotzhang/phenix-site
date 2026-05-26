@@ -220,9 +220,8 @@ export const PRODUCT_ASSETS: ProductAsset[] = [
     size: "",
     priceCny: 800000,
     fileHash: "96eb4b7f39fad55ea8650ef8f18d89cb",
-    imageURL: "/product-assets/PEM000010-01.webp",
+    imageURL: "/product-assets/PEM000010-02.webp",
     imageURLs: [
-      "/product-assets/PEM000010-01.webp",
       "/product-assets/PEM000010-02.webp",
       "/product-assets/PEM000010-03.webp",
     ],

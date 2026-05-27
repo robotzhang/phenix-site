@@ -27,7 +27,7 @@ export function Header({ scrolled = false }: { scrolled?: boolean }) {
   return (
     <div
       className={clsx(
-        "flex h-full items-center gap-8 transition-colors",
+        "mx-auto flex h-full w-full max-w-[1500px] items-center gap-8 transition-colors 2xl:px-4",
         scrolled ? "text-sky-950" : "text-white sm:text-white",
       )}
     >

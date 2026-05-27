@@ -114,7 +114,7 @@ export function meta() {
 export default function Home() {
   return (
     <div className="-mx-4 md:mx-0">
-      <section className="relative overflow-hidden border-b border-sky-100 bg-sky-950 px-4 pb-8 pt-10 text-white sm:min-h-[calc(100vh-8rem)] sm:px-8 sm:py-14">
+      <section className="home-hero relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-b border-sky-100 bg-sky-950 pb-8 pt-10 text-white sm:min-h-[calc(100vh-8rem)] sm:py-14">
         <img
           src="/rda-blue-vivid.png"
           alt="PHENIX"
@@ -124,7 +124,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(220,183,107,0.16),rgba(220,183,107,0)_34%)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(6,42,67,0),rgba(247,251,253,0.98))]" />
 
-        <div className="relative z-10 grid gap-8 pt-20 lg:min-h-[calc(100vh-17rem)] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:pt-0">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1500px] gap-8 px-4 pt-20 sm:px-8 lg:min-h-[calc(100vh-17rem)] lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center lg:pt-0 xl:grid-cols-[minmax(0,1fr)_420px] 2xl:px-10">
           <div className="max-w-5xl">
             <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/35 bg-sky-950/55 px-3 py-1.5 text-sm font-medium text-white shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-md">
               <Sparkles className="h-4 w-4 text-amber-200" />
@@ -175,13 +175,15 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 mt-8 grid max-w-5xl gap-3 sm:mt-10 sm:grid-cols-3">
-          {heroStats.map((item) => (
-            <div key={item.label} className="border border-white/[0.28] bg-sky-950/[0.24] p-4 backdrop-blur">
-              <div className="text-2xl font-semibold text-white">{item.value}</div>
-              <div className="mt-1 text-sm leading-5 text-white/[0.84]">{item.label}</div>
-            </div>
-          ))}
+        <div className="relative z-10 mx-auto mt-8 w-full max-w-[1500px] px-4 sm:mt-10 sm:px-8 2xl:px-10">
+          <div className="grid max-w-5xl gap-3 sm:grid-cols-3">
+            {heroStats.map((item) => (
+              <div key={item.label} className="border border-white/[0.28] bg-sky-950/[0.24] p-4 backdrop-blur">
+                <div className="text-2xl font-semibold text-white">{item.value}</div>
+                <div className="mt-1 text-sm leading-5 text-white/[0.84]">{item.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

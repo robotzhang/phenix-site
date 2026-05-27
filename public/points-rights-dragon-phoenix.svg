@@ -1,0 +1,59 @@
+<svg width="1440" height="520" viewBox="0 0 1440 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">PHENIX dragon phoenix ornament</title>
+  <desc id="desc">A restrained dragon and phoenix ornamental background for the PHENIX points rights entry.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1440" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#041522"/>
+      <stop offset="0.46" stop-color="#06364D"/>
+      <stop offset="1" stop-color="#6B5124"/>
+    </linearGradient>
+    <linearGradient id="phoenix" x1="802" y1="110" x2="1348" y2="442" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7D68A"/>
+      <stop offset="0.45" stop-color="#2BB7C8"/>
+      <stop offset="1" stop-color="#F4A53A"/>
+    </linearGradient>
+    <linearGradient id="dragon" x1="115" y1="105" x2="720" y2="435" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A7E7F2"/>
+      <stop offset="0.5" stop-color="#168DB7"/>
+      <stop offset="1" stop-color="#E3C171"/>
+    </linearGradient>
+    <radialGradient id="pearl" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(731 239) rotate(90) scale(88)">
+      <stop stop-color="#FFF7CE"/>
+      <stop offset="0.4" stop-color="#F5C65B" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#F5C65B" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="clouds" width="210" height="120" patternUnits="userSpaceOnUse">
+      <path d="M8 76C34 45 67 45 88 70C109 42 156 45 174 84C142 72 116 79 100 101C72 78 42 80 8 76Z" fill="#BFEAF1" opacity="0.14"/>
+      <path d="M132 24C154 7 181 13 197 38C172 31 153 36 139 54C126 43 111 39 92 43C99 31 113 25 132 24Z" fill="#F7D68A" opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1440" height="520" fill="url(#bg)"/>
+  <rect width="1440" height="520" fill="url(#clouds)" opacity="0.85"/>
+  <circle cx="731" cy="239" r="88" fill="url(#pearl)"/>
+
+  <g opacity="0.52">
+    <path d="M132 342C242 196 403 119 577 166C632 181 677 209 718 246" stroke="url(#dragon)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M165 380C274 260 420 207 572 238C625 249 675 270 727 304" stroke="#B8EEF5" stroke-opacity="0.38" stroke-width="6" stroke-linecap="round"/>
+    <path d="M462 154C428 109 455 68 515 81C483 102 475 127 492 156" stroke="#F4CE7A" stroke-opacity="0.54" stroke-width="10" stroke-linecap="round"/>
+    <path d="M556 163C575 119 625 110 661 146C620 140 594 151 579 184" stroke="#B8EEF5" stroke-opacity="0.42" stroke-width="8" stroke-linecap="round"/>
+    <path d="M221 286C202 232 229 188 287 184C261 216 260 249 288 285" stroke="#F4CE7A" stroke-opacity="0.38" stroke-width="8" stroke-linecap="round"/>
+    <path d="M704 236C735 226 760 232 785 253" stroke="#F8E6A8" stroke-opacity="0.68" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.6">
+    <path d="M850 352C937 199 1090 109 1279 116C1195 167 1148 238 1134 332C1218 287 1317 298 1400 383C1289 361 1190 384 1112 451C1038 514 930 501 836 430C903 421 959 388 995 333C941 360 893 364 850 352Z" fill="url(#phoenix)" opacity="0.34"/>
+    <path d="M832 349C924 230 1036 164 1198 153" stroke="url(#phoenix)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M967 334C1041 263 1139 229 1274 244" stroke="#F9D887" stroke-opacity="0.5" stroke-width="7" stroke-linecap="round"/>
+    <path d="M982 399C1076 345 1194 332 1352 379" stroke="#73D7E2" stroke-opacity="0.38" stroke-width="7" stroke-linecap="round"/>
+    <path d="M1058 168C1016 126 1030 79 1093 63C1074 101 1081 133 1121 158" stroke="#F4CE7A" stroke-opacity="0.52" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1152 157C1179 110 1234 101 1277 141C1231 137 1202 151 1184 188" stroke="#B8EEF5" stroke-opacity="0.42" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.28">
+    <path d="M80 108H256" stroke="#B8EEF5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M1160 82H1352" stroke="#F7D68A" stroke-width="2" stroke-linecap="round"/>
+    <path d="M1008 468H1310" stroke="#B8EEF5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M320 446H582" stroke="#F7D68A" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

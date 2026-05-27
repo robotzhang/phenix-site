@@ -29,14 +29,14 @@ const scenarios = [
 ];
 
 const communityMemberHighlights = [
-  { label: "服务卡价值", value: "1 张 = 1000 PHENIX" },
-  { label: "积分获取方式", value: "通过锁仓服务卡获取PHENIX 积分" },
+  { label: "锁仓计量基数", value: "按平台规则测算积分奖励" },
+  { label: "积分奖励方式", value: "依据锁仓周期与线上记录计算" },
   { label: "流通路径", value: "未锁仓的服务卡，可申请平台出售" },
 ];
 
 export function meta() {
   return [
-    { title: "社区商城 | PHENIX" },
+    { title: "积分权益入口 | PHENIX" },
     { name: "description", content: "PHENIX 积分可用于兑换课程、虚拟物品、康养产品等应用场景。" },
   ];
 }
@@ -46,7 +46,7 @@ export default function PointsMall() {
     <div className="-mx-4 md:mx-0">
       <section className="border-b border-sky-100 bg-white/80 px-4 py-16 sm:px-0 sm:py-24">
         <div className="max-w-4xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Points Mall</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Points Rights</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
             PHENIX 积分用途
           </h1>
@@ -59,13 +59,35 @@ export default function PointsMall() {
               className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
               <Coins className="h-4 w-4" />
-              锁仓领积分
+              锁仓积分奖励
             </Link>
             <Link
               to="/assets"
               className="inline-flex items-center justify-center gap-2 border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
             >
               查看我的资产
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-5 sm:px-0 sm:py-8">
+        <div className="points-rights-card relative overflow-hidden border border-sky-100 px-6 py-8 text-white shadow-sm sm:px-8 sm:py-10">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(3,16,26,0.9),rgba(5,44,65,0.82),rgba(95,70,28,0.52))]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_20%,rgba(245,198,91,0.28),rgba(245,198,91,0)_28%)]" />
+          <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-amber-100">Points Rights</p>
+              <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">积分权益入口</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/88">
+                进入龙凤呈祥社区权益区，兑换Phenix平台严选的产品及服务。
+              </p>
+            </div>
+            <Link
+              to="/points-redemption"
+              className="inline-flex w-fit min-w-[132px] items-center justify-center border border-white/60 bg-white px-8 py-3 text-sm font-semibold text-sky-950 shadow-sm transition hover:bg-sky-50"
+            >
+              积分兑换
             </Link>
           </div>
         </div>
@@ -108,21 +130,6 @@ export default function PointsMall() {
             ))}
           </div>
         </aside>
-      </section>
-
-      <section className="border-t border-sky-100 bg-sky-50/60 px-4 py-10 sm:px-0">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Points Mall</p>
-            <h2 className="mt-2 text-2xl font-semibold text-sky-950">积分商城</h2>
-          </div>
-          <Link
-            to="/points-redemption"
-            className="inline-flex w-fit min-w-[132px] items-center justify-center border border-sky-300 bg-white px-8 py-3 text-sm font-semibold text-sky-700 shadow-sm transition hover:border-sky-400 hover:bg-sky-50 hover:text-sky-900"
-          >
-            积分兑换
-          </Link>
-        </div>
       </section>
 
       <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">

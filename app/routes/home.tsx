@@ -118,28 +118,28 @@ export default function Home() {
         <img
           src="/rda-blue-vivid.png"
           alt="PHENIX"
-          className="absolute inset-0 h-full w-full object-cover opacity-75"
+          className="absolute inset-0 h-full w-full object-cover opacity-45 sm:opacity-60 lg:opacity-70"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(95deg,rgba(5,22,34,0.96),rgba(8,52,68,0.82),rgba(95,73,34,0.2))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(220,183,107,0.24),rgba(220,183,107,0)_34%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(3,16,26,0.98),rgba(4,28,43,0.94),rgba(7,47,68,0.82))] sm:bg-[linear-gradient(95deg,rgba(5,22,34,0.97),rgba(8,52,68,0.88),rgba(95,73,34,0.34))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(220,183,107,0.16),rgba(220,183,107,0)_34%)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(6,42,67,0),rgba(247,251,253,0.98))]" />
 
         <div className="relative z-10 grid gap-8 pt-20 lg:min-h-[calc(100vh-17rem)] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:pt-0">
           <div className="max-w-5xl">
-            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/25 bg-white/10 px-3 py-1 text-sm text-white shadow-sm backdrop-blur">
+            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/35 bg-sky-950/55 px-3 py-1.5 text-sm font-medium text-white shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-md">
               <Sparkles className="h-4 w-4 text-amber-200" />
-              文化艺术品真实资产服务网络
+              文化艺术品真实资产服务生态
             </div>
             <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
               PHENIX
-              <span className="mt-4 block text-[1.55rem] font-medium leading-tight text-white/90 sm:text-4xl">
+              <span className="mt-4 block text-[1.55rem] font-medium leading-tight text-white sm:text-4xl">
                 华夏文化艺术品资产服务与流通协同平台
               </span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:mt-8 sm:text-xl">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 sm:mt-8 sm:text-xl">
               以严选资产库、第三方托管、线上确权与渠道协同为基础，帮助文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
             </p>
-            <p className="mt-5 max-w-2xl border-l border-amber-200/70 pl-4 text-sm leading-7 text-white/[0.68]">
+            <p className="mt-5 max-w-2xl border-l border-amber-200/80 pl-4 text-sm leading-7 text-white/[0.82]">
               PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台围绕真实资产提供信息展示、托管协同与流通服务支持。
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
@@ -152,7 +152,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/custody"
-                className="inline-flex items-center justify-center gap-2 border border-white/45 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 border border-white/55 bg-sky-950/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 查看托管确权
               </Link>
@@ -177,9 +177,9 @@ export default function Home() {
 
         <div className="relative z-10 mt-8 grid max-w-5xl gap-3 sm:mt-10 sm:grid-cols-3">
           {heroStats.map((item) => (
-            <div key={item.label} className="border border-white/[0.18] bg-white/[0.09] p-4 backdrop-blur">
+            <div key={item.label} className="border border-white/[0.28] bg-sky-950/[0.24] p-4 backdrop-blur">
               <div className="text-2xl font-semibold text-white">{item.value}</div>
-              <div className="mt-1 text-sm leading-5 text-white/[0.72]">{item.label}</div>
+              <div className="mt-1 text-sm leading-5 text-white/[0.84]">{item.label}</div>
             </div>
           ))}
         </div>
@@ -305,7 +305,7 @@ export default function Home() {
                 to="/staking"
                 className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
               >
-                锁仓领积分
+                锁仓积分奖励
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link

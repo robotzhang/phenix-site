@@ -52,7 +52,7 @@ function formatDateTime(value: string) {
 
 export function meta() {
   return [
-    { title: "锁仓领积分 | PHENIX" },
+    { title: "锁仓积分奖励 | PHENIX" },
     { name: "description", content: "锁仓鉴定服务卡，或提交未锁仓鉴定服务卡的平台出售申请。" },
   ];
 }
@@ -218,10 +218,10 @@ export default function Staking() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Phenix Token Points</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            锁仓服务卡，天天得PHENIX福利
+            锁仓服务卡，按规则记录 PHENIX 积分奖励
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            一张鉴定服务卡等值于 1,000 PHENIX 积分，锁仓服务卡获得 PHENIX 积分！
+            锁仓服务卡可按平台规则获得 PHENIX 积分奖励；奖励以锁仓周期、计量基数和线上记录为准，不支持服务卡直接兑换积分。
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -277,18 +277,21 @@ export default function Staking() {
       <section className="grid gap-4 border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.85fr_1.15fr]">
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <Coins className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-2xl font-semibold text-sky-950">积分换算</h2>
+          <h2 className="mt-5 text-2xl font-semibold text-sky-950">锁仓计量参考</h2>
           <div className="mt-6 border-y border-sky-100 py-6">
-            <div className="text-sm text-sky-900/60">鉴定服务卡</div>
+            <div className="text-sm text-sky-900/60">参与锁仓的鉴定服务卡</div>
             <div className="mt-2 flex items-end gap-3">
               <span className="text-5xl font-semibold text-sky-950">1</span>
               <span className="pb-2 text-sky-900/70">张</span>
             </div>
           </div>
           <div className="pt-6">
-            <div className="text-sm text-sky-900/60">对应 PHENIX 积分</div>
+            <div className="text-sm text-sky-900/60">积分奖励计量基数</div>
             <div className="mt-2 text-5xl font-semibold text-sky-950">{CARD_POINTS}</div>
           </div>
+          <p className="mt-6 border border-amber-200 bg-amber-50/80 p-4 text-sm leading-6 text-amber-950">
+            提醒：鉴定服务卡无法兑换 Phenix 积分，平台无兑换的功能及服务！
+          </p>
         </div>
 
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
@@ -313,7 +316,7 @@ export default function Staking() {
                 <div className="mt-4 text-4xl font-semibold text-sky-950">
                   {(plan.annualRate * 100).toFixed(0)}%
                 </div>
-                <p className="mt-3 text-sm leading-6 text-sky-900/60">日日获得 PHENIX 积分</p>
+                <p className="mt-3 text-sm leading-6 text-sky-900/60">按规则记录 PHENIX 积分奖励</p>
               </button>
             ))}
           </div>
@@ -323,9 +326,9 @@ export default function Staking() {
       <section className="grid gap-8 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Staking Estimate</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">锁仓领积分</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">锁仓积分奖励</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            输入计划锁仓的未锁仓鉴定服务卡数量，选择锁仓周期，即可估算对应 PHENIX 积分获得。
+            输入计划锁仓的鉴定服务卡数量，选择锁仓周期，即可测算锁仓期间可能产生的 PHENIX 积分奖励。
           </p>
         </div>
 
@@ -347,9 +350,9 @@ export default function Staking() {
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Coins className="h-4 w-4" />
-                锁仓基数
+                积分计量基数
               </div>
-              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.principal)} PHENIX</div>
+              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.principal)} PHENIX 积分</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
@@ -361,16 +364,16 @@ export default function Staking() {
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Gift className="h-4 w-4" />
-                预计总获得
+                预计总积分奖励
               </div>
-              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.totalAirdrop)} PHENIX</div>
+              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.totalAirdrop)} PHENIX 积分</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <ShieldCheck className="h-4 w-4" />
-                预计日日获得
+                预计每日积分奖励
               </div>
-              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.dailyAirdrop)} PHENIX</div>
+              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.dailyAirdrop)} PHENIX 积分</div>
             </div>
           </div>
 
@@ -384,7 +387,7 @@ export default function Staking() {
           </button>
 
           <p className="mt-6 text-sm leading-7 text-sky-900/60">
-            测算按 1 张鉴定服务卡 = 1000 PHENIX、每月 30 天估算。最终积分发放以实际锁仓合约、平台规则与线上记录为准。
+            测算以 1 张参与锁仓的鉴定服务卡按 1000 PHENIX 积分作为计量基数、每月 30 天估算。该基数仅用于锁仓奖励测算，不代表服务卡可直接兑换Phenix积分或任何现金权益。最终积分奖励以实际锁仓合约、平台规则与线上记录为准。
           </p>
         </div>
       </section>

@@ -156,3 +156,60 @@ a,
 button {
   -webkit-tap-highlight-color: transparent;
 }
+
+.points-rights-card {
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255, 216, 125, 0.24), rgba(255, 216, 125, 0) 30%),
+    linear-gradient(112deg, rgba(3, 18, 27, 0.97), rgba(4, 66, 84, 0.92) 52%, rgba(128, 83, 35, 0.82)),
+    url("/points-rights-dragon-phoenix.svg") center / 112% auto no-repeat;
+}
+
+.points-rights-card::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  background: url("/points-rights-dragon-phoenix.svg") center / 118% auto no-repeat;
+  opacity: 0.52;
+  transform: translate3d(-1.5%, 0, 0) scale(1.02);
+  animation: points-rights-drift 18s ease-in-out infinite alternate;
+}
+
+.points-rights-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 78% 24%, rgba(255, 215, 128, 0.42), rgba(255, 215, 128, 0) 28%),
+    radial-gradient(circle at 96% 82%, rgba(190, 55, 42, 0.16), rgba(190, 55, 42, 0) 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.02));
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  animation: points-rights-glow 12s ease-in-out infinite alternate;
+}
+
+@keyframes points-rights-drift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1.03);
+  }
+  to {
+    transform: translate3d(2%, 1%, 0) scale(1.08);
+  }
+}
+
+@keyframes points-rights-glow {
+  from {
+    opacity: 0.55;
+    transform: translate3d(-1%, 0, 0);
+  }
+  to {
+    opacity: 0.88;
+    transform: translate3d(1%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .points-rights-card::before,
+  .points-rights-card::after {
+    animation: none;
+  }
+}

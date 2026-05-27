@@ -68,7 +68,7 @@ export default function Membership() {
               className="inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 sm:w-auto"
             >
               <Coins className="h-4 w-4" />
-              锁仓领积分
+              锁仓积分奖励
             </Link>
           </div>
         </div>

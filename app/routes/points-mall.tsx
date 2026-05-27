@@ -9,6 +9,7 @@ import {
   Users,
   WalletCards,
 } from "lucide-react";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 
 const scenarios = [
   {
@@ -29,9 +30,9 @@ const scenarios = [
 ];
 
 const communityMemberHighlights = [
-  { label: "锁仓计量基数", value: "按平台规则测算积分奖励" },
-  { label: "积分奖励方式", value: "依据锁仓周期与线上记录计算" },
-  { label: "流通路径", value: "未锁仓的服务卡，可申请平台出售" },
+  { label: "权益积分计量", value: "按平台规则测算积分记录" },
+  { label: "积分累计方式", value: "依据权益使用周期与线上记录计算" },
+  { label: "服务申请路径", value: "可操作服务卡可提交转让/退出服务申请" },
 ];
 
 export function meta() {
@@ -59,7 +60,7 @@ export default function PointsMall() {
               className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
               <Coins className="h-4 w-4" />
-              锁仓积分奖励
+              权益积分规则
             </Link>
             <Link
               to="/assets"
@@ -68,6 +69,7 @@ export default function PointsMall() {
               查看我的资产
             </Link>
           </div>
+          <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
         </div>
       </section>
 

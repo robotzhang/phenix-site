@@ -15,7 +15,7 @@ const channels = [
   {
     icon: Repeat2,
     title: "回收机构",
-    text: "布局长期回收与再流通网络，为资产持有人提供更清晰的退出选项。",
+    text: "布局长期回收与再流通网络，为资产持有人提供更清晰的服务申请选项。",
   },
 ];
 
@@ -28,8 +28,8 @@ const process = [
 
 export function meta() {
   return [
-    { title: "变现机制 | PHENIX" },
-    { name: "description", content: "PHENIX 提前连接典当、拍卖与回收渠道，为文化艺术品资产建立可预期退出路径。" },
+    { title: "流通服务机制 | PHENIX" },
+    { name: "description", content: "PHENIX 提前连接典当、拍卖与回收渠道，为文化艺术品资产建立可追踪的服务申请路径。" },
   ];
 }
 
@@ -43,7 +43,7 @@ export default function Liquidity() {
             流通，是信任的结果。
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            PHENIX 提前打通典当、拍卖、回收等渠道，为会员建立更可预期的退出路径。变现机制不是收益承诺，而是围绕真实资产与专业服务搭建的流通网络。
+            PHENIX 提前连接典当、拍卖、回收等渠道，为会员建立更清晰的服务申请路径。流通服务机制不是收益承诺或平台兜底退出，而是围绕真实资产与专业服务搭建的协作网络。
           </p>
         </div>
       </section>
@@ -62,10 +62,10 @@ export default function Liquidity() {
 
       <section className="grid gap-8 border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Exit Path</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Service Path</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">从资产确认到交易结算</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            平台围绕托管、确权、估值、渠道匹配和结算服务，把原本分散的退出流程组织成可追踪的服务链路。
+            平台围绕托管、确权、估值、渠道匹配和结算服务，把原本分散的流通申请流程组织成可追踪的服务链路，不承诺成交。
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">

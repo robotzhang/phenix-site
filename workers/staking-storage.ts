@@ -82,7 +82,7 @@ export class StakingStorage extends DurableObject {
 
       if (cardCount > operableCards) {
         return jsonResponse(
-          { error: "数量超过可操作的未质押鉴定服务卡，质押中的服务卡不能提交回购申请" },
+          { error: "数量超过可操作的鉴定服务卡，权益使用周期中的服务卡不能提交转让/退出服务申请" },
           { status: 400 },
         );
       }
@@ -96,7 +96,7 @@ export class StakingStorage extends DurableObject {
 
         if (months <= 0 || !Number.isFinite(annualRate) || annualRate <= 0) {
           return jsonResponse(
-            { error: "缺少质押周期或年化规则" },
+            { error: "缺少权益使用周期或积分奖励比例" },
             { status: 400 },
           );
         }

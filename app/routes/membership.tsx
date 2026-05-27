@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ArrowRight, BriefcaseBusiness, Coins, Gem, Network, ShieldCheck } from "lucide-react";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 
 const rights = [
   {
@@ -19,8 +20,8 @@ const rights = [
   },
   {
     icon: ShieldCheck,
-    title: "优先流通权",
-    text: "在典当、拍卖、回收等通道中，为会员提供更清晰、更可预期的流通支持。",
+    title: "流通服务协助",
+    text: "在典当、拍卖、回收等通道中，为会员提供资料整理、渠道沟通和服务登记支持，不承诺成交。",
   },
 ];
 
@@ -47,7 +48,7 @@ export default function Membership() {
             资产是纽带，资源是价值。
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            PHENIX 的会员体系不同于传统年费制。会员通过配置平台精选资产进入生态，在资产服务、圈层资源、项目合作与优先流通中获得长期价值。
+            PHENIX 的会员体系不同于传统年费制。会员通过配置平台精选资产进入生态，在资产服务、圈层资源、项目合作与流通服务协助中持续参与平台权益。
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
@@ -68,9 +69,10 @@ export default function Membership() {
               className="inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 sm:w-auto"
             >
               <Coins className="h-4 w-4" />
-              锁仓积分奖励
+              权益积分规则
             </Link>
           </div>
+          <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
         </div>
       </section>
 

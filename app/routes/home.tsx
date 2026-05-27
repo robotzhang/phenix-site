@@ -29,14 +29,14 @@ const heroStats = [
 const marketSignals = [
   { title: "交易难", text: "文化艺术品交易周期长，优质资产难以快速进入可信流通。" },
   { title: "确权难", text: "真伪、来源、托管与交易记录分散，持有人缺少可持续沉淀的资产索引。" },
-  { title: "退出难", text: "典当、拍卖、回收等渠道割裂，投资人与持有人缺少清晰路径。" },
+  { title: "流通难", text: "典当、拍卖、回收等渠道割裂，资产持有人缺少清晰的服务申请与资料对接路径。" },
 ];
 
 const solutionItems = [
   { icon: BadgeCheck, title: "严选资产库", text: "多层鉴定与专家评审，优先筛选稀缺性强、具备长期流通潜力的文化艺术品资产。" },
   { icon: LockKeyhole, title: "第三方托管", text: "联合金融、安保、保险等机构建立分离式托管体系，提升资产安全与公信力。" },
   { icon: Blocks, title: "数字确权存证", text: "通过线上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
-  { icon: CircleDollarSign, title: "可预期退出", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的流通与变现路径。" },
+  { icon: CircleDollarSign, title: "流通服务网络", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的服务申请、资料审核与渠道对接路径。" },
 ];
 
 const trustPrinciples = [
@@ -74,8 +74,8 @@ const platformPaths = [
     icon: Network,
     to: "/liquidity",
     label: "Liquidity",
-    title: "流通与变现机制",
-    text: "连接典当、拍卖、回收等渠道，为真实资产建立更可追踪的退出服务链路。",
+    title: "流通服务机制",
+    text: "连接典当、拍卖、回收等渠道，为真实资产建立更可追踪的服务申请链路。",
     accent: "border-cyan-200 bg-cyan-50/70 text-cyan-900",
   },
 ];
@@ -84,13 +84,13 @@ const operatingSteps = [
   { step: "01", title: "资产入库", text: "围绕真伪、稀缺性、来源材料与流通能力完成初筛。" },
   { step: "02", title: "托管确权", text: "建立第三方托管、文件包 hash、线上存证与资产状态记录。" },
   { step: "03", title: "会员配置", text: "向会员开放资产信息、服务卡、积分与生态服务入口。" },
-  { step: "04", title: "流通退出", text: "通过典当、拍卖、回收等合作渠道推进价格发现与交易服务。" },
+  { step: "04", title: "流通服务", text: "通过典当、拍卖、回收等合作渠道推进资料审核、价格发现与交易服务。" },
 ];
 
 const channelItems = [
   { icon: Landmark, title: "典当机构", text: "围绕短期资金需求、赎回机制和资产评估提供快速流通路径。" },
   { icon: Gavel, title: "拍卖渠道", text: "连接专业买家网络与公开竞价场景，推动资产价值发现。" },
-  { icon: Repeat2, title: "回收机构", text: "布局长期回收与再流通网络，为资产持有人提供退出选项。" },
+  { icon: Repeat2, title: "回收机构", text: "布局长期回收与再流通网络，为资产持有人提供服务申请选项。" },
 ];
 
 const flywheel = ["资产库扩容", "会员规模增长", "圈层价值增强", "流通效率提升", "平台公信力增强", "更多资产进入"];
@@ -300,14 +300,14 @@ export default function Home() {
               会员不是旁观者，而是资产生态的参与者。
             </h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              服务卡、锁仓积分、资产配置与社区商城共同形成会员入口。平台通过真实资产、真实服务和真实交易记录，帮助会员长期参与文化艺术品流通生态。
+              服务卡、权益积分规则、资产配置与社区商城共同形成会员入口。平台通过真实资产、真实服务和真实交易记录，帮助会员长期参与文化艺术品流通生态。
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/staking"
                 className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
               >
-                锁仓积分奖励
+                权益积分规则
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
@@ -327,7 +327,7 @@ export default function Home() {
               </div>
               <div className="border-r border-sky-100 p-4">
                 <div className="text-sm text-sky-900/60">积分</div>
-                <div className="mt-2 font-semibold text-sky-950">锁仓获取</div>
+                <div className="mt-2 font-semibold text-sky-950">规则累计</div>
               </div>
               <div className="p-4">
                 <div className="text-sm text-sky-900/60">商城</div>
@@ -343,10 +343,10 @@ export default function Home() {
           <div>
             <p className="text-sm font-semibold uppercase text-sky-700">Liquidity Channels</p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
-              退出路径提前建设，流通服务才可预期。
+              服务路径提前建设，流通协助才更清晰。
             </h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              PHENIX 不承诺收益，而是减少资产流通中的信息断点。典当、拍卖和回收通道共同服务于不同周期、不同需求的资产服务场景。
+              PHENIX 不承诺收益或成交，而是减少资产流通中的信息断点。典当、拍卖和回收通道共同服务于不同周期、不同需求的资产服务场景。
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">

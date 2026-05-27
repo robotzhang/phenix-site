@@ -1,4 +1,5 @@
 import FQA from "@/components/biz/FQA";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 
 export function meta() {
   return [
@@ -14,6 +15,7 @@ export default function Faq() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">FAQ</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">常见问题</h1>
+          <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
         </div>
       </section>
 

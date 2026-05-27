@@ -97,7 +97,7 @@ export default function Custody() {
             to="/liquidity"
             className="mt-8 inline-flex items-center gap-2 border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
           >
-            查看变现机制
+            查看流通服务
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

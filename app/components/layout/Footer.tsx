@@ -29,7 +29,7 @@ export function Footer() {
               <Link to="/custody" className="hover:text-sky-700">托管与确权</Link>
             </div>
             <div className="flex flex-col gap-2">
-              <Link to="/liquidity" className="hover:text-sky-700">变现机制</Link>
+              <Link to="/liquidity" className="hover:text-sky-700">流通服务</Link>
               <Link to="/assets" className="hover:text-sky-700">会员凭证</Link>
               <Link to="/assets" className="hover:text-sky-700">我的资产</Link>
               <Link to="/faq" className="hover:text-sky-700">FAQ</Link>

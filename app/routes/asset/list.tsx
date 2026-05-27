@@ -64,7 +64,7 @@ export default function RwaList() {
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
               PHENIX 不卖单品，而是构建可配置资产库。Phenix严选资产入库，每个资产都经过资料收集整理、文件包
-              hash 与确权资料，用于支撑后续第三方托管、第三方典当服务，使我们平台会员持有的Phenix的文化艺术品资产，都能实现快速的、高效的获得现金流通。
+              hash 与确权资料，用于支撑后续第三方托管、第三方典当等服务申请，让平台会员持有的文化艺术品资产拥有更清晰的资料索引和流通服务路径。
             </p>
           </div>
           <div className="grid grid-cols-3 border border-sky-100 bg-white/90 shadow-sm">

@@ -22,6 +22,7 @@ import {
   createStakeRecord,
   useStakingStorageDocument,
 } from "@/lib/staking-storage";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 
 const CARD_POINTS = 1000;
 
@@ -52,8 +53,8 @@ function formatDateTime(value: string) {
 
 export function meta() {
   return [
-    { title: "锁仓积分奖励 | PHENIX" },
-    { name: "description", content: "锁仓鉴定服务卡，或提交未锁仓鉴定服务卡的平台出售申请。" },
+    { title: "服务卡权益积分规则 | PHENIX" },
+    { name: "description", content: "服务卡权益使用周期、积分规则与转让/退出服务申请登记。" },
   ];
 }
 
@@ -151,12 +152,12 @@ export default function Staking() {
     }
 
     if (parsedStakeCardCount <= 0) {
-      toast.error("请输入锁仓数量");
+      toast.error("请输入服务卡数量");
       return;
     }
 
     if (parsedStakeCardCount > operableCards) {
-      toast.error("锁仓数量不能超过可操作的未锁仓鉴定服务卡数量");
+      toast.error("数量不能超过可操作的服务卡数量");
       return;
     }
 
@@ -171,9 +172,9 @@ export default function Staking() {
         months: selectedPlan.months,
         annualRate: selectedPlan.annualRate,
       });
-      toast.success("锁仓记录已提交");
+      toast.success("权益使用周期记录已提交");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "锁仓提交失败");
+      toast.error(error instanceof Error ? error.message : "权益使用周期提交失败");
     } finally {
       setBusyAction(null);
     }
@@ -186,12 +187,12 @@ export default function Staking() {
     }
 
     if (parsedBuybackCardCount <= 0) {
-      toast.error("请输入平台出售申请数量");
+      toast.error("请输入转让/退出服务申请数量");
       return;
     }
 
     if (parsedBuybackCardCount > operableCards) {
-      toast.error("平台出售数量不能超过可操作的未锁仓鉴定服务卡数量");
+      toast.error("申请数量不能超过可操作的服务卡数量");
       return;
     }
 
@@ -204,9 +205,9 @@ export default function Staking() {
         cardCount: parsedBuybackCardCount,
         ownedCardCount: cardBalance,
       });
-      toast.success("平台出售申请已提交，已按申请时间进入队列");
+      toast.success("转让/退出服务申请已提交，平台将协助登记");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "平台出售申请提交失败");
+      toast.error(error instanceof Error ? error.message : "转让/退出服务申请提交失败");
     } finally {
       setBusyAction(null);
     }
@@ -218,11 +219,12 @@ export default function Staking() {
         <div className="max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Phenix Token Points</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            锁仓服务卡，按规则记录 PHENIX 积分奖励
+            服务卡权益使用周期，按平台规则累计积分
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            锁仓服务卡可按平台规则获得 PHENIX 积分奖励；奖励以锁仓周期、计量基数和线上记录为准，不支持服务卡直接兑换积分。
+            会员可选择服务卡权益保留期，平台根据权益使用周期、积分计量单位和线上记录累计积分；服务卡不支持直接兑换积分或现金权益。
           </p>
+          <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               to="/membership"
@@ -254,22 +256,22 @@ export default function Staking() {
         </div>
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <ShieldCheck className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-xl font-semibold text-sky-950">锁仓中</h2>
+          <h2 className="mt-5 text-xl font-semibold text-sky-950">权益保留期中</h2>
           <div className="mt-5 text-5xl font-semibold text-sky-950">
             {isConnected ? activeStakedCards : "-"}
           </div>
           <p className="mt-3 text-sm leading-6 text-sky-900/60">
-            已提交锁仓记录的鉴定服务卡。
+            已提交权益使用周期记录的鉴定服务卡。
           </p>
         </div>
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <HandCoins className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-xl font-semibold text-sky-950">未锁仓</h2>
+          <h2 className="mt-5 text-xl font-semibold text-sky-950">可操作服务卡</h2>
           <div className="mt-5 text-5xl font-semibold text-sky-950">
             {isConnected ? availableCards : "-"}
           </div>
           <p className="mt-3 text-sm leading-6 text-sky-900/60">
-            未锁仓卡可继续锁仓
+            可选择权益保留期或提交转让/退出服务申请。
           </p>
         </div>
       </section>
@@ -277,26 +279,26 @@ export default function Staking() {
       <section className="grid gap-4 border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.85fr_1.15fr]">
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <Coins className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-2xl font-semibold text-sky-950">锁仓计量参考</h2>
+          <h2 className="mt-5 text-2xl font-semibold text-sky-950">权益积分计量参考</h2>
           <div className="mt-6 border-y border-sky-100 py-6">
-            <div className="text-sm text-sky-900/60">参与锁仓的鉴定服务卡</div>
+            <div className="text-sm text-sky-900/60">参与权益使用周期的鉴定服务卡</div>
             <div className="mt-2 flex items-end gap-3">
               <span className="text-5xl font-semibold text-sky-950">1</span>
               <span className="pb-2 text-sky-900/70">张</span>
             </div>
           </div>
           <div className="pt-6">
-            <div className="text-sm text-sky-900/60">积分奖励计量基数</div>
+            <div className="text-sm text-sky-900/60">积分计量单位</div>
             <div className="mt-2 text-5xl font-semibold text-sky-950">{CARD_POINTS}</div>
           </div>
           <p className="mt-6 border border-amber-200 bg-amber-50/80 p-4 text-sm leading-6 text-amber-950">
-            提醒：鉴定服务卡无法兑换 Phenix 积分，平台无兑换的功能及服务！
+            1 张服务卡对应 1000 积分计量单位，用于平台权益核算，不代表现金价值或任何固定收益。
           </p>
         </div>
 
         <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
           <BadgeCheck className="h-7 w-7 text-sky-700" />
-          <h2 className="mt-5 text-2xl font-semibold text-sky-950">获得规则</h2>
+          <h2 className="mt-5 text-2xl font-semibold text-sky-950">权益积分规则</h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {plans.map((plan) => (
               <button
@@ -311,12 +313,12 @@ export default function Staking() {
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-lg font-semibold">{plan.months} 个月</span>
-                  <span className="text-sm text-sky-900/60">年化</span>
+                  <span className="text-sm text-sky-900/60">积分奖励比例</span>
                 </div>
                 <div className="mt-4 text-4xl font-semibold text-sky-950">
                   {(plan.annualRate * 100).toFixed(0)}%
                 </div>
-                <p className="mt-3 text-sm leading-6 text-sky-900/60">按规则记录 PHENIX 积分奖励</p>
+                <p className="mt-3 text-sm leading-6 text-sky-900/60">按平台规则累计积分</p>
               </button>
             ))}
           </div>
@@ -325,16 +327,16 @@ export default function Staking() {
 
       <section className="grid gap-8 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Staking Estimate</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">锁仓积分奖励</h2>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Rights Estimate</p>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">权益积分测算</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            输入计划锁仓的鉴定服务卡数量，选择锁仓周期，即可测算锁仓期间可能产生的 PHENIX 积分奖励。
+            输入计划参与权益使用周期的鉴定服务卡数量，选择周期，即可按平台规则测算可能累计的积分。
           </p>
         </div>
 
         <div className="border border-sky-100 bg-white p-6 shadow-sm">
           <label className="text-sm font-semibold text-sky-950" htmlFor="stake-card-count">
-            锁仓鉴定服务卡数量
+            鉴定服务卡数量
           </label>
           <input
             id="stake-card-count"
@@ -350,30 +352,30 @@ export default function Staking() {
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Coins className="h-4 w-4" />
-                积分计量基数
+                积分计量单位
               </div>
-              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.principal)} PHENIX 积分</div>
+              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.principal)} 单位</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <CalendarDays className="h-4 w-4" />
-                锁仓周期
+                权益使用周期
               </div>
               <div className="mt-3 text-2xl font-semibold text-sky-950">{selectedPlan.months} 个月</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <Gift className="h-4 w-4" />
-                预计总积分奖励
+                预计累计积分
               </div>
-              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.totalAirdrop)} PHENIX 积分</div>
+              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.totalAirdrop)} 积分</div>
             </div>
             <div className="bg-sky-50 p-5">
               <div className="flex items-center gap-2 text-sm text-sky-900/60">
                 <ShieldCheck className="h-4 w-4" />
-                预计每日积分奖励
+                按日折算积分
               </div>
-              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.dailyAirdrop)} PHENIX 积分</div>
+              <div className="mt-3 text-2xl font-semibold text-sky-950">{formatPoints(estimate.dailyAirdrop)} 积分</div>
             </div>
           </div>
 
@@ -383,11 +385,11 @@ export default function Staking() {
             disabled={!isConnected || busyAction === "stake"}
             className="mt-6 inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
           >
-            {busyAction === "stake" ? "提交中..." : "提交锁仓"}
+            {busyAction === "stake" ? "提交中..." : "提交权益使用周期"}
           </button>
 
           <p className="mt-6 text-sm leading-7 text-sky-900/60">
-            测算以 1 张参与锁仓的鉴定服务卡按 1000 PHENIX 积分作为计量基数、每月 30 天估算。该基数仅用于锁仓奖励测算，不代表服务卡可直接兑换Phenix积分或任何现金权益。最终积分奖励以实际锁仓合约、平台规则与线上记录为准。
+            测算以 1 张服务卡对应 1000 积分计量单位、每月 30 天估算。该计量单位仅用于平台权益核算，不代表现金价值、固定收益或服务卡可直接兑换积分。最终积分记录以平台规则与线上记录为准。
           </p>
         </div>
       </section>
@@ -395,10 +397,10 @@ export default function Staking() {
       <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">RMB Sell Queue</p>
-            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">委托平台出售服务卡</h2>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Transfer Service Queue</p>
+            <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">服务卡转让/退出服务申请</h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              未锁仓的鉴定服务卡，可以向平台申请，委托平台出售。锁仓中的服务卡不能交易。
+              可操作的鉴定服务卡可提交转让/退出服务申请，由平台协助登记；是否成交取决于市场需求、规则审核和实际服务进度，平台不承诺成交。
             </p>
           </div>
 
@@ -423,7 +425,7 @@ export default function Staking() {
             </div>
 
             <label className="mt-6 block text-sm font-semibold text-sky-950" htmlFor="buyback-card-count">
-              申请平台出售的鉴定服务卡数量
+              转让/退出服务申请数量
             </label>
             <input
               id="buyback-card-count"
@@ -441,7 +443,7 @@ export default function Staking() {
               disabled={!isConnected || busyAction === "buyback"}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
             >
-              {busyAction === "buyback" ? "提交中..." : "提交平台出售申请"}
+              {busyAction === "buyback" ? "提交中..." : "提交转让/退出服务申请"}
             </button>
 
             {userPendingBuyback && (
@@ -457,7 +459,7 @@ export default function Staking() {
             )}
 
             <p className="mt-6 text-sm leading-7 text-sky-900/60">
-              未锁仓的服务卡，可以申请委托平台出售
+              平台仅协助登记与服务对接，不承诺成交价格、成交时间或退出结果。
             </p>
           </div>
         </div>
@@ -466,10 +468,10 @@ export default function Staking() {
       <section className="px-4 py-16 sm:px-0 sm:py-24">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
-            <h2 className="text-2xl font-semibold text-sky-950">我的锁仓记录</h2>
+            <h2 className="text-2xl font-semibold text-sky-950">我的权益使用周期记录</h2>
             <div className="mt-5 space-y-3">
               {userStakes.length === 0 ? (
-                <p className="text-sm leading-7 text-sky-900/60">暂无锁仓记录。</p>
+                <p className="text-sm leading-7 text-sky-900/60">暂无权益使用周期记录。</p>
               ) : (
                 userStakes.map((item) => (
                   <div key={item.id} className="border border-sky-100 bg-sky-50 p-4">
@@ -478,11 +480,11 @@ export default function Staking() {
                         {item.cardCount} 张 / {item.months} 个月
                       </div>
                       <div className="text-sm text-sky-700">
-                        {item.status === "active" ? "锁仓中" : "已释放"}
+                        {item.status === "active" ? "权益保留期中" : "已释放"}
                       </div>
                     </div>
                     <div className="mt-2 text-sm text-sky-900/60">
-                      年化 {(item.annualRate * 100).toFixed(0)}% / {formatDateTime(item.createdAt)}
+                      积分奖励比例 {(item.annualRate * 100).toFixed(0)}% / {formatDateTime(item.createdAt)}
                     </div>
                   </div>
                 ))
@@ -491,10 +493,10 @@ export default function Staking() {
           </div>
 
           <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
-            <h2 className="text-2xl font-semibold text-sky-950">我的平台出售申请</h2>
+            <h2 className="text-2xl font-semibold text-sky-950">我的转让/退出服务申请</h2>
             <div className="mt-5 space-y-3">
               {userBuybackRequests.length === 0 ? (
-                <p className="text-sm leading-7 text-sky-900/60">暂无平台出售申请。</p>
+                <p className="text-sm leading-7 text-sky-900/60">暂无转让/退出服务申请。</p>
               ) : (
                 userBuybackRequests.map((item) => {
                   const queuePosition =
@@ -506,7 +508,7 @@ export default function Staking() {
                     <div key={item.id} className="border border-sky-100 bg-sky-50 p-4">
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div className="font-semibold text-sky-950">
-                          {item.cardCount} 张 / {item.payoutCurrency} 平台出售
+                          {item.cardCount} 张 / 转让服务登记
                         </div>
                         <div className="text-sm text-sky-700">
                           {item.status === "pending" ? `排第 ${queuePosition} 位` : item.status}

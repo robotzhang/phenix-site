@@ -50,7 +50,7 @@ const trustRecords = [
   {
     icon: WalletCards,
     title: "流通支持",
-    text: "围绕典当、拍卖、回收等渠道建立更清晰的退出路径。",
+    text: "围绕典当、拍卖、回收等渠道建立更清晰的服务申请路径。",
   },
 ];
 

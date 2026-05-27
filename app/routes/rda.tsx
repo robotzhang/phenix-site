@@ -1,4 +1,5 @@
 import FQA from "@/components/biz/FQA";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 import { Buy } from "@/components/biz/Buy";
 import { Link } from "react-router";
 import { BadgeCheck, BriefcaseBusiness, Gem, Network, ShieldCheck } from "lucide-react";
@@ -7,7 +8,7 @@ const benefits = [
   { icon: Gem, title: "资产配置服务", text: "获取平台严选资产库相关信息与配置服务入口。" },
   { icon: Network, title: "圈层资源对接", text: "进入 PHENIX 高净值会员与战略伙伴生态。" },
   { icon: BriefcaseBusiness, title: "项目合作机会", text: "围绕文化艺术品资产、品牌、展陈与跨境流通建立连接。" },
-  { icon: ShieldCheck, title: "优先流通支持", text: "对接典当、拍卖、回收等退出路径的信息与服务。" },
+  { icon: ShieldCheck, title: "流通服务协助", text: "对接典当、拍卖、回收等服务申请路径的信息与协助登记。" },
 ];
 
 export function meta() {
@@ -28,8 +29,9 @@ export default function Rda() {
             PHENIX 会员凭证
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            会员凭证是进入 PHENIX 文化艺术品资产配置生态的线上入口。它连接资产配置服务、圈层资源、项目合作机会与优先流通支持。
+            会员凭证是进入 PHENIX 文化艺术品资产配置生态的线上入口。它连接资产配置服务、圈层资源、项目合作机会与流通服务协助。
           </p>
+          <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/membership" className="inline-flex items-center justify-center border border-sky-300 bg-white/80 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50">
               查看会员体系
@@ -55,7 +57,7 @@ export default function Rda() {
             <BadgeCheck className="h-5 w-5 text-sky-700" />
             <div>
               <h2 className="font-semibold text-sky-950">获取线上会员凭证</h2>
-              <p className="text-sm text-sky-900/60">线上直接采购鉴定服务卡，买满10张的，联系我们领取黄金会员卡。</p>
+              <p className="text-sm text-sky-900/60">线上获取鉴定服务卡，具体会员资格与权益以平台规则和人工确认为准。</p>
             </div>
           </div>
           <div className="relative flex flex-col gap-1 bg-card text-card-foreground">

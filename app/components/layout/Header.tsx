@@ -19,7 +19,7 @@ const navItems = [
   { to: "/membership", label: "会员体系" },
   { to: "/points-mall", label: "社区商城" },
   { to: "/custody", label: "托管与确权" },
-  { to: "/liquidity", label: "变现机制" },
+  { to: "/liquidity", label: "流通服务" },
   { to: "/faq", label: "FAQ" },
 ];
 

@@ -7,6 +7,7 @@ import { FNFT_ADDRESS, USDT_ADDRESS } from "@/lib/constants";
 import ConnectButton from "@/components/wallet/ConnectButton";
 import { Button } from "@/components/ui/button";
 import { BadgeCheck, IdCard, WalletCards } from "lucide-react";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 
 const MAX_DISPLAYED_SERVICE_CARDS = 50;
 const serviceCardAbi = fnftAbi as Abi;
@@ -72,6 +73,7 @@ export default function Assets() {
         <p className="mt-4 max-w-2xl leading-7 text-sky-900/70">
           查看当前账户中的积分、PHENIX 会员凭证及鉴定服务卡数量。
         </p>
+        <RightsBoundaryNotice className="mt-5 max-w-3xl" compact />
         {isConnected && (
           <div className="mt-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div className="break-all text-sm text-muted-foreground">{address}</div>
@@ -163,7 +165,7 @@ export default function Assets() {
                       <div className="mt-5 text-sm text-sky-900/60">鉴定服务卡编号</div>
                       <div className="mt-2 text-2xl font-semibold text-sky-950">#{cardId}</div>
                       <div className="mt-4 border-t border-sky-100 pt-4 text-sm leading-6 text-sky-900/70">
-                        可用于会员身份识别、服务卡锁仓与平台支持的会员功能。
+                        可用于会员身份识别、服务卡权益使用周期与平台支持的会员功能。
                       </div>
                     </div>
                   ))}

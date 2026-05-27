@@ -13,6 +13,7 @@ import {
   Sparkles,
   TicketPercent,
 } from "lucide-react";
+import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 
 const redemptionProducts = [
   {
@@ -117,6 +118,7 @@ export default function PointsRedemption() {
             选择产品查看权益详情，后续可接入外部权益链接、商品详情页或线上积分扣减流程。当前页面先展示兑换路径和确认信息。
           </p>
         </div>
+        <RightsBoundaryNotice className="mt-6" compact />
       </section>
 
       <section className="grid gap-6 px-4 py-10 sm:px-0 sm:py-14 lg:grid-cols-[0.85fr_1.15fr]">
@@ -162,7 +164,7 @@ export default function PointsRedemption() {
                   </div>
                   <div className="sm:text-right">
                     <div className="text-lg font-semibold text-sky-950">
-                      {formatPoints(product.points)} PHENIX
+                      {formatPoints(product.points)} 积分
                     </div>
                     <div className="mt-2 text-sm text-sky-700">{product.status}</div>
                   </div>
@@ -314,6 +316,7 @@ export default function PointsRedemption() {
             <ShieldCheck className="mt-1 h-5 w-5 shrink-0 text-sky-700" />
             <p className="text-sm leading-7 text-sky-900/70">
               当前为积分兑换展示与流程页面。商品上线状态、积分消耗、权益发放和外部链接以正式规则为准。
+              PHENIX 积分仅用于平台权益核算与兑换记录，不代表现金价值、固定收益或可对外兑付资产。
             </p>
           </div>
         </div>

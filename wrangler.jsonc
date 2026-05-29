@@ -6,10 +6,18 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "phenix-site",
 	"compatibility_flags": [
-    "nodejs_compat"
-  ],
+		"nodejs_compat"
+	],
 	"compatibility_date": "2025-04-04",
 	"main": "./workers/app.ts",
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "phenix-site-db",
+			"database_id": "d217caae-9adf-4dd1-916a-befdb21bdf0f",
+			"migrations_dir": "migrations"
+		}
+	],
 	"durable_objects": {
 		"bindings": [
 			{

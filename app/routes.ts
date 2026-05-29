@@ -17,6 +17,7 @@ export default [
   route("admin/asset/image/*", "./routes/admin/asset-image-file.tsx"),
   route("admin/asset/storage", "./routes/admin/asset-storage.tsx"),
   route("admin/asset", "./routes/admin/asset.tsx"),
+  route("admin/db-health", "./routes/admin/db-health.ts"),
   route("admin/rwa/storage", "./routes/legacy/admin-rwa-storage.tsx"),
   route("admin/rwa", "./routes/legacy/admin-rwa.tsx"),
   route("membership", "./routes/membership.tsx"),

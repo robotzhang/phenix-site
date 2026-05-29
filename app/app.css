@@ -157,6 +157,12 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+.admin-shell {
+  --primary: #000;
+  --primary-foreground: #fff;
+  --ring: #000;
+}
+
 .points-rights-card {
   background:
     radial-gradient(circle at 82% 22%, rgba(255, 216, 125, 0.24), rgba(255, 216, 125, 0) 30%),

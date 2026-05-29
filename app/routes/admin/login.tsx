@@ -136,13 +136,9 @@ export default function AdminLogin() {
             <LockKeyhole className="h-6 w-6" />
           </div>
           <h2 className="mt-6 text-2xl font-semibold">后台登录</h2>
-          <p className="mt-2 text-sm leading-6 text-sky-900/60">
-            连接的钱包地址必须存在于 <code>admin_wallets</code> 表中，
-            且状态为 active。
-          </p>
 
-          <div className="mt-8 grid gap-4">
-            <ConnectButton />
+          <div className="mt-6 grid gap-4">
+            <ConnectButton connectLabel="连接钱包" connectedTo={null} />
 
             {address ? (
               <div className="border border-sky-100 bg-sky-50/70 p-3 text-sm text-sky-900">

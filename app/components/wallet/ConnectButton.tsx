@@ -9,7 +9,15 @@ type RainbowKitHooks = {
   useAccountModal: () => { openAccountModal?: () => void };
 };
 
-export default function WalletConnectButton() {
+type WalletConnectButtonProps = {
+  connectLabel?: string;
+  connectedTo?: string | null;
+};
+
+export default function WalletConnectButton({
+  connectLabel = "Connect",
+  connectedTo = "/assets",
+}: WalletConnectButtonProps) {
   const [rainbowKitHooks, setRainbowKitHooks] = useState<RainbowKitHooks | null>(null);
 
   useEffect(() => {
@@ -33,7 +41,13 @@ export default function WalletConnectButton() {
     return <WalletConnectButtonFallback />;
   }
 
-  return <WalletConnectButtonInner hooks={rainbowKitHooks} />;
+  return (
+    <WalletConnectButtonInner
+      hooks={rainbowKitHooks}
+      connectLabel={connectLabel}
+      connectedTo={connectedTo}
+    />
+  );
 }
 
 function WalletConnectButtonFallback() {
@@ -44,10 +58,18 @@ function WalletConnectButtonFallback() {
   );
 }
 
-function WalletConnectButtonInner({ hooks }: { hooks: RainbowKitHooks }) {
+function WalletConnectButtonInner({
+  hooks,
+  connectLabel,
+  connectedTo,
+}: {
+  hooks: RainbowKitHooks;
+  connectLabel: string;
+  connectedTo: string | null;
+}) {
   const { address, isConnected, isReconnecting, isConnecting } = useAccount();
   const { openConnectModal } = hooks.useConnectModal();
-  hooks.useAccountModal();
+  const { openAccountModal } = hooks.useAccountModal();
   const [mounted, setMounted] = useState(false);
 
   // SSR 安全挂载
@@ -64,16 +86,33 @@ function WalletConnectButtonInner({ hooks }: { hooks: RainbowKitHooks }) {
 
   // 已连接钱包显示地址 + Dicebear 头像
   if (isConnected && address) {
+    const content = (
+      <>
+        <Wallet className="w-4 h-4" />
+        <span className="max-w-20">{`${address.slice(0, 4)}...${address.slice(-4)}`}</span>
+      </>
+    );
+
+    if (!connectedTo) {
+      return (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={openAccountModal}
+          className="flex items-center gap-2 transition-all duration-200"
+        >
+          {content}
+        </Button>
+      );
+    }
+
     return (
       <Button
         asChild
         variant="outline"
         className="flex items-center gap-2 transition-all duration-200"
       >
-        <Link to="/assets">
-          <Wallet className="w-4 h-4" />
-          <span className="max-w-20">{`${address.slice(0, 4)}...${address.slice(-4)}`}</span>
-        </Link>
+        <Link to={connectedTo}>{content}</Link>
       </Button>
     );
   }
@@ -84,7 +123,7 @@ function WalletConnectButtonInner({ hooks }: { hooks: RainbowKitHooks }) {
       onClick={openConnectModal}
       className="transition-all duration-200"
     >
-      Connect
+      {connectLabel}
     </Button>
   );
 }

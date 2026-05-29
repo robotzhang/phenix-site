@@ -43,7 +43,7 @@ export function normalizeAdminAddress(value: unknown): `0x${string}` | null {
     return null;
   }
 
-  return getAddress(value).toLowerCase() as `0x${string}`;
+  return getAddress(value) as `0x${string}`;
 }
 
 export async function createAdminLoginChallenge(
@@ -144,7 +144,7 @@ export async function verifyAdminLogin(
     `
       SELECT address, role, status
       FROM admin_wallets
-      WHERE address = ? AND role = 'super_admin' AND status = 'active'
+      WHERE lower(address) = lower(?) AND role = 'super_admin' AND status = 'active'
     `,
     [address],
   );
@@ -204,7 +204,7 @@ export async function getSuperAdminSession(
         admin_wallets.role,
         admin_wallets.status
       FROM admin_sessions
-      INNER JOIN admin_wallets ON admin_wallets.address = admin_sessions.address
+      INNER JOIN admin_wallets ON lower(admin_wallets.address) = lower(admin_sessions.address)
       WHERE admin_sessions.id = ?
     `,
     [sessionId],

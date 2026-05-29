@@ -20,7 +20,12 @@ export default [
   route("admin/auth/session", "./routes/admin/auth/session.ts"),
   route("admin/auth/verify", "./routes/admin/auth/verify.ts"),
   layout("./components/layout/admin.tsx", [
+    route("admin", "./routes/admin/index.tsx"),
     route("admin/asset", "./routes/admin/asset.tsx"),
+    route("admin/asset/new", "./routes/admin/asset-new.tsx"),
+    route("admin/asset/:assetId", "./routes/admin/asset-detail.tsx"),
+    route("admin/asset/:assetId/edit", "./routes/admin/asset-edit.tsx"),
+    route("admin/settings", "./routes/admin/settings.tsx"),
   ]),
   route("admin/db-health", "./routes/admin/db-health.ts"),
   route("admin/login", "./routes/admin/login.tsx"),

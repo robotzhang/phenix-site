@@ -6,13 +6,18 @@ import {
   listAppSettings,
   upsertAppSetting,
 } from "@/lib/server/app-settings.repository";
+import { requireSuperAdminApi } from "@/lib/server/admin-auth";
 import { queryFirst } from "@/lib/server/db";
 
 type HealthRow = {
   ok: number;
 };
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
+  if (!isLocalRequest(request)) {
+    await requireSuperAdminApi(context, request);
+  }
+
   const health = await queryFirst<HealthRow>(context, "SELECT 1 AS ok");
 
   return Response.json({

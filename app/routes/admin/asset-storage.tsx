@@ -4,6 +4,7 @@ import {
   RWA_ADMIN_IMAGE_ROUTE,
   RWA_ADMIN_STORAGE_ROUTE,
 } from "@/lib/rwa-admin-storage.shared";
+import { requireSuperAdminApi } from "@/lib/server/admin-auth";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   return handleRwaAdminStorageRequest(request, context);
@@ -26,6 +27,10 @@ async function handleRwaAdminStorageRequest(
     url.pathname !== "/admin/rwa/storage"
   ) {
     return new Response("Not Found", { status: 404 });
+  }
+
+  if (request.method !== "GET") {
+    await requireSuperAdminApi(context, request);
   }
 
   const env = (context as { cloudflare?: { env?: Env } }).cloudflare?.env;

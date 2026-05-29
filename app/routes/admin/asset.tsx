@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router";
+import {
+  Form,
+  Link,
+  useLoaderData,
+  type LoaderFunctionArgs,
+} from "react-router";
 import { base } from "viem/chains";
 import { isAddress, parseEventLogs, parseUnits } from "viem";
 import { useAccount, usePublicClient, useReadContract, useSwitchChain } from "wagmi";
@@ -43,6 +48,7 @@ import {
   RWA_SELLER_CATEGORY_LABELS,
   formatRwaPriceWithCurrency,
 } from "@/lib/rwa";
+import { requireSuperAdminPage } from "@/lib/server/admin-auth";
 import {
   removeRwaAdminMetadata,
   refreshRwaAdminMetadataMap,
@@ -61,6 +67,18 @@ const MAX_CATALOG_IMAGES = 8;
 const MAX_CERTIFICATE_IMAGES = 6;
 const MAX_UPLOAD_IMAGE_BYTES = 420_000;
 const IMAGE_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+export async function loader({ context, request }: LoaderFunctionArgs) {
+  const admin = await requireSuperAdminPage(context, request);
+
+  return {
+    admin: {
+      address: admin.address,
+      role: admin.role,
+      expiresAt: admin.expiresAt,
+    },
+  };
+}
 
 interface ProductAssetFormState {
   assetCode: string;
@@ -706,6 +724,7 @@ export function meta() {
 }
 
 export default function AdminRwa() {
+  const { admin } = useLoaderData<typeof loader>();
   const { address, isConnected, chainId } = useAccount();
   const publicClient = usePublicClient();
   const { switchChainAsync, isPending: switching } = useSwitchChain();
@@ -1230,6 +1249,18 @@ export default function AdminRwa() {
 
           <div className="grid min-w-[280px] gap-3 border border-sky-100 bg-white/90 p-4 shadow-sm">
             <ConnectButton />
+            <div className="border border-sky-100 bg-sky-50/70 p-3 text-sm">
+              <div className="text-sky-900/60">后台账号</div>
+              <div className="mt-1 font-semibold text-sky-950">
+                {shortAddress(admin.address)}
+              </div>
+            </div>
+            <Form method="post" action="/admin/logout">
+              <input type="hidden" name="redirectTo" value="/admin/asset" />
+              <Button type="submit" variant="outline" className="w-full">
+                退出后台登录
+              </Button>
+            </Form>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="border border-sky-100 p-3">
                 <div className="text-sky-900/60">网络</div>

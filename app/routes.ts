@@ -1,4 +1,4 @@
-import { type RouteConfig, index, prefix, route } from "@react-router/dev/routes";
+import { type RouteConfig, index, layout, prefix, route } from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
@@ -19,7 +19,9 @@ export default [
   route("admin/auth/nonce", "./routes/admin/auth/nonce.ts"),
   route("admin/auth/session", "./routes/admin/auth/session.ts"),
   route("admin/auth/verify", "./routes/admin/auth/verify.ts"),
-  route("admin/asset", "./routes/admin/asset.tsx"),
+  layout("./components/layout/admin.tsx", [
+    route("admin/asset", "./routes/admin/asset.tsx"),
+  ]),
   route("admin/db-health", "./routes/admin/db-health.ts"),
   route("admin/login", "./routes/admin/login.tsx"),
   route("admin/logout", "./routes/admin/logout.ts"),

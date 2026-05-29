@@ -59,6 +59,18 @@ export default function App() {
   const { scrolled } = useScrollHeader(50);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isAdmin = location.pathname.startsWith("/admin");
+
+  if (isAdmin) {
+    return (
+      <Providers>
+        <div className="min-h-screen text-foreground">
+          <Outlet />
+        </div>
+      </Providers>
+    );
+  }
+
   //
   return (
     <Providers>

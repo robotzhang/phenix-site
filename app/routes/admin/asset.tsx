@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Form,
   Link,
   useLoaderData,
   type LoaderFunctionArgs,
@@ -1231,90 +1230,80 @@ export default function AdminRwa() {
     uploadingProductImages || productImageURLs.length >= MAX_PRODUCT_IMAGES;
 
   return (
-    <div className="-mx-4 md:mx-0">
-      <section className="border-b border-sky-100 bg-white/80 px-4 py-10 sm:px-0 sm:py-14">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
-              Admin Console
-            </p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-              资产库管理
-            </h1>
-            <p className="mt-5 max-w-3xl leading-8 text-sky-900/70">
-              管理 Phenix 严选资产入库资料，维护产品图片、证书影像、资产名称、资产编号、规格、会员价、文件包
-              hash 与确权资料。保存后的后台资料会同步到前台资产库展示。
-            </p>
-          </div>
+    <div className="pb-8">
+      <header className="flex h-14 w-full items-center border-b bg-neutral-100 px-2">
+        <h2 className="flex items-center gap-1 text-base">
+          <FileCheck2 strokeWidth={1.75} className="h-5 w-5" />
+          <span className="font-semibold">资产库管理</span>
+        </h2>
 
-          <div className="grid min-w-[280px] gap-3 border border-sky-100 bg-white/90 p-4 shadow-sm">
-            <ConnectButton />
-            <div className="border border-sky-100 bg-sky-50/70 p-3 text-sm">
-              <div className="text-sky-900/60">后台账号</div>
-              <div className="mt-1 font-semibold text-sky-950">
-                {shortAddress(admin.address)}
-              </div>
-            </div>
-            <Form method="post" action="/admin/logout">
-              <input type="hidden" name="redirectTo" value="/admin/asset" />
-              <Button type="submit" variant="outline" className="w-full">
-                退出后台登录
-              </Button>
-            </Form>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="border border-sky-100 p-3">
-                <div className="text-sky-900/60">网络</div>
-                <div className="mt-1 font-semibold text-sky-950">
-                  {isBase ? "Base" : "未切换"}
-                </div>
-              </div>
-              <div className="border border-sky-100 p-3">
-                <div className="text-sky-900/60">权限</div>
-                <div className="mt-1 font-semibold text-sky-950">
-                  {isOwner ? "Owner" : isIssuer ? "Issuer" : "无权限"}
-                </div>
-              </div>
-            </div>
-            {!isBase && isConnected && (
-              <Button
-                variant="outline"
-                onClick={() => switchChainAsync({ chainId: base.id })}
-                disabled={switching}
-              >
-                {switching && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                切换到 Base
-              </Button>
-            )}
-          </div>
+        <div className="ml-auto flex items-center gap-2">
+          {!isBase && isConnected && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => switchChainAsync({ chainId: base.id })}
+              disabled={switching}
+            >
+              {switching && <LoaderCircle className="h-4 w-4 animate-spin" />}
+              切换 Base
+            </Button>
+          )}
+          <ConnectButton />
         </div>
-      </section>
+      </header>
 
-      <section className="grid gap-4 border-b border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#edf6fb_100%)] px-4 py-6 text-sky-950 sm:px-8 md:grid-cols-5">
-        <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">产品资产</div>
-          <div className="mt-2 text-2xl font-semibold">{productAssets.length}</div>
-        </div>
-        <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">证书影像</div>
-          <div className="mt-2 text-2xl font-semibold">{productCertificateCount}</div>
-        </div>
-        <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">线上资产</div>
-          <div className="mt-2 text-2xl font-semibold">{rwas.length}</div>
-        </div>
-        <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">线上已发布</div>
-          <div className="mt-2 text-2xl font-semibold">{published}</div>
-        </div>
-        <div className="border border-sky-100 bg-white/80 p-4 shadow-sm">
-          <div className="text-sm text-sky-900/60">后台覆盖</div>
-          <div className="mt-2 text-2xl font-semibold">{labeledCount}</div>
-        </div>
-      </section>
+      <div className="m-auto max-w-6xl space-y-4 p-6">
+        <section className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">后台账号</div>
+            <div className="mt-2 font-semibold text-neutral-950">
+              {shortAddress(admin.address)}
+            </div>
+            <div className="mt-2 text-sm text-neutral-500">超级管理员 session 已验证</div>
+          </div>
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">网络</div>
+            <div className="mt-2 font-semibold text-neutral-950">
+              {isBase ? "Base" : "未切换"}
+            </div>
+            <div className="mt-2 text-sm text-neutral-500">链上操作需要 Base 网络</div>
+          </div>
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">链上权限</div>
+            <div className="mt-2 font-semibold text-neutral-950">
+              {isOwner ? "Owner" : isIssuer ? "Issuer" : "无权限"}
+            </div>
+            <div className="mt-2 text-sm text-neutral-500">创建链上资产仍需合约权限</div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">产品资产</div>
+            <div className="mt-2 text-2xl font-semibold">{productAssets.length}</div>
+          </div>
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">证书影像</div>
+            <div className="mt-2 text-2xl font-semibold">{productCertificateCount}</div>
+          </div>
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">线上资产</div>
+            <div className="mt-2 text-2xl font-semibold">{rwas.length}</div>
+          </div>
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">线上已发布</div>
+            <div className="mt-2 text-2xl font-semibold">{published}</div>
+          </div>
+          <div className="rounded-xl border-0 bg-white p-4 shadow">
+            <div className="text-sm text-neutral-500">后台覆盖</div>
+            <div className="mt-2 text-2xl font-semibold">{labeledCount}</div>
+          </div>
+        </section>
 
       {!canManage && isConnected && (
-        <section className="px-4 py-6 sm:px-0">
-          <div className="flex gap-3 border border-amber-200 bg-amber-50 p-5 text-amber-900">
+        <section>
+          <div className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-5 text-amber-900">
             <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0" />
             <div>
               <div className="font-semibold">当前钱包没有管理权限</div>
@@ -1326,8 +1315,8 @@ export default function AdminRwa() {
         </section>
       )}
 
-      <section className="grid gap-6 px-4 py-8 sm:px-0 lg:grid-cols-[1.18fr_0.82fr]">
-        <div className="border border-sky-100 bg-white/90 p-5 shadow-sm">
+      <section className="grid gap-6 lg:grid-cols-[1.18fr_0.82fr]">
+        <div className="rounded-xl border-0 bg-white p-5 shadow">
           <div className="mb-5 flex items-center gap-3 border-b border-sky-100 pb-5">
             <FileCheck2 className="h-5 w-5 text-sky-700" />
             <div>
@@ -1513,7 +1502,7 @@ export default function AdminRwa() {
           </div>
         </div>
 
-        <div className="border border-sky-100 bg-white/90 p-5 shadow-sm">
+        <div className="rounded-xl border-0 bg-white p-5 shadow">
           <div className="mb-5 flex items-center gap-3 border-b border-sky-100 pb-5">
             <ShieldCheck className="h-5 w-5 text-sky-700" />
             <div>
@@ -1602,7 +1591,7 @@ export default function AdminRwa() {
         </div>
       </section>
 
-      <section className="px-4 pb-12 sm:px-0">
+      <section className="pb-12">
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-2xl font-semibold text-sky-950">产品资产列表</h2>
@@ -1922,6 +1911,8 @@ export default function AdminRwa() {
           </div>
         )}
       </section>
+
+      </div>
 
       <datalist id={CATEGORY_DATALIST_ID}>
         {RWA_CATEGORY_LABELS.map((label) => (

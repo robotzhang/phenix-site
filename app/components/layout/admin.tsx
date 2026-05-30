@@ -43,6 +43,7 @@ type NavItemProps = {
   icon: LucideIcon;
   label: string;
   end?: boolean;
+  reloadDocument?: boolean;
 };
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -64,10 +65,15 @@ function navLinkClass(isActive: boolean) {
   );
 }
 
-function NavItem({ to, icon: Icon, label, end }: NavItemProps) {
+function NavItem({ to, icon: Icon, label, end, reloadDocument }: NavItemProps) {
   return (
     <li>
-      <NavLink end={end} to={to} className={({ isActive }) => navLinkClass(isActive)}>
+      <NavLink
+        end={end}
+        reloadDocument={reloadDocument}
+        to={to}
+        className={({ isActive }) => navLinkClass(isActive)}
+      >
         <Icon strokeWidth={1} className="h-5 w-5" />
         <span>{label}</span>
       </NavLink>
@@ -165,13 +171,13 @@ export default function AdminLayout() {
             </div>
 
             <NavGroup title="常用">
-              <NavItem to="/admin" icon={LayoutDashboard} label="总览" end />
+              <NavItem to="/admin" icon={LayoutDashboard} label="总览" end reloadDocument />
               <NavItem to="/admin/asset" icon={FileCheck2} label="资产库" end />
             </NavGroup>
 
             <NavGroup title="设置">
               <NavItem to="/admin/settings" icon={Settings2} label="通用" end />
-              <NavItem to="/admin/settings/accounts" icon={UserCog} label="账号管理" end />
+              <NavItem to="/admin/settings/accounts" icon={UserCog} label="账号" end />
             </NavGroup>
           </div>
         </aside>

@@ -12,6 +12,7 @@ import {
   Check,
   ChevronDown,
   Ellipsis,
+  Pencil,
   Plus,
   RotateCcw,
   Search,
@@ -51,9 +52,9 @@ import {
   disableAdminWallet,
   enableAdminWallet,
   listAdminWallets,
+  updateAdminWalletLabel,
   type AdminWalletListItem,
 } from "@/lib/server/admin-wallets.repository";
-import { AssetHeader } from "./asset/shared";
 
 type SettingsAccountsLoaderData = {
   admin: {
@@ -64,7 +65,12 @@ type SettingsAccountsLoaderData = {
 
 type SettingsAccountsActionData = {
   ok: boolean;
-  intent: "add-admin-wallet" | "disable-admin-wallet" | "enable-admin-wallet" | "unknown";
+  intent:
+    | "add-admin-wallet"
+    | "disable-admin-wallet"
+    | "enable-admin-wallet"
+    | "update-admin-wallet-label"
+    | "unknown";
   message: string;
 };
 
@@ -127,6 +133,19 @@ export async function action({ context, request }: ActionFunctionArgs) {
       } satisfies SettingsAccountsActionData;
     }
 
+    if (intent === "update-admin-wallet-label") {
+      const address = await updateAdminWalletLabel(context, {
+        address: formData.get("address"),
+        label: formData.get("label"),
+      });
+
+      return {
+        ok: true,
+        intent,
+        message: `${shortAddress(address)} 名称已更新`,
+      } satisfies SettingsAccountsActionData;
+    }
+
     return {
       ok: false,
       intent: "unknown",
@@ -143,7 +162,7 @@ export async function action({ context, request }: ActionFunctionArgs) {
 
 export function meta() {
   return [
-    { title: "账号管理 | PHENIX" },
+    { title: "账号 | PHENIX" },
     { name: "robots", content: "noindex,nofollow" },
   ];
 }
@@ -153,12 +172,17 @@ export default function AdminSettingsAccounts() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [editingWallet, setEditingWallet] = useState<AdminWalletListItem | null>(null);
   const [statusFilter, setStatusFilter] = useState<WalletStatusFilter>("");
   const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     if (actionData?.ok && actionData.intent === "add-admin-wallet") {
       setAddModalOpen(false);
+    }
+
+    if (actionData?.ok && actionData.intent === "update-admin-wallet-label") {
+      setEditingWallet(null);
     }
   }, [actionData]);
 
@@ -189,15 +213,22 @@ export default function AdminSettingsAccounts() {
 
   return (
     <div className="admin-asset-theme min-h-screen bg-neutral-100 text-neutral-950">
-      <AssetHeader
-        title="账号管理"
-        description="维护可登录后台的超级管理员钱包白名单"
-      >
-        <Button size="sm" type="button" onClick={() => setAddModalOpen(true)}>
-          <Plus />
-          添加管理员
-        </Button>
-      </AssetHeader>
+      <header className="min-h-14 w-full border-b bg-neutral-100">
+        <div className="mx-auto flex min-h-14 w-full max-w-7xl items-center px-6">
+          <div className="min-w-0">
+            <h2 className="truncate text-base font-semibold">账号</h2>
+            <p className="mt-0.5 truncate text-xs text-neutral-500">
+              维护可登录后台的超级管理员钱包白名单
+            </p>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <Button size="sm" type="button" onClick={() => setAddModalOpen(true)}>
+              <Plus />
+              添加管理员
+            </Button>
+          </div>
+        </div>
+      </header>
 
       <main className="mx-auto flex max-w-7xl flex-col gap-4 p-6">
         {actionData ? (
@@ -251,6 +282,7 @@ export default function AdminSettingsAccounts() {
                     currentAddress={admin.address}
                     activeCount={activeCount}
                     submitting={submitting}
+                    onEditLabel={setEditingWallet}
                   />
                 ))}
               </TableBody>
@@ -270,6 +302,15 @@ export default function AdminSettingsAccounts() {
           submitting={submitting}
           actionData={actionData}
           onClose={() => setAddModalOpen(false)}
+        />
+      ) : null}
+
+      {editingWallet ? (
+        <EditAdminWalletLabelModal
+          wallet={editingWallet}
+          submitting={submitting}
+          actionData={actionData}
+          onClose={() => setEditingWallet(null)}
         />
       ) : null}
     </div>
@@ -437,11 +478,13 @@ function AdminWalletRow({
   currentAddress,
   activeCount,
   submitting,
+  onEditLabel,
 }: {
   wallet: AdminWalletListItem;
   currentAddress: `0x${string}`;
   activeCount: number;
   submitting: boolean;
+  onEditLabel: (wallet: AdminWalletListItem) => void;
 }) {
   const isCurrent = wallet.address.toLowerCase() === currentAddress.toLowerCase();
   const canDisable = wallet.status === "active" && !isCurrent && activeCount > 1;
@@ -517,6 +560,10 @@ function AdminWalletRow({
               更多操作
             </DropdownMenuLabel>
             <DropdownMenuGroup>
+              <DropdownMenuItem onSelect={() => onEditLabel(wallet)}>
+                <Pencil />
+                编辑名称
+              </DropdownMenuItem>
               {wallet.status === "active" ? (
                 <DropdownMenuItem asChild disabled={!canDisable || submitting}>
                   <button type="submit" form={actionFormId} disabled={!canDisable || submitting}>
@@ -549,13 +596,94 @@ function AdminWalletRow({
   );
 }
 
+function EditAdminWalletLabelModal({
+  wallet,
+  submitting,
+  actionData,
+  onClose,
+}: {
+  wallet: AdminWalletListItem;
+  submitting: boolean;
+  actionData?: SettingsAccountsActionData;
+  onClose: () => void;
+}) {
+  const editError =
+    actionData?.intent === "update-admin-wallet-label" && !actionData.ok
+      ? actionData.message
+      : "";
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/30 p-4"
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-admin-wallet-label-title"
+        className="flex max-h-[min(560px,calc(100vh-32px))] w-full max-w-lg flex-col border border-neutral-200 bg-white shadow-2xl"
+      >
+        <div className="flex shrink-0 items-center justify-between border-b border-neutral-200 px-5 py-4">
+          <div>
+            <h2 id="edit-admin-wallet-label-title" className="text-lg font-semibold">
+              编辑名称
+            </h2>
+            <p className="mt-1 break-all font-mono text-xs text-neutral-500">
+              {wallet.address}
+            </p>
+          </div>
+          <Button type="button" variant="ghost" size="icon-sm" onClick={onClose}>
+            <X className="size-4" />
+            <span className="sr-only">关闭</span>
+          </Button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
+          {editError ? (
+            <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {editError}
+            </div>
+          ) : null}
+
+          <Form id="edit-admin-wallet-label-form" method="post" className="grid gap-4">
+            <input type="hidden" name="intent" value="update-admin-wallet-label" />
+            <input type="hidden" name="address" value={wallet.address} />
+            <label className="grid gap-2">
+              <span className="text-sm font-medium">备注名称</span>
+              <Input
+                name="label"
+                autoComplete="off"
+                placeholder="例如：运营管理员"
+                defaultValue={wallet.label}
+                disabled={submitting}
+                maxLength={64}
+              />
+            </label>
+          </Form>
+        </div>
+
+        <div className="flex shrink-0 justify-end gap-2 border-t border-neutral-200 px-5 py-4">
+          <Button type="button" variant="outline" disabled={submitting} onClick={onClose}>
+            取消
+          </Button>
+          <Button type="submit" form="edit-admin-wallet-label-form" disabled={submitting}>
+            <Pencil className="size-4" />
+            保存名称
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function isKnownIntent(
   value: string,
 ): value is SettingsAccountsActionData["intent"] {
   return (
     value === "add-admin-wallet" ||
     value === "disable-admin-wallet" ||
-    value === "enable-admin-wallet"
+    value === "enable-admin-wallet" ||
+    value === "update-admin-wallet-label"
   );
 }
 

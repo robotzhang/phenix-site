@@ -192,6 +192,36 @@ export async function enableAdminWallet(
   return address;
 }
 
+export async function updateAdminWalletLabel(
+  context: AppLoadContext,
+  input: {
+    address: unknown;
+    label?: unknown;
+  },
+) {
+  const address = normalizeRequiredAdminAddress(input.address);
+  const label = normalizeLabel(input.label);
+  const existing = await readAdminWalletByAddress(context, address);
+
+  if (!existing) {
+    throw new Error("管理员钱包不存在");
+  }
+
+  await execute(
+    context,
+    `
+      UPDATE admin_wallets
+      SET
+        label = ?,
+        updated_at = unixepoch()
+      WHERE lower(address) = lower(?)
+    `,
+    [label || null, address],
+  );
+
+  return address;
+}
+
 async function readAdminWalletByAddress(
   context: AppLoadContext,
   address: `0x${string}`,

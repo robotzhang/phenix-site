@@ -264,6 +264,63 @@ export function ProductAssetImageUploader({
 }) {
   const [dragging, setDragging] = useState(false);
   const uploadDisabled = disabled || uploading || imageURLs.length >= maxImages;
+  const uploadTile = (
+    <label
+      className={`flex aspect-square cursor-pointer flex-col items-center justify-center border border-dashed p-3 text-center transition ${
+        dragging
+          ? "border-sky-500 bg-sky-100"
+          : "border-sky-200 bg-sky-50/60 hover:border-sky-400 hover:bg-sky-50"
+      } ${uploadDisabled ? "cursor-not-allowed opacity-60" : ""}`}
+      onDragEnter={(event) => {
+        event.preventDefault();
+        if (!uploadDisabled) setDragging(true);
+      }}
+      onDragOver={(event) => {
+        event.preventDefault();
+        if (!uploadDisabled) setDragging(true);
+      }}
+      onDragLeave={(event) => {
+        event.preventDefault();
+        setDragging(false);
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+        setDragging(false);
+        if (!uploadDisabled) onUpload(event.dataTransfer.files);
+      }}
+    >
+      <span className="flex h-11 w-11 items-center justify-center border border-sky-200 bg-white text-sky-700 shadow-sm">
+        {uploading ? (
+          <LoaderCircle className="h-5 w-5 animate-spin" />
+        ) : (
+          <ImagePlus className="h-5 w-5" />
+        )}
+      </span>
+      <span className="mt-3 text-sm font-semibold text-sky-950">
+        {disabled
+          ? "图片已锁定"
+          : uploading
+            ? "正在上传"
+            : imageURLs.length >= maxImages
+              ? "已达上限"
+              : "添加图片"}
+      </span>
+      <span className="mt-1 text-xs leading-5 text-sky-900/60">
+        点击或拖拽上传
+      </span>
+      <input
+        type="file"
+        className="sr-only"
+        accept="image/jpeg,image/png,image/webp"
+        multiple
+        disabled={uploadDisabled}
+        onChange={(event) => {
+          onUpload(event.target.files);
+          event.target.value = "";
+        }}
+      />
+    </label>
+  );
 
   return (
     <div className="grid gap-3">
@@ -274,105 +331,44 @@ export function ProductAssetImageUploader({
         <p className="text-sm leading-6 text-sky-900/60">{description}</p>
       </div>
 
-      <label
-        className={`flex min-h-[128px] cursor-pointer flex-col items-center justify-center border border-dashed px-5 py-6 text-center transition ${
-          dragging
-            ? "border-sky-500 bg-sky-100"
-            : "border-sky-200 bg-sky-50/60 hover:border-sky-400 hover:bg-sky-50"
-        } ${uploadDisabled ? "cursor-not-allowed opacity-60" : ""}`}
-        onDragEnter={(event) => {
-          event.preventDefault();
-          if (!uploadDisabled) setDragging(true);
-        }}
-        onDragOver={(event) => {
-          event.preventDefault();
-          if (!uploadDisabled) setDragging(true);
-        }}
-        onDragLeave={(event) => {
-          event.preventDefault();
-          setDragging(false);
-        }}
-        onDrop={(event) => {
-          event.preventDefault();
-          setDragging(false);
-          if (!uploadDisabled) onUpload(event.dataTransfer.files);
-        }}
-      >
-        <span className="flex h-11 w-11 items-center justify-center border border-sky-200 bg-white text-sky-700 shadow-sm">
-          {uploading ? (
-            <LoaderCircle className="h-5 w-5 animate-spin" />
-          ) : (
-            <ImagePlus className="h-5 w-5" />
-          )}
-        </span>
-        <span className="mt-3 text-sm font-semibold text-sky-950">
-          {disabled
-            ? "已上链，图片已锁定"
-            : uploading
-              ? "正在上传"
-              : imageURLs.length >= maxImages
-              ? "图片数量已达上限"
-              : "点击或拖拽上传"}
-        </span>
-        <span className="mt-1 text-xs leading-5 text-sky-900/60">
-          JPG / PNG / WebP，上传前会自动压缩
-        </span>
-        <input
-          type="file"
-          className="sr-only"
-          accept="image/jpeg,image/png,image/webp"
-          multiple
-          disabled={uploadDisabled}
-          onChange={(event) => {
-            onUpload(event.target.files);
-            event.target.value = "";
-          }}
-        />
-      </label>
-
-      {imageURLs.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-6">
-          {imageURLs.map((imageURL, index) => (
-            <div
-              key={imageURL}
-              className="group relative overflow-hidden border border-sky-100 bg-sky-50"
-            >
-              <img
-                src={imageURL}
-                alt={`${title} ${index + 1}`}
-                className="aspect-square w-full object-cover"
-              />
-              <div className="absolute left-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm">
-                {index === 0 && onCover ? "封面" : index + 1}
-              </div>
-              {!disabled ? (
-                <div className="absolute inset-x-1 top-1 flex justify-end gap-1 opacity-0 transition group-hover:opacity-100">
-                  {onCover && index > 0 ? (
-                    <button
-                      type="button"
-                      className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
-                      onClick={() => onCover(imageURL)}
-                    >
-                      设封面
-                    </button>
-                  ) : null}
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-6">
+        {imageURLs.map((imageURL, index) => (
+          <div
+            key={imageURL}
+            className="group relative overflow-hidden border border-sky-100 bg-sky-50"
+          >
+            <img
+              src={imageURL}
+              alt={`${title} ${index + 1}`}
+              className="aspect-square w-full object-cover"
+            />
+            <div className="absolute left-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm">
+              {index === 0 && onCover ? "封面" : index + 1}
+            </div>
+            {!disabled ? (
+              <div className="absolute inset-x-1 top-1 flex justify-end gap-1 opacity-0 transition group-hover:opacity-100">
+                {onCover && index > 0 ? (
                   <button
                     type="button"
                     className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
-                    onClick={() => onRemove(imageURL)}
+                    onClick={() => onCover(imageURL)}
                   >
-                    删除
+                    设封面
                   </button>
-                </div>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="border border-sky-100 bg-white/70 p-4 text-sm leading-6 text-sky-900/60">
-          暂无图片。
-        </div>
-      )}
+                ) : null}
+                <button
+                  type="button"
+                  className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
+                  onClick={() => onRemove(imageURL)}
+                >
+                  删除
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ))}
+        {uploadTile}
+      </div>
     </div>
   );
 }
@@ -448,10 +444,14 @@ export function ProductAssetFields({
   form,
   setForm,
   disabled = false,
+  chainDisabled = disabled,
+  offchainDisabled = disabled,
 }: {
   form: ProductAssetFormState;
   setForm: React.Dispatch<React.SetStateAction<ProductAssetFormState>>;
   disabled?: boolean;
+  chainDisabled?: boolean;
+  offchainDisabled?: boolean;
 }) {
   return (
     <div className="grid gap-5">
@@ -460,7 +460,7 @@ export function ProductAssetFields({
           <span className="text-sm font-medium text-sky-950">资产编号</span>
           <Input
             value={form.assetCode}
-            disabled={disabled}
+            disabled={chainDisabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -475,7 +475,7 @@ export function ProductAssetFields({
           <span className="text-sm font-medium text-sky-950">资产名称</span>
           <Input
             value={form.name}
-            disabled={disabled}
+            disabled={chainDisabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -486,6 +486,162 @@ export function ProductAssetFields({
           />
         </label>
       </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">资产类别</span>
+          <Input
+            list={CATEGORY_DATALIST_ID}
+            value={form.categoryLabel}
+            disabled={offchainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                categoryLabel: event.target.value,
+              }))
+            }
+            placeholder="古玉 / 沉香"
+          />
+        </label>
+
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">来源标签</span>
+          <Input
+            list={SELLER_DATALIST_ID}
+            value={form.sellerCategoryLabel}
+            disabled={offchainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                sellerCategoryLabel: event.target.value,
+              }))
+            }
+            placeholder="平台 / 认证商家"
+          />
+        </label>
+
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">规格</span>
+          <Input
+            value={form.spec}
+            disabled={offchainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                spec: event.target.value,
+              }))
+            }
+            placeholder="例如：50克"
+          />
+        </label>
+
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">尺寸</span>
+          <Input
+            value={form.size}
+            disabled={offchainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                size: event.target.value,
+              }))
+            }
+            placeholder="可缺省"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">人民币会员价</span>
+          <Input
+            inputMode="decimal"
+            value={form.priceCny}
+            disabled={offchainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                priceCny: event.target.value,
+              }))
+            }
+            placeholder="例如：420000"
+          />
+        </label>
+
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">PHENIX 价格</span>
+          <Input
+            inputMode="decimal"
+            value={form.pricePhenix}
+            disabled={chainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                pricePhenix: event.target.value,
+              }))
+            }
+            placeholder="例如：1200"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">接收钱包地址</span>
+          <Input
+            value={form.recipient}
+            disabled={chainDisabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                recipient: event.target.value,
+              }))
+            }
+            placeholder="0x..."
+          />
+        </label>
+
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">文件包 hash</span>
+          <Input
+            value={form.fileHash}
+            readOnly
+            disabled={chainDisabled}
+            placeholder="生成并上传文件包后自动写入"
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
+export function ProductAssetOffchainFields({
+  form,
+  setForm,
+  disabled = false,
+  lockAssetCode = false,
+}: {
+  form: ProductAssetFormState;
+  setForm: React.Dispatch<React.SetStateAction<ProductAssetFormState>>;
+  disabled?: boolean;
+  lockAssetCode?: boolean;
+}) {
+  return (
+    <div className="grid gap-5">
+      <label className="grid gap-2">
+        <span className="text-sm font-medium text-sky-950">资产编号</span>
+        <Input
+          value={form.assetCode}
+          disabled={disabled || lockAssetCode}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              assetCode: event.target.value.toUpperCase(),
+            }))
+          }
+          placeholder="例如：PAJ000001"
+        />
+      </label>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <label className="grid gap-2">
@@ -551,66 +707,21 @@ export function ProductAssetFields({
         </label>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-sky-950">人民币会员价</span>
-          <Input
-            inputMode="decimal"
-            value={form.priceCny}
-            disabled={disabled}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                priceCny: event.target.value,
-              }))
-            }
-            placeholder="例如：420000"
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-sky-950">PHENIX 价格</span>
-          <Input
-            inputMode="decimal"
-            value={form.pricePhenix}
-            disabled={disabled}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                pricePhenix: event.target.value,
-              }))
-            }
-            placeholder="例如：1200"
-          />
-        </label>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-sky-950">接收钱包地址</span>
-          <Input
-            value={form.recipient}
-            disabled={disabled}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                recipient: event.target.value,
-              }))
-            }
-            placeholder="0x..."
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-sky-950">文件包 hash</span>
-          <Input
-            value={form.fileHash}
-            readOnly
-            disabled={disabled}
-            placeholder="生成并上传文件包后自动写入"
-          />
-        </label>
-      </div>
+      <label className="grid gap-2 sm:max-w-md">
+        <span className="text-sm font-medium text-sky-950">人民币会员价</span>
+        <Input
+          inputMode="decimal"
+          value={form.priceCny}
+          disabled={disabled}
+          onChange={(event) =>
+            setForm((current) => ({
+              ...current,
+              priceCny: event.target.value,
+            }))
+          }
+          placeholder="例如：420000"
+        />
+      </label>
     </div>
   );
 }

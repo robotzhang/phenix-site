@@ -20,8 +20,9 @@
 	],
 	"r2_buckets": [
 		{
-			"binding": "ASSET_PACKAGES",
-			"bucket_name": "phenix-asset-packages"
+			"binding": "ASSETS",
+			"bucket_name": "phenix-asset",
+			"preview_bucket_name": "phenix-asset-dev"
 		}
 	],
 	"durable_objects": {
@@ -55,6 +56,40 @@
 	},
 	"observability": {
 		"enabled": true
+	},
+	"env": {
+		"dev": {
+			"name": "phenix-site-dev",
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "phenix-site-db",
+					"database_id": "d217caae-9adf-4dd1-916a-befdb21bdf0f",
+					"migrations_dir": "migrations"
+				}
+			],
+			"r2_buckets": [
+				{
+					"binding": "ASSETS",
+					"bucket_name": "phenix-asset-dev"
+				}
+			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"class_name": "RwaAdminStorage",
+						"name": "RWA_ADMIN_STORAGE"
+					},
+					{
+						"class_name": "StakingStorage",
+						"name": "STAKING_STORAGE"
+					}
+				]
+			},
+			"vars": {
+				"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
+			}
+		}
 	},
 	"routes": [
 		{

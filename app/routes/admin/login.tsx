@@ -3,7 +3,6 @@ import {
   Link,
   redirect,
   useLoaderData,
-  useNavigate,
   type LoaderFunctionArgs,
 } from "react-router";
 import { LoaderCircle, LockKeyhole, ShieldCheck } from "lucide-react";
@@ -47,7 +46,6 @@ export function meta() {
 
 export default function AdminLogin() {
   const { redirectTo } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
   const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const [error, setError] = useState("");
@@ -102,7 +100,7 @@ export default function AdminLogin() {
         throw new Error(getApiError(result, "管理员登录失败"));
       }
 
-      navigate(redirectTo, { replace: true });
+      window.location.assign(redirectTo);
     } catch (loginError) {
       setError(
         loginError instanceof Error

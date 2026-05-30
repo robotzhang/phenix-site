@@ -38,11 +38,11 @@ async function sha256Hex(buffer: ArrayBuffer) {
   return toHex(await crypto.subtle.digest("SHA-256", buffer));
 }
 
-function normalizeAssetCode(value: string | null) {
-  return (value ?? "").trim().replace(/\s+/g, "").toUpperCase();
+function buildPackageKey(hash: string) {
+  return `packages/${hash}.zip`;
 }
 
-function buildPackageKey(hash: string) {
+function buildLegacyPackageKey(hash: string) {
   return `asset-packages/${hash}.zip`;
 }
 
@@ -70,11 +70,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
   await requireSuperAdminApi(context, request);
 
   const env = getEnv(context);
-  const bucket = env?.ASSET_PACKAGES;
+  const bucket = env?.ASSETS;
 
   if (!bucket) {
     return jsonResponse(
-      { error: "Asset package storage is not configured" },
+      { error: "Asset storage is not configured" },
       { status: 500 },
     );
   }
@@ -103,16 +103,14 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const packageHash = await sha256Hex(body);
   const packageKey = buildPackageKey(packageHash);
-  const assetCode = normalizeAssetCode(new URL(request.url).searchParams.get("assetCode"));
 
   if (!(await bucket.head(packageKey))) {
     await bucket.put(packageKey, body, {
       httpMetadata: {
         contentType: "application/zip",
-        contentDisposition: `attachment; filename="${assetCode || "phenix-asset"}-${packageHash}.zip"`,
+        contentDisposition: `attachment; filename="phenix-asset-${packageHash}.zip"`,
       },
       customMetadata: {
-        assetCode,
         packageHash,
       },
     });
@@ -141,13 +139,15 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     return new Response("Not Found", { status: 404 });
   }
 
-  const bucket = getEnv(context)?.ASSET_PACKAGES;
+  const bucket = getEnv(context)?.ASSETS;
 
   if (!bucket) {
-    return new Response("Asset package storage is not configured", { status: 500 });
+    return new Response("Asset storage is not configured", { status: 500 });
   }
 
-  const object = await bucket.get(buildPackageKey(packageHash));
+  const object =
+    await bucket.get(buildPackageKey(packageHash)) ??
+    await bucket.get(buildLegacyPackageKey(packageHash));
 
   if (!object) {
     return new Response("Not Found", { status: 404 });

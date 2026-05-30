@@ -31,11 +31,12 @@ export function useSafeContractWrite() {
           id: toastId,
           action: {
             label: "Explorer",
-            onClick: () =>
-              window.open(
-                `https://basescan.org/tx/${hash}`,
-                "_blank"
-              ),
+            onClick: () => {
+              const explorerURL =
+                publicClient.chain?.blockExplorers?.default.url ??
+                "https://basescan.org";
+              window.open(`${explorerURL}/tx/${hash}`, "_blank");
+            },
           },
         });
 

@@ -1,12 +1,12 @@
 import { redirect, type AppLoadContext } from "react-router";
 import { getAddress, isAddress, verifyMessage } from "viem";
 
+import { RWA_CHAIN_ID } from "@/lib/rwa-chain-config";
 import { execute, queryFirst } from "@/lib/server/db";
 
 const ADMIN_SESSION_COOKIE = "phenix_admin_session";
 const ADMIN_NONCE_TTL_SECONDS = 5 * 60;
 const ADMIN_SESSION_TTL_SECONDS = 12 * 60 * 60;
-const BASE_CHAIN_ID = 8453;
 
 export type AdminSession = {
   id: string;
@@ -318,7 +318,7 @@ function createLoginMessage({
     "",
     `URI: ${url.origin}/admin/login`,
     "Version: 1",
-    `Chain ID: ${BASE_CHAIN_ID}`,
+    `Chain ID: ${RWA_CHAIN_ID}`,
     `Nonce: ${nonce}`,
     `Issued At: ${issuedAt}`,
     `Expiration Time: ${expiresAt}`,

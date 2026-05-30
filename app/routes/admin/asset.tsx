@@ -60,9 +60,33 @@ import {
 } from "@/lib/rwa-admin-storage";
 import { requireSuperAdminPage } from "@/lib/server/admin-auth";
 import { cn } from "@/lib/utils";
+import { OffchainAssetEditor } from "./asset/offchain-editor";
 import { AssetHeader } from "./asset/shared";
 
 const ASSET_PAGE_SIZE = 10;
+
+function getAssetChainStatusLabel(status?: ProductAsset["chainStatus"]) {
+  if (status === "confirmed") return "已上链";
+  if (status === "pending") return "上链中";
+  if (status === "failed") return "上链失败";
+  return "草稿";
+}
+
+function getAssetChainStatusClassName(status?: ProductAsset["chainStatus"]) {
+  if (status === "confirmed") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+
+  if (status === "pending") {
+    return "border-amber-200 bg-amber-50 text-amber-700";
+  }
+
+  if (status === "failed") {
+    return "border-red-200 bg-red-50 text-red-700";
+  }
+
+  return "border-neutral-200 bg-neutral-50 text-neutral-700";
+}
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   await requireSuperAdminPage(context, request);
@@ -84,6 +108,7 @@ export default function AdminAssetList() {
   const [certificateFilter, setCertificateFilter] = useState("");
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
 
   const productAssets = useMemo(
     () => mergeProductAssetsWithAdminMetadata(adminMetadataMap),
@@ -234,6 +259,7 @@ export default function AdminAssetList() {
                   <TableHead>资产</TableHead>
                   <TableHead>分类</TableHead>
                   <TableHead>来源</TableHead>
+                  <TableHead>链状态</TableHead>
                   <TableHead>规格</TableHead>
                   <TableHead>会员价</TableHead>
                   <TableHead>资料</TableHead>
@@ -242,7 +268,11 @@ export default function AdminAssetList() {
               </TableHeader>
               <TableBody>
                 {paginatedAssets.map((asset) => (
-                  <AssetRow key={asset.id} asset={asset} />
+                  <AssetRow
+                    key={asset.id}
+                    asset={asset}
+                    onEditOffchain={setEditingAssetId}
+                  />
                 ))}
               </TableBody>
             </Table>
@@ -314,6 +344,15 @@ export default function AdminAssetList() {
           </CardContent>
         </Card>
       </main>
+
+      {editingAssetId ? (
+        <OffchainAssetEditor
+          assetId={editingAssetId}
+          mode="modal"
+          onClose={() => setEditingAssetId(null)}
+          onSaved={() => setEditingAssetId(null)}
+        />
+      ) : null}
     </div>
   );
 }
@@ -466,9 +505,14 @@ function SummaryCard({
   );
 }
 
-function AssetRow({ asset }: { asset: ProductAsset }) {
+function AssetRow({
+  asset,
+  onEditOffchain,
+}: {
+  asset: ProductAsset;
+  onEditOffchain: (assetId: string) => void;
+}) {
   const detailHref = `/admin/asset/${asset.id}`;
-  const editHref = `/admin/asset/${asset.id}/edit`;
 
   return (
     <TableRow>
@@ -494,6 +538,11 @@ function AssetRow({ asset }: { asset: ProductAsset }) {
       </TableCell>
       <TableCell>
         <Badge variant="secondary">{asset.sellerCategoryLabel}</Badge>
+      </TableCell>
+      <TableCell>
+        <Badge className={getAssetChainStatusClassName(asset.chainStatus)}>
+          {getAssetChainStatusLabel(asset.chainStatus)}
+        </Badge>
       </TableCell>
       <TableCell>
         <div className="min-w-[120px]">
@@ -523,11 +572,9 @@ function AssetRow({ asset }: { asset: ProductAsset }) {
                   查看
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to={editHref}>
-                  <Pencil />
-                  编辑
-                </Link>
+              <DropdownMenuItem onSelect={() => onEditOffchain(asset.id)}>
+                <Pencil />
+                维护链下资料
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

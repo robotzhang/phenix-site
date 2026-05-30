@@ -128,8 +128,15 @@ export async function removeRwaAdminMetadata(tokenId: bigint | string) {
   return mutateMetadata("DELETE", tokenId);
 }
 
-export async function uploadRwaAdminImage(file: Blob) {
-  const response = await fetch(RWA_ADMIN_IMAGE_ROUTE, {
+export async function uploadRwaAdminImage(
+  file: Blob,
+  kind: "product" | "certificate" = "product",
+) {
+  const searchParams = new URLSearchParams();
+
+  searchParams.set("kind", kind);
+
+  const response = await fetch(`${RWA_ADMIN_IMAGE_ROUTE}?${searchParams}`, {
     method: "PUT",
     headers: {
       "Content-Type": file.type || "application/octet-stream",

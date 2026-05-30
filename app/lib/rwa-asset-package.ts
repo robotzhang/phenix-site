@@ -3,7 +3,7 @@ import { strToU8, zipSync, type Zippable } from "fflate";
 import { normalizeProductAssetCode } from "@/data/product-assets";
 import { RWA_ASSET_PACKAGE_ROUTE } from "@/lib/rwa-admin-storage.shared";
 
-const ZERO_DATE = new Date(0);
+const ZIP_EPOCH_DATE = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));
 const SUPPORTED_IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
 const IMAGE_TYPE_EXTENSIONS: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -62,19 +62,16 @@ export async function createAndUploadRwaAssetPackage({
 
   const entries = await Promise.all(sources.map(fetchPackageEntry));
   const packageBytes = buildAssetPackageZip(normalizedAssetCode, entries);
-  const response = await fetch(
-    `${RWA_ASSET_PACKAGE_ROUTE}?assetCode=${encodeURIComponent(normalizedAssetCode)}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/zip",
-        Accept: "application/json",
-      },
-      body: new Blob([toExactArrayBuffer(packageBytes)], {
-        type: "application/zip",
-      }),
+  const response = await fetch(RWA_ASSET_PACKAGE_ROUTE, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/zip",
+      Accept: "application/json",
     },
-  );
+    body: new Blob([toExactArrayBuffer(packageBytes)], {
+      type: "application/zip",
+    }),
+  });
 
   if (!response.ok) {
     const fallback = `上传文件包失败 (${response.status})`;
@@ -147,15 +144,15 @@ function buildAssetPackageZip(assetCode: string, entries: AssetPackageEntry[]) {
   const zipEntries: Zippable = {
     "manifest.json": [
       strToU8(`${JSON.stringify(manifest, null, 2)}\n`),
-      { mtime: ZERO_DATE, level: 0 },
+      { mtime: ZIP_EPOCH_DATE, level: 0 },
     ],
   };
 
   for (const entry of entries) {
-    zipEntries[entry.path] = [entry.bytes, { mtime: ZERO_DATE, level: 0 }];
+    zipEntries[entry.path] = [entry.bytes, { mtime: ZIP_EPOCH_DATE, level: 0 }];
   }
 
-  return zipSync(zipEntries, { mtime: ZERO_DATE, level: 0 });
+  return zipSync(zipEntries, { mtime: ZIP_EPOCH_DATE, level: 0 });
 }
 
 function resolveImageExtension(url: string, contentType: string) {

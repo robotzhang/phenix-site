@@ -59,6 +59,19 @@ function readMetadataPayload(raw: unknown) {
     imageURL: trimAdminStorageString(payload.imageURL) || undefined,
     imageURLs: normalizeRwaAdminAssetURLs(payload.imageURLs),
     certificateURLs: normalizeRwaAdminAssetURLs(payload.certificateURLs, 6),
+    packageURL: trimAdminStorageString(payload.packageURL) || undefined,
+    packageKey: trimAdminStorageString(payload.packageKey) || undefined,
+    packageSize: trimAdminStorageString(payload.packageSize) || undefined,
+    chainStatus:
+      payload.chainStatus === "pending" ||
+      payload.chainStatus === "confirmed" ||
+      payload.chainStatus === "failed" ||
+      payload.chainStatus === "draft"
+        ? payload.chainStatus
+        : undefined,
+    chainTokenId: trimAdminStorageString(payload.chainTokenId) || undefined,
+    chainTxHash: trimAdminStorageString(payload.chainTxHash) || undefined,
+    chainConfirmedAt: trimAdminStorageString(payload.chainConfirmedAt) || undefined,
     tokenURI: trimAdminStorageString(payload.tokenURI) || undefined,
     status: typeof payload.status === "number" ? payload.status : undefined,
   };
@@ -188,6 +201,13 @@ export class RwaAdminStorage extends DurableObject {
         imageURL: payload.imageURL ?? previous?.imageURL,
         imageURLs: payload.imageURLs ?? previous?.imageURLs,
         certificateURLs: payload.certificateURLs ?? previous?.certificateURLs,
+        packageURL: payload.packageURL ?? previous?.packageURL,
+        packageKey: payload.packageKey ?? previous?.packageKey,
+        packageSize: payload.packageSize ?? previous?.packageSize,
+        chainStatus: payload.chainStatus ?? previous?.chainStatus,
+        chainTokenId: payload.chainTokenId ?? previous?.chainTokenId,
+        chainTxHash: payload.chainTxHash ?? previous?.chainTxHash,
+        chainConfirmedAt: payload.chainConfirmedAt ?? previous?.chainConfirmedAt,
         tokenURI: payload.tokenURI ?? previous?.tokenURI,
         status: payload.status ?? previous?.status,
       };
@@ -219,7 +239,7 @@ export class RwaAdminStorage extends DurableObject {
       {
         status: 405,
         headers: {
-      Allow: "GET, POST, DELETE",
+          Allow: "GET, PUT, POST, DELETE",
         },
       },
     );

@@ -16,6 +16,13 @@ export interface RwaAdminMetadata {
   imageURL?: string;
   imageURLs?: string[];
   certificateURLs?: string[];
+  packageURL?: string;
+  packageKey?: string;
+  packageSize?: string;
+  chainStatus?: "draft" | "pending" | "confirmed" | "failed";
+  chainTokenId?: string;
+  chainTxHash?: string;
+  chainConfirmedAt?: string;
   tokenURI?: string;
   status?: number;
 }
@@ -43,12 +50,20 @@ export interface RwaAdminMetadataInput {
   imageURL?: string;
   imageURLs?: string[];
   certificateURLs?: string[];
+  packageURL?: string;
+  packageKey?: string;
+  packageSize?: string;
+  chainStatus?: "draft" | "pending" | "confirmed" | "failed";
+  chainTokenId?: string;
+  chainTxHash?: string;
+  chainConfirmedAt?: string;
   tokenURI?: string;
   status?: number;
 }
 
 export const RWA_ADMIN_STORAGE_ROUTE = "/admin/asset/storage" as const;
 export const RWA_ADMIN_IMAGE_ROUTE = "/admin/asset/image" as const;
+export const RWA_ASSET_PACKAGE_ROUTE = "/admin/asset/package" as const;
 
 export function trimAdminStorageString(value: unknown) {
   if (typeof value !== "string") return "";
@@ -151,6 +166,19 @@ export function normalizeRwaAdminStorageDocument(
       imageURL: trimAdminStorageString(value.imageURL) || undefined,
       imageURLs: normalizeRwaAdminAssetURLs(value.imageURLs),
       certificateURLs: normalizeRwaAdminAssetURLs(value.certificateURLs, 6),
+      packageURL: trimAdminStorageString(value.packageURL) || undefined,
+      packageKey: trimAdminStorageString(value.packageKey) || undefined,
+      packageSize: trimAdminStorageString(value.packageSize) || undefined,
+      chainStatus:
+        value.chainStatus === "pending" ||
+        value.chainStatus === "confirmed" ||
+        value.chainStatus === "failed" ||
+        value.chainStatus === "draft"
+          ? value.chainStatus
+          : undefined,
+      chainTokenId: trimAdminStorageString(value.chainTokenId) || undefined,
+      chainTxHash: trimAdminStorageString(value.chainTxHash) || undefined,
+      chainConfirmedAt: trimAdminStorageString(value.chainConfirmedAt) || undefined,
       tokenURI: trimAdminStorageString(value.tokenURI) || undefined,
       status: typeof value.status === "number" ? value.status : undefined,
     };

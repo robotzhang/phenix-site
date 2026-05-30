@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  FileArchive,
   FileCheck2,
   LockKeyhole,
   PackageCheck,
@@ -61,6 +62,44 @@ const trustRecords = [
 
 const ASSET_DETAIL_TAB_TRIGGER_CLASS =
   "relative h-11 flex-none rounded-none border-0 bg-transparent px-0 pr-7 text-sm font-semibold text-muted-foreground shadow-none after:absolute after:bottom-0 after:left-0 after:right-7 after:h-0.5 after:bg-transparent after:content-[''] data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:after:bg-foreground";
+const BASESCAN_TX_BASE = "https://basescan.org/tx/";
+
+function getAssetChainStatusLabel(status?: ProductAsset["chainStatus"]) {
+  if (status === "confirmed") return "已上链";
+  if (status === "pending") return "上链中";
+  if (status === "failed") return "上链失败";
+  return "草稿";
+}
+
+function getAssetChainStatusClassName(status?: ProductAsset["chainStatus"]) {
+  if (status === "confirmed") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+
+  if (status === "pending") {
+    return "border-amber-200 bg-amber-50 text-amber-700";
+  }
+
+  if (status === "failed") {
+    return "border-red-200 bg-red-50 text-red-700";
+  }
+
+  return "border-neutral-200 bg-neutral-50 text-neutral-700";
+}
+
+function formatPackageSize(value?: string) {
+  const bytes = Number(value);
+
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return "未知大小";
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+}
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   await requireSuperAdminPage(context, request);
@@ -140,6 +179,9 @@ export default function AdminAssetDetail() {
               <Badge variant="secondary" className="shrink-0 rounded-md">
                 {asset.id}
               </Badge>
+              <Badge className={getAssetChainStatusClassName(asset.chainStatus)}>
+                {getAssetChainStatusLabel(asset.chainStatus)}
+              </Badge>
             </div>
           </div>
 
@@ -151,8 +193,12 @@ export default function AdminAssetDetail() {
             </Button>
             <Button asChild size="sm">
               <Link to={`/admin/asset/${asset.id}/edit`}>
-                <Pencil data-icon="inline-start" />
-                编辑
+                {asset.chainStatus === "confirmed" ? (
+                  <LockKeyhole data-icon="inline-start" />
+                ) : (
+                  <Pencil data-icon="inline-start" />
+                )}
+                {asset.chainStatus === "confirmed" ? "查看锁定资料" : "编辑"}
               </Link>
             </Button>
           </div>
@@ -265,15 +311,29 @@ export default function AdminAssetDetail() {
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
                   <MetricCard label="会员价" value={formatProductAssetPrice(asset.priceCny)} />
+                  <MetricCard label="PHENIX 价格" value={asset.pricePhenix || "待补充"} />
                   <MetricCard label="资产编号" value={asset.id} />
+                  <MetricCard label="链上状态" value={getAssetChainStatusLabel(asset.chainStatus)} />
                   <MetricCard icon={PackageCheck} label="规格" value={asset.spec || "待补充"} />
                   <MetricCard icon={Ruler} label="尺寸" value={asset.size || "待补充"} />
                 </div>
 
                 <div className="mt-6 border border-sky-100 bg-white/80 p-5 shadow-sm">
-                  <div className="text-sm text-sky-900/60">资产文件包 hash</div>
-                  <div className="mt-2 break-all font-mono text-sm text-sky-950">
-                    {asset.fileHash}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <div className="text-sm text-sky-900/60">资产文件包 hash</div>
+                      <div className="mt-2 break-all font-mono text-sm text-sky-950">
+                        {asset.fileHash}
+                      </div>
+                    </div>
+                    {asset.packageURL ? (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={asset.packageURL} target="_blank" rel="noreferrer">
+                          <FileArchive className="size-4" />
+                          下载 ZIP
+                        </a>
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -356,6 +416,10 @@ function ProductRecordTable({
     <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
       <RecordRow label="资产名称" value={displayName} />
       <RecordRow label="文件包 hash" value={asset.fileHash} mono />
+      <RecordRow label="文件包大小" value={asset.packageSize ? formatPackageSize(asset.packageSize) : "未生成"} />
+      <RecordRow label="接收地址" value={asset.recipient || "未填写"} mono />
+      <RecordRow label="PHENIX 价格" value={asset.pricePhenix || "未填写"} />
+      <RecordRow label="链上 Token" value={asset.chainTokenId || "未上链"} mono />
       <RecordRow
         label="证书影像"
         value={asset.certificateURLs.length > 0 ? `${asset.certificateURLs.length} 张` : "暂无"}
@@ -406,6 +470,39 @@ function MaterialsPanel({
     <div className="grid gap-5">
       <Card>
         <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileArchive className="size-5" />
+            文件包
+          </CardTitle>
+          <CardDescription>产品图片、证书图片和 manifest 自动打包后的 ZIP 文件。</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {asset.packageURL ? (
+            <div className="grid gap-4 rounded-lg border bg-white/70 p-4">
+              <div>
+                <div className="text-sm text-muted-foreground">SHA-256 Hash</div>
+                <div className="mt-2 break-all font-mono text-sm">{asset.fileHash}</div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary">{formatPackageSize(asset.packageSize)}</Badge>
+                <Button asChild variant="outline" size="sm">
+                  <a href={asset.packageURL} target="_blank" rel="noreferrer">
+                    <ExternalLink className="size-4" />
+                    下载 ZIP
+                  </a>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-dashed bg-muted/40 p-8 text-center text-sm text-muted-foreground">
+              暂未生成文件包。
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>产品图片</CardTitle>
           <CardDescription>第一张图片作为资产封面，后续图片用于多角度展示。</CardDescription>
         </CardHeader>
@@ -437,11 +534,38 @@ function ChainOrdersPanel({ asset }: { asset: ProductAsset }) {
   const rows = useMemo(
     () => [
       { label: "资产编号", value: asset.id },
-      { label: "链上订单", value: "暂未接入" },
-      { label: "交易记录", value: "等待订单索引服务接入后展示" },
-      { label: "结算状态", value: "未开始" },
+      { label: "链上状态", value: getAssetChainStatusLabel(asset.chainStatus) },
+      { label: "Token ID", value: asset.chainTokenId || "未上链" },
+      { label: "接收地址", value: asset.recipient || "未填写" },
+      { label: "PHENIX 价格", value: asset.pricePhenix || "未填写" },
+      {
+        label: "交易 Hash",
+        value: asset.chainTxHash ? (
+          <a
+            className="inline-flex items-center gap-1 break-all font-mono text-sky-700 hover:underline"
+            href={`${BASESCAN_TX_BASE}${asset.chainTxHash}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {asset.chainTxHash}
+            <ExternalLink className="size-3.5 shrink-0" />
+          </a>
+        ) : (
+          "未提交"
+        ),
+      },
+      { label: "Token URI", value: asset.tokenURI || "未生成" },
+      { label: "结算状态", value: "等待订单索引服务接入后展示" },
     ],
-    [asset.id],
+    [
+      asset.chainStatus,
+      asset.chainTokenId,
+      asset.chainTxHash,
+      asset.id,
+      asset.pricePhenix,
+      asset.recipient,
+      asset.tokenURI,
+    ],
   );
 
   return (
@@ -462,7 +586,7 @@ function ChainOrdersPanel({ asset }: { asset: ProductAsset }) {
             className="grid gap-1 rounded-lg border bg-white/70 p-4 sm:grid-cols-[160px_1fr]"
           >
             <div className="text-sm text-muted-foreground">{row.label}</div>
-            <div className="font-medium">{row.value}</div>
+            <div className="break-all font-medium">{row.value}</div>
           </div>
         ))}
       </CardContent>

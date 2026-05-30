@@ -18,6 +18,12 @@
 			"migrations_dir": "migrations"
 		}
 	],
+	"r2_buckets": [
+		{
+			"binding": "ASSET_PACKAGES",
+			"bucket_name": "phenix-asset-packages"
+		}
+	],
 	"durable_objects": {
 		"bindings": [
 			{

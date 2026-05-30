@@ -15,6 +15,16 @@ export interface ProductAsset {
   imageURL: string;
   imageURLs: string[];
   certificateURLs: string[];
+  recipient?: string;
+  pricePhenix?: string;
+  packageURL?: string;
+  packageKey?: string;
+  packageSize?: string;
+  chainStatus?: "draft" | "pending" | "confirmed" | "failed";
+  chainTokenId?: string;
+  chainTxHash?: string;
+  chainConfirmedAt?: string;
+  tokenURI?: string;
 }
 
 export const PRODUCT_ASSET_STORAGE_PREFIX = "product:";
@@ -394,6 +404,16 @@ function buildProductAssetFromMetadata(
     imageURLs: imageURLs.length > 0 ? imageURLs : fallback?.imageURLs ?? [imageURL],
     certificateURLs:
       certificateURLs.length > 0 ? certificateURLs : fallback?.certificateURLs ?? [],
+    recipient: metadata.recipient?.trim() || fallback?.recipient,
+    pricePhenix: metadata.pricePhenix?.trim() || fallback?.pricePhenix,
+    packageURL: metadata.packageURL?.trim() || fallback?.packageURL,
+    packageKey: metadata.packageKey?.trim() || fallback?.packageKey,
+    packageSize: metadata.packageSize?.trim() || fallback?.packageSize,
+    chainStatus: metadata.chainStatus ?? fallback?.chainStatus,
+    chainTokenId: metadata.chainTokenId?.trim() || fallback?.chainTokenId,
+    chainTxHash: metadata.chainTxHash?.trim() || fallback?.chainTxHash,
+    chainConfirmedAt: metadata.chainConfirmedAt?.trim() || fallback?.chainConfirmedAt,
+    tokenURI: metadata.tokenURI?.trim() || fallback?.tokenURI,
   } satisfies ProductAsset;
 }
 

@@ -33,7 +33,17 @@ export interface ProductAssetFormState {
   spec: string;
   size: string;
   priceCny: string;
+  recipient: string;
+  pricePhenix: string;
   fileHash: string;
+  packageURL: string;
+  packageKey: string;
+  packageSize: string;
+  chainStatus: "draft" | "pending" | "confirmed" | "failed";
+  chainTokenId: string;
+  chainTxHash: string;
+  chainConfirmedAt: string;
+  tokenURI: string;
   imageURLs: string[];
   certificateURLs: string[];
 }
@@ -47,7 +57,17 @@ export function createEmptyProductAssetForm(assetCode = ""): ProductAssetFormSta
     spec: "",
     size: "",
     priceCny: "",
+    recipient: "",
+    pricePhenix: "",
     fileHash: "",
+    packageURL: "",
+    packageKey: "",
+    packageSize: "",
+    chainStatus: "draft",
+    chainTokenId: "",
+    chainTxHash: "",
+    chainConfirmedAt: "",
+    tokenURI: "",
     imageURLs: [],
     certificateURLs: [],
   };
@@ -62,7 +82,17 @@ export function createProductAssetFormFromAsset(asset: ProductAsset): ProductAss
     spec: asset.spec,
     size: asset.size,
     priceCny: String(asset.priceCny || ""),
+    recipient: asset.recipient ?? "",
+    pricePhenix: asset.pricePhenix ?? "",
     fileHash: asset.fileHash,
+    packageURL: asset.packageURL ?? "",
+    packageKey: asset.packageKey ?? "",
+    packageSize: asset.packageSize ?? "",
+    chainStatus: asset.chainStatus ?? "draft",
+    chainTokenId: asset.chainTokenId ?? "",
+    chainTxHash: asset.chainTxHash ?? "",
+    chainConfirmedAt: asset.chainConfirmedAt ?? "",
+    tokenURI: asset.tokenURI ?? "",
     imageURLs: normalizeImageURLList(asset.imageURLs, MAX_CATALOG_IMAGES),
     certificateURLs: normalizeImageURLList(asset.certificateURLs, MAX_CERTIFICATE_IMAGES),
   };
@@ -217,6 +247,7 @@ export function ProductAssetImageUploader({
   imageURLs,
   maxImages,
   uploading,
+  disabled = false,
   onUpload,
   onRemove,
   onCover,
@@ -226,12 +257,13 @@ export function ProductAssetImageUploader({
   imageURLs: string[];
   maxImages: number;
   uploading: boolean;
+  disabled?: boolean;
   onUpload: (files: FileList | null) => void;
   onRemove: (imageURL: string) => void;
   onCover?: (imageURL: string) => void;
 }) {
   const [dragging, setDragging] = useState(false);
-  const uploadDisabled = uploading || imageURLs.length >= maxImages;
+  const uploadDisabled = disabled || uploading || imageURLs.length >= maxImages;
 
   return (
     <div className="grid gap-3">
@@ -274,7 +306,13 @@ export function ProductAssetImageUploader({
           )}
         </span>
         <span className="mt-3 text-sm font-semibold text-sky-950">
-          {uploadDisabled ? "图片数量已达上限" : "点击或拖拽上传"}
+          {disabled
+            ? "已上链，图片已锁定"
+            : uploading
+              ? "正在上传"
+              : imageURLs.length >= maxImages
+              ? "图片数量已达上限"
+              : "点击或拖拽上传"}
         </span>
         <span className="mt-1 text-xs leading-5 text-sky-900/60">
           JPG / PNG / WebP，上传前会自动压缩
@@ -307,24 +345,26 @@ export function ProductAssetImageUploader({
               <div className="absolute left-1 top-1 bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm">
                 {index === 0 && onCover ? "封面" : index + 1}
               </div>
-              <div className="absolute inset-x-1 top-1 flex justify-end gap-1 opacity-0 transition group-hover:opacity-100">
-                {onCover && index > 0 ? (
+              {!disabled ? (
+                <div className="absolute inset-x-1 top-1 flex justify-end gap-1 opacity-0 transition group-hover:opacity-100">
+                  {onCover && index > 0 ? (
+                    <button
+                      type="button"
+                      className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
+                      onClick={() => onCover(imageURL)}
+                    >
+                      设封面
+                    </button>
+                  ) : null}
                   <button
                     type="button"
                     className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
-                    onClick={() => onCover(imageURL)}
+                    onClick={() => onRemove(imageURL)}
                   >
-                    设封面
+                    删除
                   </button>
-                ) : null}
-                <button
-                  type="button"
-                  className="bg-white/95 px-1.5 py-0.5 text-xs font-semibold text-sky-950 shadow-sm"
-                  onClick={() => onRemove(imageURL)}
-                >
-                  删除
-                </button>
-              </div>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
@@ -407,9 +447,11 @@ export function ProductAssetPreviewCard({ form }: { form: ProductAssetFormState 
 export function ProductAssetFields({
   form,
   setForm,
+  disabled = false,
 }: {
   form: ProductAssetFormState;
   setForm: React.Dispatch<React.SetStateAction<ProductAssetFormState>>;
+  disabled?: boolean;
 }) {
   return (
     <div className="grid gap-5">
@@ -418,6 +460,7 @@ export function ProductAssetFields({
           <span className="text-sm font-medium text-sky-950">资产编号</span>
           <Input
             value={form.assetCode}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -432,6 +475,7 @@ export function ProductAssetFields({
           <span className="text-sm font-medium text-sky-950">资产名称</span>
           <Input
             value={form.name}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -449,6 +493,7 @@ export function ProductAssetFields({
           <Input
             list={CATEGORY_DATALIST_ID}
             value={form.categoryLabel}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -464,6 +509,7 @@ export function ProductAssetFields({
           <Input
             list={SELLER_DATALIST_ID}
             value={form.sellerCategoryLabel}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -478,6 +524,7 @@ export function ProductAssetFields({
           <span className="text-sm font-medium text-sky-950">规格</span>
           <Input
             value={form.spec}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -492,6 +539,7 @@ export function ProductAssetFields({
           <span className="text-sm font-medium text-sky-950">尺寸</span>
           <Input
             value={form.size}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -509,6 +557,7 @@ export function ProductAssetFields({
           <Input
             inputMode="decimal"
             value={form.priceCny}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
@@ -520,16 +569,45 @@ export function ProductAssetFields({
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-sky-950">文件包 hash</span>
+          <span className="text-sm font-medium text-sky-950">PHENIX 价格</span>
           <Input
-            value={form.fileHash}
+            inputMode="decimal"
+            value={form.pricePhenix}
+            disabled={disabled}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
-                fileHash: event.target.value,
+                pricePhenix: event.target.value,
               }))
             }
-            placeholder="资料包 hash / 文件包编号"
+            placeholder="例如：1200"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">接收钱包地址</span>
+          <Input
+            value={form.recipient}
+            disabled={disabled}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                recipient: event.target.value,
+              }))
+            }
+            placeholder="0x..."
+          />
+        </label>
+
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-sky-950">文件包 hash</span>
+          <Input
+            value={form.fileHash}
+            readOnly
+            disabled={disabled}
+            placeholder="生成并上传文件包后自动写入"
           />
         </label>
       </div>

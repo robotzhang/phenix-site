@@ -60,7 +60,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 function navLinkClass(isActive: boolean) {
   return clsx(
     isActive ? "is-active bg-neutral-200/60" : "",
-    "admin-nav-link outline-hidden flex items-center gap-1 rounded-lg px-2 py-1 text-sm hover:bg-neutral-200/60",
+    "admin-nav-link outline-hidden flex items-center gap-1 rounded-lg px-2 py-1 text-base hover:bg-neutral-200/60",
   );
 }
 

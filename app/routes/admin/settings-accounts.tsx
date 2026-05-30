@@ -9,9 +9,12 @@ import {
 } from "react-router";
 import {
   Ban,
+  Check,
+  ChevronDown,
   Ellipsis,
   Plus,
   RotateCcw,
+  Search,
   ShieldCheck,
   UserPlus,
   WalletCards,
@@ -20,6 +23,10 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,6 +67,8 @@ type SettingsAccountsActionData = {
   intent: "add-admin-wallet" | "disable-admin-wallet" | "enable-admin-wallet" | "unknown";
   message: string;
 };
+
+type WalletStatusFilter = "" | "active" | "disabled";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const admin = await requireSuperAdminPage(context, request);
@@ -144,6 +153,8 @@ export default function AdminSettingsAccounts() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<WalletStatusFilter>("");
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     if (actionData?.ok && actionData.intent === "add-admin-wallet") {
@@ -158,6 +169,23 @@ export default function AdminSettingsAccounts() {
   const { admin, wallets } = loaderData;
   const submitting = navigation.state === "submitting";
   const activeCount = wallets.filter((wallet) => wallet.status === "active").length;
+  const filteredWallets = wallets.filter((wallet) => {
+    const q = keyword.trim().toLowerCase();
+
+    return (
+      (!statusFilter || wallet.status === statusFilter) &&
+      (!q ||
+        [
+          wallet.address,
+          wallet.label,
+          wallet.createdBy,
+          wallet.disabledBy,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(q))
+    );
+  });
 
   return (
     <div className="admin-asset-theme min-h-screen bg-neutral-100 text-neutral-950">
@@ -184,52 +212,57 @@ export default function AdminSettingsAccounts() {
           </div>
         ) : null}
 
-        <section className="border border-neutral-200 bg-white shadow-sm">
-          <div className="flex flex-col gap-3 border-b border-neutral-200 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                <WalletCards className="size-5 text-neutral-700" />
-                管理员账号
-              </div>
-              <p className="mt-1 text-sm leading-6 text-neutral-500">
-                只有启用状态的钱包可以通过签名登录后台。禁用后会同步撤销该钱包已有会话。
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">{wallets.length} 个钱包</Badge>
-              <Badge variant="outline">启用 {activeCount}</Badge>
-            </div>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>账号</TableHead>
-                <TableHead>状态</TableHead>
-                <TableHead>创建</TableHead>
-                <TableHead>禁用</TableHead>
-                <TableHead className="text-right">更多操作</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {wallets.map((wallet) => (
-                <AdminWalletRow
-                  key={wallet.address}
-                  wallet={wallet}
-                  currentAddress={admin.address}
-                  activeCount={activeCount}
-                  submitting={submitting}
+        <Card className="admin-asset-panel gap-0 overflow-hidden p-0">
+          <CardContent className="px-0">
+            <div className="flex flex-col gap-3 border-b p-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-0">
+                <WalletStatusFilterDropdown
+                  value={statusFilter}
+                  onChange={setStatusFilter}
                 />
-              ))}
-            </TableBody>
-          </Table>
+              </div>
 
-          {wallets.length === 0 ? (
-            <div className="py-12 text-center text-sm text-muted-foreground">
-              暂无管理员钱包。
+              <label className="relative block w-full sm:max-w-md">
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
+                <Input
+                  value={keyword}
+                  onChange={(event) => setKeyword(event.target.value)}
+                  placeholder="搜索钱包地址、备注或创建人"
+                  className="h-8 pl-9"
+                />
+              </label>
             </div>
-          ) : null}
-        </section>
+
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>账号</TableHead>
+                  <TableHead>状态</TableHead>
+                  <TableHead>创建</TableHead>
+                  <TableHead>禁用</TableHead>
+                  <TableHead className="text-right">更多操作</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredWallets.map((wallet) => (
+                  <AdminWalletRow
+                    key={wallet.address}
+                    wallet={wallet}
+                    currentAddress={admin.address}
+                    activeCount={activeCount}
+                    submitting={submitting}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+
+            {filteredWallets.length === 0 ? (
+              <div className="py-12 text-center text-sm text-muted-foreground">
+                没有匹配的管理员账号。
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
       </main>
 
       {addModalOpen ? (
@@ -240,6 +273,46 @@ export default function AdminSettingsAccounts() {
         />
       ) : null}
     </div>
+  );
+}
+
+function WalletStatusFilterDropdown({
+  value,
+  onChange,
+}: {
+  value: WalletStatusFilter;
+  onChange: (value: WalletStatusFilter) => void;
+}) {
+  const label = value === "active" ? "状态: 启用" : value === "disabled" ? "状态: 禁用" : "状态";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="ring-0!">
+          <span>{label}</span>
+          <ChevronDown strokeWidth={1} />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-40">
+        <DropdownMenuLabel className="font-normal text-muted-foreground">
+          状态过滤
+        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="justify-between" onClick={() => onChange("")}>
+            <span>全部</span>
+            {!value ? <Check className="size-4" /> : null}
+          </DropdownMenuItem>
+          <DropdownMenuItem className="justify-between" onClick={() => onChange("active")}>
+            <span>启用</span>
+            {value === "active" ? <Check className="size-4" /> : null}
+          </DropdownMenuItem>
+          <DropdownMenuItem className="justify-between" onClick={() => onChange("disabled")}>
+            <span>禁用</span>
+            {value === "disabled" ? <Check className="size-4" /> : null}
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

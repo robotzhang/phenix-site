@@ -59,7 +59,7 @@ export default function AdminDashboard() {
       <div className="mx-auto max-w-6xl space-y-6">
         <section className="overflow-hidden border border-neutral-200 bg-white shadow-sm">
           <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="bg-[linear-gradient(135deg,#0f172a_0%,#334155_45%,#64748b_100%)] p-6 text-white sm:p-8">
+            <div className="admin-dashboard-hero p-6 text-white sm:p-8">
               <div className="inline-flex items-center gap-2 border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
                 <ShieldCheck className="h-4 w-4" />
                 Admin Console

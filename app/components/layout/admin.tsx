@@ -59,8 +59,8 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
 function navLinkClass(isActive: boolean) {
   return clsx(
-    isActive ? "bg-neutral-200/60" : "",
-    "outline-hidden flex items-center gap-1 rounded-lg px-2 py-1 text-sm hover:bg-neutral-200/60",
+    isActive ? "is-active bg-neutral-200/60" : "",
+    "admin-nav-link outline-hidden flex items-center gap-1 rounded-lg px-2 py-1 text-sm hover:bg-neutral-200/60",
   );
 }
 
@@ -104,7 +104,7 @@ export default function AdminLayout() {
     <>
       <GlobalLoading />
       <div className="admin-shell min-h-screen bg-neutral-100 text-neutral-950">
-        <aside className="fixed inset-y-0 left-0 z-20 flex h-screen w-64 flex-col border-r bg-transparent p-3">
+        <aside className="admin-sidebar fixed inset-y-0 left-0 z-20 flex h-screen w-64 flex-col border-r bg-transparent p-3">
           <div>
             <div className="flex items-center gap-2">
               <a
@@ -113,7 +113,7 @@ export default function AdminLayout() {
                 rel="noreferrer"
                 aria-label="返回官网"
                 title="返回官网"
-                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-neutral-950 text-white outline-hidden hover:bg-neutral-800 focus-visible:bg-neutral-800"
+                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,#821313,#d1a047)] text-[#fff8ec] shadow-sm shadow-red-950/20 outline-hidden hover:bg-[linear-gradient(135deg,#5f0b0b,#c99532)] focus-visible:bg-[linear-gradient(135deg,#5f0b0b,#c99532)]"
               >
                 <House className="size-4" />
               </a>

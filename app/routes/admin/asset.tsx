@@ -159,7 +159,7 @@ export default function AdminAssetList() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-100 text-neutral-950">
+    <div className="admin-asset-theme min-h-screen bg-neutral-100 text-neutral-950">
       <AssetHeader title="资产列表">
         <Button asChild size="sm">
           <Link to="/admin/asset/new">
@@ -195,7 +195,7 @@ export default function AdminAssetList() {
           />
         </section>
 
-        <Card className="gap-0 overflow-hidden p-0">
+        <Card className="admin-asset-panel gap-0 overflow-hidden p-0">
           <CardContent className="px-0">
             <div className="flex flex-col gap-3 border-b p-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-0">
@@ -451,7 +451,7 @@ function SummaryCard({
   description: string;
 }) {
   return (
-    <Card className="gap-3 p-4">
+    <Card className="admin-asset-summary-card gap-3 p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm text-neutral-500">{label}</div>

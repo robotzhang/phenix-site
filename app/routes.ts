@@ -28,6 +28,7 @@ export default [
     route("admin/asset/:assetId", "./routes/admin/asset-detail.tsx"),
     route("admin/asset/:assetId/edit", "./routes/admin/asset-edit.tsx"),
     route("admin/settings", "./routes/admin/settings.tsx"),
+    route("admin/settings/accounts", "./routes/admin/settings-accounts.tsx"),
   ]),
   route("admin/db-health", "./routes/admin/db-health.ts"),
   route("admin/login", "./routes/admin/login.tsx"),

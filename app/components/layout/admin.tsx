@@ -13,11 +13,11 @@ import {
   LayoutDashboard,
   LogOut,
   Settings2,
+  UserCog,
   type LucideIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { GlobalLoading } from "@/components/ui/ssr-global-loading";
 import {
   DropdownMenu,
@@ -140,11 +140,8 @@ export default function AdminLayout() {
                       <AvatarFallback className="rounded-lg">A</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 text-base font-semibold">
+                      <div className="truncate text-base font-semibold">
                         <span className="truncate">{addressLabel}</span>
-                        <Badge variant="outline" className="h-5 px-1.5 text-[11px] leading-none">
-                          SUPER
-                        </Badge>
                       </div>
                       <div className="truncate text-sm text-muted-foreground">
                         超级管理员
@@ -174,6 +171,7 @@ export default function AdminLayout() {
 
             <NavGroup title="设置">
               <NavItem to="/admin/settings" icon={Settings2} label="通用" end />
+              <NavItem to="/admin/settings/accounts" icon={UserCog} label="账号管理" end />
             </NavGroup>
           </div>
         </aside>

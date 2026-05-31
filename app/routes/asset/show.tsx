@@ -473,7 +473,7 @@ export default function RwaShow() {
         ))}
       </section>
 
-      <section className="grid gap-8 border-y border-sky-100 bg-white/70 px-4 py-12 sm:px-0 sm:py-16 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="grid gap-8 bg-white/50 px-4 py-12 sm:px-0 sm:py-16 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
             Asset Record
@@ -484,42 +484,42 @@ export default function RwaShow() {
             关联线下资料。线上凭证不等同于收益承诺，也不替代专业鉴定与托管文件。
           </p>
         </div>
-        <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
-          <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
-            <div className="text-sm text-sky-900/60">链上资产</div>
+        <div className="overflow-hidden rounded-md border border-sky-100/80 bg-white/90 shadow-sm">
+          <div className="grid items-center gap-3 border-b border-sky-100/80 px-5 py-4 sm:grid-cols-[128px_minmax(0,1fr)]">
+            <div className="text-sm text-sky-900/60">线上资产</div>
             <a
               href={rwa.explorerURL}
               target="_blank"
               rel="noreferrer"
-              className="flex min-w-0 items-center gap-2 break-all text-sm font-semibold text-sky-950 hover:text-sky-700"
+              className="inline-flex w-fit items-center gap-1.5 rounded border border-sky-100 bg-sky-50 px-3 py-1.5 text-sm font-semibold text-sky-800 transition hover:border-sky-200 hover:bg-sky-100"
             >
-              {rwa.explorerURL}
+              查看
               <ExternalLink className="h-4 w-4 shrink-0" />
             </a>
           </div>
-          <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
-            <div className="text-sm text-sky-900/60">Token URI</div>
+          <div className="grid items-center gap-3 border-b border-sky-100/80 px-5 py-4 sm:grid-cols-[128px_minmax(0,1fr)]">
+            <div className="text-sm text-sky-900/60">hash</div>
             <a
               href={rwa.tokenURI}
               target="_blank"
               rel="noreferrer"
-              className="flex min-w-0 items-center gap-2 break-all text-sm font-semibold text-sky-950 hover:text-sky-700"
+              className="inline-flex min-w-0 items-center gap-2 break-all font-mono text-sm font-semibold text-sky-950 hover:text-sky-700"
             >
-              {rwa.tokenURI}
+              {rwa.asset.fileHash}
               <ExternalLink className="h-4 w-4 shrink-0" />
             </a>
           </div>
-          <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+          <div className="grid items-center gap-3 border-b border-sky-100/80 px-5 py-4 sm:grid-cols-[128px_minmax(0,1fr)]">
             <div className="text-sm text-sky-900/60">Owner</div>
             <div className="break-all font-mono text-sm text-sky-950">
               {rwa.owner}
             </div>
           </div>
-          <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+          <div className="grid items-center gap-3 px-5 py-4 sm:grid-cols-[128px_minmax(0,1fr)]">
             <div className="text-sm text-sky-900/60">卖家类别</div>
             <div>
               <span
-                className={`inline-flex border px-3 py-1 text-sm font-semibold ${getRwaSellerCategoryClassName(
+                className={`inline-flex rounded border px-3 py-1 text-sm font-semibold ${getRwaSellerCategoryClassName(
                   sellerCategoryLabel,
                 )}`}
               >

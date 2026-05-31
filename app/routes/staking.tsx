@@ -47,6 +47,45 @@ function formatDays(days: number) {
   return `${days} 天`;
 }
 
+function chunkArray<T>(items: T[], size: number) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function chunkUnstakePositionIds(
+  positionIds: string[],
+  positions: Array<{ idText: string; tokenCount: number }>,
+) {
+  const tokenCounts = new Map(positions.map((position) => [position.idText, position.tokenCount]));
+  const chunks: string[][] = [];
+  let currentChunk: string[] = [];
+  let currentTransfers = 0;
+
+  for (const positionId of positionIds) {
+    const tokenCount = tokenCounts.get(positionId) ?? 0;
+    const nextWouldOverflow =
+      currentChunk.length >= 20 || currentTransfers + tokenCount > 100;
+
+    if (nextWouldOverflow && currentChunk.length > 0) {
+      chunks.push(currentChunk);
+      currentChunk = [];
+      currentTransfers = 0;
+    }
+
+    currentChunk.push(positionId);
+    currentTransfers += tokenCount;
+  }
+
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk);
+  }
+
+  return chunks;
+}
+
 export function meta() {
   return [
     { title: "F-NFT Staking | PHENIX" },
@@ -172,10 +211,6 @@ export default function Staking() {
       toast.error("没有可领取奖励的仓位");
       return;
     }
-    if (positionIds.length > 20) {
-      toast.error("单次最多领取 20 个仓位");
-      return;
-    }
     if (!poolStatus?.rewardSolvent) {
       toast.error("奖励池不足，claim 暂停");
       return;
@@ -183,7 +218,9 @@ export default function Staking() {
 
     setBusyAction("claim");
     try {
-      await claim(positionIds);
+      for (const batch of chunkArray(positionIds, 20)) {
+        await claim(batch);
+      }
       setSelectedPositionIds((current) => current.filter((id) => !positionIds.includes(id)));
       await refreshAll();
     } finally {
@@ -196,22 +233,19 @@ export default function Staking() {
       toast.error("没有可提取的仓位");
       return;
     }
-    if (positionIds.length > 20) {
-      toast.error("单次最多提取 20 个仓位");
-      return;
-    }
 
     const nftTransfers = positions
       .filter((position) => positionIds.includes(position.idText))
       .reduce((sum, position) => sum + position.tokenCount, 0);
     if (nftTransfers > 100) {
-      toast.error("单次最多提取 100 张 F-NFT");
-      return;
+      toast.message("将分批提取，单笔最多处理 100 张 F-NFT");
     }
 
     setBusyAction("unstake");
     try {
-      await unstakeTo(positionIds);
+      for (const batch of chunkUnstakePositionIds(positionIds, positions)) {
+        await unstakeTo(batch);
+      }
       setSelectedPositionIds((current) => current.filter((id) => !positionIds.includes(id)));
       await refreshAll();
     } finally {

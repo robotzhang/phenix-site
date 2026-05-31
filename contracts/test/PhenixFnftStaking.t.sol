@@ -58,6 +58,18 @@ contract PhenixFnftStakingTest is Test, IERC721Receiver {
         vm.stopPrank();
     }
 
+    function testCannotStakeDuplicateTokenIdsInSamePosition() public {
+        uint256[] memory tokenIds = new uint256[](2);
+        tokenIds[0] = 1;
+        tokenIds[1] = 1;
+
+        vm.startPrank(user);
+        fnft.setApprovalForAll(address(staking), true);
+        vm.expectRevert(abi.encodeWithSelector(PhenixFnftStaking.TokenAlreadyStaked.selector, 1));
+        staking.stake(tokenIds, 0);
+        vm.stopPrank();
+    }
+
     function testStakeRevertsWhenRewardPoolCannotCoverReservation() public {
         uint256[] memory tokens = _tokens(1, 1);
         uint256 stakingBalance = phenix.balanceOf(address(staking));

@@ -52,7 +52,9 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
         uint256 unlockTime
     );
     event RewardClaimed(address indexed owner, uint256 indexed positionId, uint256 amount);
-    event PositionUnstaked(address indexed owner, uint256 indexed positionId, address indexed recipient, uint256 tokenCount);
+    event PositionUnstaked(
+        address indexed owner, uint256 indexed positionId, address indexed recipient, uint256 tokenCount
+    );
     event RewardsDeposited(address indexed funder, uint256 requestedAmount, uint256 receivedAmount);
     event OwnerPhenixWithdrawn(address indexed owner, address indexed to, uint256 amount);
     event UntrackedFnftRecovered(address indexed owner, address indexed to, uint256 indexed tokenId);
@@ -267,7 +269,12 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
         return balance >= reservedRewards ? 0 : reservedRewards - balance;
     }
 
-    function onERC721Received(address, address, uint256 tokenId, bytes calldata) external view override returns (bytes4) {
+    function onERC721Received(address, address, uint256 tokenId, bytes calldata)
+        external
+        view
+        override
+        returns (bytes4)
+    {
         if (msg.sender != address(fnft) || !_acceptingFnft || !_expectedTokenId[tokenId]) {
             revert UnexpectedFnftTransfer();
         }

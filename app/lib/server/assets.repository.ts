@@ -72,7 +72,53 @@ export type AssetTokenMetadata = {
   imageURL: string;
 };
 
+export type OnchainAssetSnapshot = {
+  assetCode: string;
+  tokenId: string;
+  name: string;
+  owner: string;
+  pricePhenix: string;
+  pricePhenixWei: string;
+  fileHash: string;
+  tokenURI: string;
+  status: "published" | "unpublished" | "burned";
+  imageURL?: string;
+  categoryLabel: string;
+  sellerCategoryLabel: string;
+  spec?: string;
+  size?: string;
+  txHash?: string;
+  confirmedAt?: string;
+};
+
+export type OnchainAssetUpsertResult = {
+  assetCode: string;
+  tokenId: string;
+  action: "created" | "updated" | "skipped";
+  reason?: string;
+};
+
 const CONTRACT_ADDRESS = RWA_CONTRACT_ADDRESS.toLowerCase();
+const INITIAL_ONCHAIN_ASSET_SNAPSHOTS: OnchainAssetSnapshot[] = [
+  {
+    assetCode: "PR00001",
+    tokenId: "1",
+    name: "蓝宝石 戒指 PR00001",
+    owner: "0xc5D4C6c5Fa4ad10dC768fc589f782Ef8c8CB0cA7",
+    pricePhenix: "1000000",
+    pricePhenixWei: "1000000000000000000000000",
+    fileHash: "f4b03bf7dea1a568f32f4f6af22cc70b",
+    tokenURI:
+      "https://phenixmcga.com/rwa/metadata?id=1&hash=f4b03bf7dea1a568f32f4f6af22cc70b",
+    status: "published",
+    imageURL:
+      "https://rwa-cdn.phenixmcga.com/f4b03bf7dea1a568f32f4f6af22cc70b/cover.png",
+    categoryLabel: "宝石",
+    sellerCategoryLabel: "平台",
+    spec: "待维护",
+    size: "待维护",
+  },
+];
 const TABLE_MISSING_PATTERNS = [
   "no such table: assets",
   "no such table: asset_onchain_data",
@@ -315,6 +361,121 @@ export async function readAssetTokenMetadata(
   };
 }
 
+export async function upsertOnchainAssetSnapshot(
+  context: AppLoadContext,
+  snapshot: OnchainAssetSnapshot,
+): Promise<OnchainAssetUpsertResult> {
+  await seedProductAssetCatalog(context);
+  return upsertOnchainAssetSnapshotRow(context, snapshot);
+}
+
+async function upsertOnchainAssetSnapshotRow(
+  context: AppLoadContext,
+  snapshot: OnchainAssetSnapshot,
+): Promise<OnchainAssetUpsertResult> {
+  const tokenId = trimAdminStorageString(snapshot.tokenId);
+  const requestedAssetCode = normalizeProductAssetCode(snapshot.assetCode);
+
+  if (!tokenId || !requestedAssetCode) {
+    return {
+      assetCode: requestedAssetCode,
+      tokenId,
+      action: "skipped",
+      reason: "missing_token_or_asset_code",
+    };
+  }
+
+  const existingByRwaId = await queryFirst<AssetRow>(
+    context,
+    `
+      SELECT assets.*
+      FROM assets
+      INNER JOIN asset_onchain_data ON asset_onchain_data.asset_id = assets.id
+      WHERE asset_onchain_data.rwa_id = ?
+      LIMIT 1
+    `,
+    [tokenId],
+  );
+  const assetCode = existingByRwaId?.asset_code ?? requestedAssetCode;
+  let asset =
+    existingByRwaId ??
+    (await queryFirst<AssetRow>(
+      context,
+      "SELECT * FROM assets WHERE asset_code = ?",
+      [assetCode],
+    ));
+  const existedBeforeSync = Boolean(asset);
+
+  if (!asset) {
+    await execute(
+      context,
+      `
+        INSERT INTO assets (asset_code, chain_state, display_state)
+        VALUES (?, 'draft', 'active')
+        ON CONFLICT(asset_code) DO NOTHING
+      `,
+      [assetCode],
+    );
+    asset = await queryFirst<AssetRow>(
+      context,
+      "SELECT * FROM assets WHERE asset_code = ?",
+      [assetCode],
+    );
+  }
+
+  if (!asset) {
+    return {
+      assetCode,
+      tokenId,
+      action: "skipped",
+      reason: "asset_not_found_after_insert",
+    };
+  }
+
+  await ensureOffchainData(context, asset.id);
+  await fillOffchainPlaceholders(context, asset.id, snapshot);
+  const onchain = await ensureOnchainData(context, asset.id);
+
+  if (onchain.rwa_id && onchain.rwa_id !== tokenId) {
+    return {
+      assetCode: asset.asset_code,
+      tokenId,
+      action: "skipped",
+      reason: "asset_already_linked_to_another_token",
+    };
+  }
+
+  await updateOnchainSnapshot(
+    context,
+    asset.id,
+    snapshot,
+    Boolean(onchain.locked_at) || asset.chain_state === "onchain",
+  );
+  await insertProductMediaIfMissing(
+    context,
+    asset.id,
+    asset.chain_state,
+    snapshot.imageURL,
+  );
+  await execute(
+    context,
+    `
+      UPDATE assets
+      SET chain_state = 'onchain',
+          display_state = 'active',
+          updated_at = unixepoch()
+      WHERE id = ?
+    `,
+    [asset.id],
+  );
+
+  return {
+    assetCode: asset.asset_code,
+    tokenId,
+    action: existedBeforeSync ? "updated" : "created",
+  };
+}
+
 async function seedProductAssetCatalog(context: AppLoadContext) {
   if (catalogSeeded) {
     return;
@@ -401,7 +562,34 @@ async function seedProductAssetCatalog(context: AppLoadContext) {
     }
   }
 
+  if (RWA_CHAIN_ID === 8453) {
+    for (const snapshot of INITIAL_ONCHAIN_ASSET_SNAPSHOTS) {
+      if (!(await isInitialOnchainAssetSeeded(context, snapshot))) {
+        await upsertOnchainAssetSnapshotRow(context, snapshot);
+      }
+    }
+  }
+
   catalogSeeded = true;
+}
+
+async function isInitialOnchainAssetSeeded(
+  context: AppLoadContext,
+  snapshot: OnchainAssetSnapshot,
+) {
+  const row = await queryFirst<Record<string, unknown> & { id: number }>(
+    context,
+    `
+      SELECT assets.id
+      FROM assets
+      INNER JOIN asset_onchain_data ON asset_onchain_data.asset_id = assets.id
+      WHERE asset_onchain_data.rwa_id = ?
+      LIMIT 1
+    `,
+    [snapshot.tokenId],
+  );
+
+  return Boolean(row);
 }
 
 async function ensureAsset(
@@ -503,6 +691,116 @@ async function upsertOffchainData(
       trimAdminStorageString(metadata.sellerCategoryLabel) || null,
       trimAdminStorageString(metadata.spec) || null,
       trimAdminStorageString(metadata.size) || null,
+      assetId,
+    ],
+  );
+}
+
+async function fillOffchainPlaceholders(
+  context: AppLoadContext,
+  assetId: number,
+  snapshot: OnchainAssetSnapshot,
+) {
+  await execute(
+    context,
+    `
+      UPDATE asset_offchain_data
+      SET
+        category_label = CASE
+          WHEN category_label IS NULL OR trim(category_label) = '' THEN ?
+          ELSE category_label
+        END,
+        source_label = CASE
+          WHEN source_label IS NULL OR trim(source_label) = '' THEN ?
+          ELSE source_label
+        END,
+        spec = CASE
+          WHEN spec IS NULL OR trim(spec) = '' THEN ?
+          ELSE spec
+        END,
+        size = CASE
+          WHEN size IS NULL OR trim(size) = '' THEN ?
+          ELSE size
+        END,
+        updated_at = unixepoch()
+      WHERE asset_id = ?
+    `,
+    [
+      trimAdminStorageString(snapshot.categoryLabel) || "文化艺术品",
+      trimAdminStorageString(snapshot.sellerCategoryLabel) || "平台",
+      trimAdminStorageString(snapshot.spec) || "待维护",
+      trimAdminStorageString(snapshot.size) || "待维护",
+      assetId,
+    ],
+  );
+}
+
+async function updateOnchainSnapshot(
+  context: AppLoadContext,
+  assetId: number,
+  snapshot: OnchainAssetSnapshot,
+  locked: boolean,
+) {
+  const confirmedAt = isoToUnixSeconds(snapshot.confirmedAt);
+
+  if (locked) {
+    await execute(
+      context,
+      `
+        UPDATE asset_onchain_data
+        SET
+          rwa_id = COALESCE(rwa_id, ?),
+          token_uri = COALESCE(NULLIF(token_uri, ''), ?),
+          issue_tx_hash = COALESCE(NULLIF(issue_tx_hash, ''), ?),
+          onchain_status = COALESCE(?, onchain_status),
+          confirmed_at = COALESCE(confirmed_at, ?),
+          updated_at = unixepoch()
+        WHERE asset_id = ?
+      `,
+      [
+        trimAdminStorageString(snapshot.tokenId) || null,
+        trimAdminStorageString(snapshot.tokenURI) || null,
+        trimAdminStorageString(snapshot.txHash) || null,
+        snapshot.status || null,
+        confirmedAt,
+        assetId,
+      ],
+    );
+    return;
+  }
+
+  await execute(
+    context,
+    `
+      UPDATE asset_onchain_data
+      SET
+        contract_address = COALESCE(NULLIF(contract_address, ''), ?),
+        recipient_address = COALESCE(NULLIF(recipient_address, ''), ?),
+        name = COALESCE(NULLIF(name, ''), ?),
+        phenix_price_wei = COALESCE(NULLIF(phenix_price_wei, ''), ?),
+        phenix_price_text = COALESCE(NULLIF(phenix_price_text, ''), ?),
+        file_hash = COALESCE(NULLIF(file_hash, ''), ?),
+        rwa_id = COALESCE(rwa_id, ?),
+        token_uri = COALESCE(NULLIF(token_uri, ''), ?),
+        issue_tx_hash = COALESCE(NULLIF(issue_tx_hash, ''), ?),
+        onchain_status = COALESCE(?, onchain_status),
+        confirmed_at = COALESCE(confirmed_at, ?),
+        locked_at = COALESCE(locked_at, unixepoch()),
+        updated_at = unixepoch()
+      WHERE asset_id = ?
+    `,
+    [
+      CONTRACT_ADDRESS,
+      trimAdminStorageString(snapshot.owner) || null,
+      trimAdminStorageString(snapshot.name) || null,
+      trimAdminStorageString(snapshot.pricePhenixWei) || null,
+      trimAdminStorageString(snapshot.pricePhenix) || null,
+      trimAdminStorageString(snapshot.fileHash) || null,
+      trimAdminStorageString(snapshot.tokenId) || null,
+      trimAdminStorageString(snapshot.tokenURI) || null,
+      trimAdminStorageString(snapshot.txHash) || null,
+      snapshot.status || null,
+      confirmedAt,
       assetId,
     ],
   );
@@ -645,6 +943,27 @@ async function insertMedia(
       [assetId, role, url, index],
     );
   }
+}
+
+async function insertProductMediaIfMissing(
+  context: AppLoadContext,
+  assetId: number,
+  currentChainState: AssetChainState,
+  imageURL?: string,
+) {
+  const normalizedImageURL = trimAdminStorageString(imageURL);
+
+  if (!normalizedImageURL || currentChainState === "onchain") return;
+
+  const mediaCount = await queryFirst<Record<string, unknown> & { count: number }>(
+    context,
+    "SELECT COUNT(*) AS count FROM asset_media WHERE asset_id = ? AND role = 'product'",
+    [assetId],
+  );
+
+  if ((mediaCount?.count ?? 0) > 0) return;
+
+  await insertMedia(context, assetId, "product", [normalizedImageURL]);
 }
 
 async function readMediaByAssetId(context: AppLoadContext) {

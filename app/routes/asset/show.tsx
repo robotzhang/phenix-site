@@ -486,6 +486,18 @@ export default function RwaShow() {
         </div>
         <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
           <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
+            <div className="text-sm text-sky-900/60">链上资产</div>
+            <a
+              href={rwa.explorerURL}
+              target="_blank"
+              rel="noreferrer"
+              className="flex min-w-0 items-center gap-2 break-all text-sm font-semibold text-sky-950 hover:text-sky-700"
+            >
+              {rwa.explorerURL}
+              <ExternalLink className="h-4 w-4 shrink-0" />
+            </a>
+          </div>
+          <div className="grid gap-2 p-5 sm:grid-cols-[160px_1fr]">
             <div className="text-sm text-sky-900/60">Token URI</div>
             <a
               href={rwa.tokenURI}

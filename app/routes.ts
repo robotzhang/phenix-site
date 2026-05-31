@@ -17,6 +17,7 @@ export default [
   route("admin/asset/image", "./routes/admin/asset-image.tsx"),
   route("admin/asset/image/*", "./routes/admin/asset-image-file.tsx"),
   route("admin/asset/package", "./routes/admin/asset-package.ts"),
+  route("admin/asset/sync-chain", "./routes/admin/asset-sync-chain.ts"),
   route("admin/asset/storage", "./routes/admin/asset-storage.tsx"),
   route("admin/auth/nonce", "./routes/admin/auth/nonce.ts"),
   route("admin/auth/session", "./routes/admin/auth/session.ts"),

@@ -465,6 +465,10 @@ export function getProductAssetById(id?: string) {
 }
 
 export function formatProductAssetPrice(value: number) {
+  if (!Number.isFinite(value) || value <= 0) {
+    return "待维护";
+  }
+
   return new Intl.NumberFormat("zh-CN", {
     style: "currency",
     currency: "CNY",

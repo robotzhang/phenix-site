@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Eye,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,12 +59,22 @@ import {
   refreshRwaAdminMetadataMap,
   useRwaAdminMetadataMap,
 } from "@/lib/rwa-admin-storage";
+import { formatRwaPrice } from "@/lib/rwa";
 import { requireSuperAdminPage } from "@/lib/server/admin-auth";
 import { cn } from "@/lib/utils";
 import { OffchainAssetEditor } from "./asset/offchain-editor";
 import { AssetHeader } from "./asset/shared";
 
 const ASSET_PAGE_SIZE = 10;
+const RWA_CHAIN_SYNC_ROUTE = "/admin/asset/sync-chain";
+
+type RwaChainSyncResponse = {
+  scanned?: number;
+  created?: number;
+  updated?: number;
+  skipped?: number;
+  error?: string;
+};
 
 function getAssetChainStatusLabel(status?: ProductAsset["chainStatus"]) {
   if (status === "confirmed") return "已上链";
@@ -108,6 +119,7 @@ export default function AdminAssetList() {
   const [certificateFilter, setCertificateFilter] = useState("");
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [syncingChain, setSyncingChain] = useState(false);
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
 
   const productAssets = useMemo(
@@ -139,6 +151,8 @@ export default function AdminAssetList() {
           asset.sellerCategoryLabel,
           asset.spec,
           asset.fileHash,
+          asset.chainTokenId,
+          asset.pricePhenix,
         ]
           .join(" ")
           .toLowerCase()
@@ -150,7 +164,12 @@ export default function AdminAssetList() {
     () => productAssets.reduce((count, asset) => count + asset.certificateURLs.length, 0),
     [productAssets],
   );
-  const coveredCount = useMemo(() => Object.keys(adminMetadataMap).length, [adminMetadataMap]);
+  const coveredCount = useMemo(
+    () =>
+      Object.values(adminMetadataMap).filter((metadata) => metadata.assetKind !== "chain")
+        .length,
+    [adminMetadataMap],
+  );
   const totalPages = Math.max(1, Math.ceil(filteredAssets.length / ASSET_PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
   const pageStart = filteredAssets.length === 0
@@ -179,6 +198,32 @@ export default function AdminAssetList() {
     }
   };
 
+  const handleSyncChain = async () => {
+    try {
+      setSyncingChain(true);
+      const response = await fetch(RWA_CHAIN_SYNC_ROUTE, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+      });
+      const result = await response.json().catch(() => ({})) as RwaChainSyncResponse;
+
+      if (!response.ok) {
+        throw new Error(result.error || `同步链上资产失败 (${response.status})`);
+      }
+
+      await refreshRwaAdminMetadataMap();
+      toast.success(
+        `链上同步完成：扫描 ${result.scanned ?? 0}，新增 ${result.created ?? 0}，更新 ${
+          result.updated ?? 0
+        }，跳过 ${result.skipped ?? 0}`,
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "同步链上资产失败");
+    } finally {
+      setSyncingChain(false);
+    }
+  };
+
   const goToPage = (nextPage: number) => {
     setPage(Math.min(Math.max(nextPage, 1), totalPages));
   };
@@ -191,6 +236,15 @@ export default function AdminAssetList() {
             <Plus />
             添加资产
           </Link>
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => void handleSyncChain()}
+          disabled={syncingChain}
+        >
+          <RefreshCw className={syncingChain ? "animate-spin" : ""} />
+          同步链上
         </Button>
         <Button variant="outline" size="sm" onClick={() => void handleRefresh()}>
           <RefreshCw className={refreshing ? "animate-spin" : ""} />
@@ -550,7 +604,9 @@ function AssetRow({
           {asset.size ? <div className="text-xs text-muted-foreground">{asset.size}</div> : null}
         </div>
       </TableCell>
-      <TableCell>{formatProductAssetPrice(asset.priceCny)}</TableCell>
+      <TableCell>
+        <AssetPriceCell asset={asset} />
+      </TableCell>
       <TableCell>
         <div className="text-sm">
           <div>图片 {asset.imageURLs.length}</div>
@@ -588,5 +644,21 @@ function AssetRow({
         </DropdownMenu>
       </TableCell>
     </TableRow>
+  );
+}
+
+function AssetPriceCell({ asset }: { asset: ProductAsset }) {
+  const hasCnyPrice = Number.isFinite(asset.priceCny) && asset.priceCny > 0;
+  const pricePhenix = asset.pricePhenix?.trim();
+
+  return (
+    <div className="min-w-[120px]">
+      <div>{hasCnyPrice ? formatProductAssetPrice(asset.priceCny) : "待维护"}</div>
+      {pricePhenix ? (
+        <div className="text-xs text-muted-foreground">
+          {formatRwaPrice(pricePhenix)} PHENIX
+        </div>
+      ) : null}
+    </div>
   );
 }

@@ -1,12 +1,16 @@
 import { useReadContract } from "wagmi";
-import { base } from "viem/chains";
 import abi from "@/abi/rwa.json";
-import { PHENIX_DECIMALS, RWA_ADDRESS } from "@/lib/constants";
+import { PHENIX_DECIMALS } from "@/lib/constants";
 import {
   resolveRwaCategoryLabel,
   resolveRwaSellerCategoryLabel,
 } from "@/lib/rwa";
 import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
+import {
+  RWA_CHAIN_ID,
+  RWA_CONTRACT_ADDRESS,
+  RWA_EXPLORER_TOKEN_BASE,
+} from "@/lib/rwa-chain-config";
 import { formatUnits } from "viem";
 
 export interface RWA {
@@ -15,6 +19,7 @@ export interface RWA {
   categoryLabel: string;
   sellerCategoryLabel: string;
   tokenURI: string;
+  explorerURL: string;
   imageURL: string;
   imageURLs: string[];
   asset: {
@@ -42,14 +47,12 @@ function formatRwaInfo(
     adminMetadata?.imageURLs && adminMetadata.imageURLs.length > 0
       ? adminMetadata.imageURLs
       : [adminMetadata?.imageURL || fallbackImageURL];
-  const tokenURI =
-    typeof rwaData.tokenURI === "string"
-      ? rwaData.tokenURI.replace("/rwa/metadata", "/asset/metadata")
-      : rwaData.tokenURI;
+  const tokenURI = typeof rwaData.tokenURI === "string" ? rwaData.tokenURI : "";
 
   return {
     ...rwaData,
     tokenURI,
+    explorerURL: `${RWA_EXPLORER_TOKEN_BASE}${encodeURIComponent(tokenIdKey)}`,
     categoryLabel: adminMetadata?.categoryLabel ?? resolveRwaCategoryLabel(rwaData.asset.name, rwaData.tokenId),
     sellerCategoryLabel: adminMetadata?.sellerCategoryLabel ?? resolveRwaSellerCategoryLabel(rwaData.tokenId),
     imageURL: imageURLs[0],
@@ -71,9 +74,9 @@ function formatRwaInfo(
 export function useRwaList() {
   const adminMetadataMap = useRwaAdminMetadataMap();
   const { data, isLoading, error, refetch } = useReadContract({
-    address: RWA_ADDRESS,
+    address: RWA_CONTRACT_ADDRESS,
     abi,
-    chainId: base.id,
+    chainId: RWA_CHAIN_ID,
     functionName: "getAllRWAs",
   });
   //
@@ -92,9 +95,9 @@ export function useRwaList() {
 export function useRwaDetail(tokenId?: string) {
   const adminMetadataMap = useRwaAdminMetadataMap();
   const { data, isLoading, error } = useReadContract({
-    address: RWA_ADDRESS,
+    address: RWA_CONTRACT_ADDRESS,
     abi,
-    chainId: base.id,
+    chainId: RWA_CHAIN_ID,
     functionName: "getRWA",
     args: tokenId ? [BigInt(tokenId)] : undefined,
     query: { enabled: !!tokenId },

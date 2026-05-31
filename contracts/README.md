@@ -45,6 +45,18 @@ forge script script/FundRewards.s.sol:FundRewards \
   --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
 ```
 
+## Base Mainnet Deployment
+
+The Base mainnet PHENIX and F-NFT addresses are project constants and are
+hardcoded in `DeployStakingBaseMainnet.s.sol`. Mainnet deployment still requires
+the deployer key, Base RPC URL, and owner multisig:
+
+```bash
+cd contracts
+forge script script/DeployStakingBaseMainnet.s.sol:DeployStakingBaseMainnet \
+  --rpc-url $BASE_RPC_URL --broadcast
+```
+
 ## Verification
 
 ```bash

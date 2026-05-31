@@ -553,7 +553,7 @@ export function ProductAssetFields({
 
       <div className="grid gap-4 sm:grid-cols-[0.45fr_0.55fr]">
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-sky-950">人民币会员价</span>
+          <span className="text-sm font-medium text-sky-950">会员价</span>
           <Input
             inputMode="decimal"
             value={form.priceCny}
@@ -708,7 +708,7 @@ export function ProductAssetOffchainFields({
       </div>
 
       <label className="grid gap-2 sm:max-w-md">
-        <span className="text-sm font-medium text-sky-950">人民币会员价</span>
+        <span className="text-sm font-medium text-sky-950">会员价</span>
         <Input
           inputMode="decimal"
           value={form.priceCny}

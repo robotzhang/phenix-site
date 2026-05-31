@@ -355,7 +355,7 @@ function normalizeProductAssetURLs(value?: string[]) {
   return Array.from(new Set(value.map((item) => item.trim()).filter(Boolean)));
 }
 
-function parseProductAssetPriceCny(value?: string) {
+export function parseProductAssetPriceCny(value?: string) {
   if (!value) return undefined;
 
   const parsed = Number(value.replace(/[,\s￥¥]/g, ""));

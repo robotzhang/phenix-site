@@ -3,13 +3,12 @@ import GlobalLoading from "@/components/ui/global-loading";
 import {
   formatProductAssetPrice,
   getProductAssetDisplayName,
+  getProductAssetStorageKey,
   getMergedProductAssetById,
+  parseProductAssetPriceCny,
 } from "@/data/product-assets";
 import { useRwaDetail } from "@/hooks/useRwa";
-import {
-  formatRwaPriceWithCurrency,
-  getRwaSellerCategoryClassName,
-} from "@/lib/rwa";
+import { getRwaSellerCategoryClassName } from "@/lib/rwa";
 import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
 import { Link, useParams } from "react-router";
 import {
@@ -53,6 +52,12 @@ const trustRecords = [
     text: "围绕典当、拍卖、回收等渠道建立更清晰的服务申请路径。",
   },
 ];
+
+const ASSET_CODE_PATTERN = /[A-Z]{2,4}\d{4,}/i;
+
+function resolveAssetCodeFromName(name: string) {
+  return name.match(ASSET_CODE_PATTERN)?.[0]?.toUpperCase();
+}
 
 export function meta() {
   return [
@@ -329,15 +334,20 @@ export default function RwaShow() {
   }
 
   const tokenId = rwa.tokenId.toString();
-  const categoryLabel = adminMetadataMap[tokenId]?.categoryLabel ?? rwa.categoryLabel;
+  const assetCode = resolveAssetCodeFromName(rwa.asset.name);
+  const chainMetadata =
+    adminMetadataMap[tokenId] ??
+    (assetCode ? adminMetadataMap[getProductAssetStorageKey(assetCode)] : undefined);
+  const categoryLabel = chainMetadata?.categoryLabel ?? rwa.categoryLabel;
   const sellerCategoryLabel =
-    adminMetadataMap[tokenId]?.sellerCategoryLabel ?? rwa.sellerCategoryLabel;
+    chainMetadata?.sellerCategoryLabel ?? rwa.sellerCategoryLabel;
   const imageURLs =
-    adminMetadataMap[tokenId]?.imageURLs && adminMetadataMap[tokenId].imageURLs.length > 0
-      ? adminMetadataMap[tokenId].imageURLs
+    chainMetadata?.imageURLs && chainMetadata.imageURLs.length > 0
+      ? chainMetadata.imageURLs
       : rwa.imageURLs;
   const selectedImageURL = imageURLs[selectedImageIndex] ?? imageURLs[0] ?? rwa.imageURL;
   const hasMultipleImages = imageURLs.length > 1;
+  const memberPriceCny = parseProductAssetPriceCny(chainMetadata?.priceCny) ?? 0;
 
   const showPreviousImage = () => {
     setSelectedImageIndex((current) => (current - 1 + imageURLs.length) % imageURLs.length);
@@ -437,7 +447,7 @@ export default function RwaShow() {
               <div className="border border-sky-100 bg-white/80 p-5 shadow-sm">
                 <div className="text-sm text-sky-900/60">会员价</div>
                 <div className="mt-2 text-3xl font-semibold text-sky-950">
-                  {formatRwaPriceWithCurrency(rwa.asset.pricePhenixFormatted)}
+                  {formatProductAssetPrice(memberPriceCny)}
                 </div>
               </div>
               <div className="border border-sky-100 bg-white/80 p-5 shadow-sm">

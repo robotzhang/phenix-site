@@ -108,7 +108,7 @@ export function OffchainAssetEditor({
     }
 
     if (!parsePositiveCurrency(priceCny)) {
-      throw new Error("请输入正确的人民币会员价");
+      throw new Error("请输入正确的会员价");
     }
 
     return {

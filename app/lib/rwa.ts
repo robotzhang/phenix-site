@@ -60,10 +60,6 @@ export function formatRwaPrice(value: string) {
   }).format(num);
 }
 
-export function formatRwaPriceWithCurrency(value: string) {
-  return `￥ ${formatRwaPrice(value)} 元`;
-}
-
 export function getRwaSellerCategoryClassName(label: string) {
   switch (label) {
     case "平台":

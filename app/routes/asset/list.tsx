@@ -1,14 +1,14 @@
 import {
   formatProductAssetPrice,
   getProductAssetDisplayName,
+  getProductAssetStorageKey,
   mergeProductAssetsWithAdminMetadata,
+  parseProductAssetPriceCny,
 } from "@/data/product-assets";
 import { useRwaList } from "@/hooks/useRwa";
 import { useRwaAdminMetadataMap } from "@/lib/rwa-admin-storage";
-import {
-  formatRwaPriceWithCurrency,
-  getRwaSellerCategoryClassName,
-} from "@/lib/rwa";
+import { getRwaSellerCategoryClassName } from "@/lib/rwa";
+import type { RwaAdminMetadataMap } from "@/lib/rwa-admin-storage.shared";
 import { Link } from "react-router";
 import {
   ArrowRight,
@@ -20,6 +20,23 @@ import {
   Ruler,
   ShieldCheck,
 } from "lucide-react";
+
+const ONLINE_ASSET_CODE_PATTERN = /[A-Z]{2,4}\d{4,}/i;
+
+function resolveOnlineAssetCode(name: string, tokenId: string) {
+  return name.match(ONLINE_ASSET_CODE_PATTERN)?.[0]?.toUpperCase() ?? `A${tokenId}`;
+}
+
+function resolveOnlineAssetPriceCny(
+  adminMetadataMap: RwaAdminMetadataMap,
+  tokenId: string,
+  assetCode: string,
+) {
+  const metadata =
+    adminMetadataMap[tokenId] ?? adminMetadataMap[getProductAssetStorageKey(assetCode)];
+
+  return parseProductAssetPriceCny(metadata?.priceCny) ?? 0;
+}
 
 export function meta() {
   return [
@@ -37,19 +54,32 @@ export default function RwaList() {
   const { data: onlineAssets } = useRwaList();
   const productAssets = mergeProductAssetsWithAdminMetadata(adminMetadataMap);
   const publishedOnlineAssets = onlineAssets.filter((asset) => asset.asset.status === 0);
-  const certificateCount = productAssets.reduce(
+  const publishedOnlineTokenIds = new Set(
+    publishedOnlineAssets.map((asset) => asset.tokenId.toString()),
+  );
+  const publishedOnlineAssetCodes = new Set(
+    publishedOnlineAssets.map((asset) =>
+      resolveOnlineAssetCode(asset.asset.name, asset.tokenId.toString()),
+    ),
+  );
+  const visibleProductAssets = productAssets.filter(
+    (asset) =>
+      !(asset.chainTokenId && publishedOnlineTokenIds.has(asset.chainTokenId)) &&
+      !publishedOnlineAssetCodes.has(asset.id),
+  );
+  const certificateCount = visibleProductAssets.reduce(
     (count, asset) => count + asset.certificateURLs.length,
     0,
   );
   const categoryLabels = Array.from(
     new Set(
       [
-        ...productAssets.map((asset) => asset.categoryLabel),
+        ...visibleProductAssets.map((asset) => asset.categoryLabel),
         ...publishedOnlineAssets.map((asset) => asset.categoryLabel),
       ].filter(Boolean),
     ),
   );
-  const assetCount = productAssets.length + publishedOnlineAssets.length;
+  const assetCount = visibleProductAssets.length + publishedOnlineAssets.length;
 
   return (
     <div className="-mx-4 md:mx-0">
@@ -134,10 +164,10 @@ export default function RwaList() {
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {productAssets.map((asset) => (
+          {visibleProductAssets.map((asset) => (
             <Link
               key={asset.id}
-              to={`/asset/${asset.id}`}
+              to={`/asset/${asset.chainTokenId || asset.id}`}
               className="group overflow-hidden border border-sky-100 bg-white/90 shadow-sm transition hover:border-sky-300"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-sky-50">
@@ -209,9 +239,12 @@ export default function RwaList() {
 
           {publishedOnlineAssets.map((asset) => {
             const tokenId = asset.tokenId.toString();
-            const displayCode =
-              asset.asset.name.match(/[A-Z]{2,4}\d{4,}/i)?.[0]?.toUpperCase() ??
-              `A${tokenId}`;
+            const displayCode = resolveOnlineAssetCode(asset.asset.name, tokenId);
+            const priceCny = resolveOnlineAssetPriceCny(
+              adminMetadataMap,
+              tokenId,
+              displayCode,
+            );
 
             return (
               <Link
@@ -252,7 +285,7 @@ export default function RwaList() {
                   <div className="mt-5 border-t border-sky-100 pt-4">
                     <div className="text-sm text-sky-900/60">会员价</div>
                     <div className="mt-1 text-2xl font-semibold text-sky-950">
-                      {formatRwaPriceWithCurrency(asset.asset.pricePhenixFormatted)}
+                      {formatProductAssetPrice(priceCny)}
                     </div>
                   </div>
                   <div className="mt-5 flex items-center justify-between text-sm text-sky-900/70">

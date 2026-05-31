@@ -119,6 +119,9 @@ const INITIAL_ONCHAIN_ASSET_SNAPSHOTS: OnchainAssetSnapshot[] = [
     size: "待维护",
   },
 ];
+const INITIAL_MEMBER_PRICE_CNY_BY_ASSET_CODE: Record<string, number> = {
+  PR00001: 1_000_000,
+};
 const TABLE_MISSING_PATTERNS = [
   "no such table: assets",
   "no such table: asset_onchain_data",
@@ -567,10 +570,52 @@ async function seedProductAssetCatalog(context: AppLoadContext) {
       if (!(await isInitialOnchainAssetSeeded(context, snapshot))) {
         await upsertOnchainAssetSnapshotRow(context, snapshot);
       }
+      await seedInitialMemberPriceCny(context, snapshot.assetCode);
     }
   }
 
   catalogSeeded = true;
+}
+
+async function seedInitialMemberPriceCny(
+  context: AppLoadContext,
+  assetCode: string,
+) {
+  const normalizedAssetCode = normalizeProductAssetCode(assetCode);
+  const memberPriceCny = INITIAL_MEMBER_PRICE_CNY_BY_ASSET_CODE[normalizedAssetCode];
+
+  if (!memberPriceCny) {
+    return;
+  }
+
+  const asset = await queryFirst<AssetRow>(
+    context,
+    "SELECT * FROM assets WHERE asset_code = ?",
+    [normalizedAssetCode],
+  );
+
+  if (!asset) {
+    return;
+  }
+
+  await ensureOffchainData(context, asset.id);
+  await execute(
+    context,
+    `
+      UPDATE asset_offchain_data
+      SET
+        member_price_cny_cents = CASE
+          WHEN member_price_cny_cents IS NULL OR member_price_cny_cents <= 0 THEN ?
+          ELSE member_price_cny_cents
+        END,
+        updated_at = CASE
+          WHEN member_price_cny_cents IS NULL OR member_price_cny_cents <= 0 THEN unixepoch()
+          ELSE updated_at
+        END
+      WHERE asset_id = ?
+    `,
+    [priceCnyToCents(memberPriceCny), asset.id],
+  );
 }
 
 async function isInitialOnchainAssetSeeded(

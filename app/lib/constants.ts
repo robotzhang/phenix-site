@@ -17,29 +17,25 @@ export const MEME_DECIMALS = 18;
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-function configuredAddress(value: unknown, fallback = ZERO_ADDRESS) {
-  return typeof value === "string" && /^0x[a-fA-F0-9]{40}$/.test(value)
-    ? value
-    : fallback;
-}
+export type StakingNetwork = "baseSepolia" | "base";
 
-export const TEST_FNFT_ADDRESS = configuredAddress(import.meta.env.VITE_TEST_FNFT_ADDRESS);
-export const FNFT_STAKING_ADDRESS = configuredAddress(import.meta.env.VITE_FNFT_STAKING_ADDRESS);
-export const TEST_FNFT_STAKING_ADDRESS = configuredAddress(import.meta.env.VITE_TEST_FNFT_STAKING_ADDRESS);
-export const CONFIGURED_TEST_PHENIX_ADDRESS = configuredAddress(
-  import.meta.env.VITE_TEST_PHENIX_ADDRESS,
-  TEST_PHENIX_ADDRESS,
-);
+// Cloudflare deploys the client bundle without runtime VITE_* address injection.
+// Update these public addresses in source after each staking deployment.
+export const STAKING_NETWORK: StakingNetwork = "baseSepolia";
 
-export const STAKING_FNFT_ADDRESS = import.meta.env.DEV && TEST_FNFT_ADDRESS !== ZERO_ADDRESS
-  ? TEST_FNFT_ADDRESS
-  : FNFT_ADDRESS;
+export const BASE_FNFT_ADDRESS = FNFT_ADDRESS;
+export const BASE_PHENIX_ADDRESS = PHENIX_ADDRESS;
+export const BASE_FNFT_STAKING_ADDRESS = ZERO_ADDRESS;
 
-export const STAKING_PHENIX_ADDRESS = import.meta.env.DEV
-  ? CONFIGURED_TEST_PHENIX_ADDRESS
-  : PHENIX_ADDRESS;
+export const BASE_SEPOLIA_FNFT_ADDRESS = ZERO_ADDRESS;
+export const BASE_SEPOLIA_PHENIX_ADDRESS = ZERO_ADDRESS;
+export const BASE_SEPOLIA_FNFT_STAKING_ADDRESS = ZERO_ADDRESS;
+
+export const STAKING_FNFT_ADDRESS =
+  STAKING_NETWORK === "baseSepolia" ? BASE_SEPOLIA_FNFT_ADDRESS : BASE_FNFT_ADDRESS;
+
+export const STAKING_PHENIX_ADDRESS =
+  STAKING_NETWORK === "baseSepolia" ? BASE_SEPOLIA_PHENIX_ADDRESS : BASE_PHENIX_ADDRESS;
 
 export const ACTIVE_FNFT_STAKING_ADDRESS =
-  import.meta.env.DEV && TEST_FNFT_STAKING_ADDRESS !== ZERO_ADDRESS
-    ? TEST_FNFT_STAKING_ADDRESS
-    : FNFT_STAKING_ADDRESS;
+  STAKING_NETWORK === "baseSepolia" ? BASE_SEPOLIA_FNFT_STAKING_ADDRESS : BASE_FNFT_STAKING_ADDRESS;

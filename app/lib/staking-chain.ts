@@ -1,3 +1,5 @@
 import { base, baseSepolia } from "viem/chains";
 
-export const STAKING_CHAIN = import.meta.env.DEV ? baseSepolia : base;
+import { STAKING_NETWORK } from "@/lib/constants";
+
+export const STAKING_CHAIN = STAKING_NETWORK === "baseSepolia" ? baseSepolia : base;

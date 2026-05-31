@@ -55,14 +55,17 @@ forge verify-contract --chain-id 84532 <staking_address> src/PhenixFnftStaking.s
   --etherscan-api-key $BASESCAN_API_KEY
 ```
 
-## Frontend Env
+## Frontend Address Config
 
-Create a root `.env` from the repo-level `.env.example` and set:
+Cloudflare deployment should not depend on client-side `.env` address injection.
+After each staking deployment, update the public frontend addresses in
+`app/lib/constants.ts` and commit them:
 
-- `VITE_FNFT_STAKING_ADDRESS` for production Base staking
-- `VITE_TEST_FNFT_ADDRESS` for the Base Sepolia FNFT/mock FNFT
-- `VITE_TEST_FNFT_STAKING_ADDRESS` for the Base Sepolia staking deployment
-- `VITE_TEST_PHENIX_ADDRESS` when Base Sepolia uses a PHENIX mock or alternate token
+- `STAKING_NETWORK`
+- `BASE_SEPOLIA_FNFT_ADDRESS`
+- `BASE_SEPOLIA_PHENIX_ADDRESS`
+- `BASE_SEPOLIA_FNFT_STAKING_ADDRESS`
+- `BASE_FNFT_STAKING_ADDRESS`
 
 ## Notes
 

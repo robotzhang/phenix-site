@@ -257,8 +257,8 @@ export default function Staking() {
           <div className="border border-amber-200 bg-amber-50 p-6 text-amber-950 shadow-sm">
             <h2 className="text-xl font-semibold">Staking contract not configured</h2>
             <p className="mt-3 text-sm leading-6">
-              请在环境变量中设置 `VITE_FNFT_STAKING_ADDRESS`，开发环境可额外设置
-              `VITE_TEST_FNFT_ADDRESS` 与 `VITE_TEST_FNFT_STAKING_ADDRESS`。
+              请在 `app/lib/constants.ts` 中设置当前 staking 网络和公开合约地址。
+              Cloudflare 部署不依赖前端 `.env` 注入。
             </p>
           </div>
         </section>

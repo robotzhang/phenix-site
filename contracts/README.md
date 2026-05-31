@@ -19,10 +19,13 @@ deployment scripts, and Foundry tests.
 
 ```bash
 cd contracts
-forge install foundry-rs/forge-std --no-git --shallow
+git -C .. submodule update --init --recursive contracts/lib/forge-std
 cp .env.example .env
 forge test
 ```
+
+`forge-std` is pinned as a git submodule in this repository. Do not replace it
+with a local `forge install --no-git` checkout when preparing deployment.
 
 ## Base Sepolia Deployment
 

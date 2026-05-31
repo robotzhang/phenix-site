@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatUnits, type Abi, type Address } from "viem";
-import { useAccount, usePublicClient } from "wagmi";
+import { useAccount, useChainId, usePublicClient, useSwitchChain } from "wagmi";
 import { toast } from "sonner";
 
 import fnftAbi from "@/abi/fnft.json";
@@ -234,16 +234,31 @@ export function useStakingPoolStatus() {
 
 export function useFnftStakingActions() {
   const { address } = useAccount();
+  const chainId = useChainId();
   const publicClient = usePublicClient({ chainId: STAKING_CHAIN.id });
+  const { switchChainAsync } = useSwitchChain();
   const { write } = useSafeContractWrite();
 
   const configured = isConfigured(ACTIVE_FNFT_STAKING_ADDRESS) && isConfigured(STAKING_FNFT_ADDRESS);
+
+  const ensureStakingChain = async () => {
+    if (chainId === STAKING_CHAIN.id) return;
+
+    try {
+      await switchChainAsync({ chainId: STAKING_CHAIN.id });
+    } catch (error) {
+      toast.error(`Switch wallet to ${STAKING_CHAIN.name}`);
+      throw error;
+    }
+  };
 
   const approveAll = async () => {
     if (!address || !publicClient || !configured) {
       toast.error("Staking contract is not ready");
       return;
     }
+    await ensureStakingChain();
+
     const fnftAddress = toAddress(STAKING_FNFT_ADDRESS);
     const stakingAddress = toAddress(ACTIVE_FNFT_STAKING_ADDRESS);
 
@@ -255,7 +270,7 @@ export function useFnftStakingActions() {
       account: address,
     });
 
-    await write(simulation.request);
+    await write(simulation.request, publicClient);
   };
 
   const stake = async (tokenIds: string[], planId: number) => {
@@ -267,6 +282,8 @@ export function useFnftStakingActions() {
       toast.error("Select at least one F-NFT");
       return;
     }
+    await ensureStakingChain();
+
     const fnftAddress = toAddress(STAKING_FNFT_ADDRESS);
     const stakingAddress = toAddress(ACTIVE_FNFT_STAKING_ADDRESS);
 
@@ -289,7 +306,7 @@ export function useFnftStakingActions() {
       account: address,
     });
 
-    await write(simulation.request);
+    await write(simulation.request, publicClient);
   };
 
   const claim = async (positionIds: string[]) => {
@@ -297,6 +314,8 @@ export function useFnftStakingActions() {
       toast.error("Staking contract is not ready");
       return;
     }
+    await ensureStakingChain();
+
     const stakingAddress = toAddress(ACTIVE_FNFT_STAKING_ADDRESS);
 
     const simulation = await publicClient.simulateContract({
@@ -307,7 +326,7 @@ export function useFnftStakingActions() {
       account: address,
     });
 
-    await write(simulation.request);
+    await write(simulation.request, publicClient);
   };
 
   const unstakeTo = async (positionIds: string[], recipient = address) => {
@@ -315,6 +334,8 @@ export function useFnftStakingActions() {
       toast.error("Staking contract is not ready");
       return;
     }
+    await ensureStakingChain();
+
     const stakingAddress = toAddress(ACTIVE_FNFT_STAKING_ADDRESS);
 
     const simulation = await publicClient.simulateContract({
@@ -325,7 +346,7 @@ export function useFnftStakingActions() {
       account: address,
     });
 
-    await write(simulation.request);
+    await write(simulation.request, publicClient);
   };
 
   return {

@@ -1,7 +1,10 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
 import { requireSuperAdminApi } from "@/lib/server/admin-auth";
-import { syncOnchainRwaAssetsToDatabase } from "@/lib/server/rwa-chain-sync";
+import {
+  formatRwaChainSyncError,
+  syncOnchainRwaAssetsToDatabase,
+} from "@/lib/server/rwa-chain-sync";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   await requireSuperAdminApi(context, request);
@@ -26,7 +29,7 @@ export async function action({ context, request }: ActionFunctionArgs) {
     return Response.json(await syncOnchainRwaAssetsToDatabase(context));
   } catch (error) {
     return Response.json(
-      { error: error instanceof Error ? error.message : "同步链上资产失败" },
+      { error: formatRwaChainSyncError(error) },
       { status: 500 },
     );
   }

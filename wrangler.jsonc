@@ -52,6 +52,8 @@
 		}
 	],
 	"vars": {
+		// Set RWA_RPC_URL as a Worker secret or environment variable in production
+		// to avoid Base public RPC rate limits.
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
 	},
 	"observability": {
@@ -87,6 +89,7 @@
 				]
 			},
 			"vars": {
+				// Set RWA_RPC_URL for dev deployments when chain sync is tested.
 				"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
 			}
 		}

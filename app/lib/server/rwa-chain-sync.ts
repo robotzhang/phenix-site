@@ -28,14 +28,16 @@ export type RwaChainSyncResult = {
 
 const ASSET_CODE_PATTERN = /\b[A-Z]{2,6}\d{3,}\b/i;
 
-const rwaClient = createPublicClient({
-  chain: RWA_CHAIN,
-  transport: http(),
-});
-
 export async function syncOnchainRwaAssetsToDatabase(
   context: AppLoadContext,
 ): Promise<RwaChainSyncResult> {
+  const rwaClient = createPublicClient({
+    chain: RWA_CHAIN,
+    transport: http(readRwaRpcUrl(context), {
+      retryCount: 2,
+      retryDelay: 1_000,
+    }),
+  });
   const data = await rwaClient.readContract({
     address: RWA_CONTRACT_ADDRESS,
     abi: rwaAbi,
@@ -57,6 +59,26 @@ export async function syncOnchainRwaAssetsToDatabase(
     skipped: items.filter((item) => item.action === "skipped").length,
     items,
   };
+}
+
+export function formatRwaChainSyncError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (message.includes("Status: 429") || /over rate limit/i.test(message)) {
+    return [
+      "Base RPC 请求被限流，链上同步暂时无法完成。",
+      "请在 Cloudflare Worker 配置专用 RWA_RPC_URL 后重试。",
+    ].join("");
+  }
+
+  return message || "同步链上资产失败";
+}
+
+function readRwaRpcUrl(context: AppLoadContext) {
+  const value = (context as { cloudflare?: { env?: { RWA_RPC_URL?: unknown } } })
+    .cloudflare?.env?.RWA_RPC_URL;
+
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
 async function buildOnchainSnapshot(rwaItem: unknown) {

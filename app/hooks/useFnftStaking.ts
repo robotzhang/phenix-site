@@ -38,7 +38,7 @@ export const STAKING_PLANS: readonly StakingPlan[] = [
 const MAX_UI_TOKEN_IDS = 200;
 const POSITIONS_PAGE_SIZE = 100n;
 
-function isConfigured(address: string): address is Address {
+export function isConfigured(address: string): address is Address {
   return address !== ZERO_ADDRESS && /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 

@@ -17,6 +17,7 @@ import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 import ConnectButton from "@/components/wallet/ConnectButton";
 import {
   formatPhenix,
+  isConfigured,
   STAKING_PLANS,
   useFnftStakingActions,
   useFnftTokenIds,
@@ -27,7 +28,6 @@ import {
 import {
   ACTIVE_FNFT_STAKING_ADDRESS,
   STAKING_FNFT_ADDRESS,
-  ZERO_ADDRESS,
 } from "@/lib/constants";
 import { STAKING_CHAIN } from "@/lib/staking-chain";
 
@@ -101,8 +101,7 @@ export default function Staking() {
   const [selectedPositionIds, setSelectedPositionIds] = useState<string[]>([]);
   const [busyAction, setBusyAction] = useState<"stake" | "claim" | "unstake" | null>(null);
 
-  const configured =
-    ACTIVE_FNFT_STAKING_ADDRESS !== ZERO_ADDRESS && STAKING_FNFT_ADDRESS !== ZERO_ADDRESS;
+  const configured = isConfigured(ACTIVE_FNFT_STAKING_ADDRESS) && isConfigured(STAKING_FNFT_ADDRESS);
 
   const {
     data: walletTokenIds = [],

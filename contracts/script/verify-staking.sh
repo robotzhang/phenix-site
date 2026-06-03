@@ -24,7 +24,7 @@ case "$deployment" in
     contract_path="src/PhenixFnftStaking.sol:PhenixFnftStaking"
     fnft_address="0xCBfbb824852047a4fA4CdCa98E106C75545B14bc"
     phenix_address="0x80F325b67D9cf94518930d6E24C631E38F9334f3"
-    owner_address="${BASE_SEPOLIA_OWNER_ADDRESS:-}"
+    owner_address="${DEPLOYER_ADDRESS:-}"
     ;;
   base-sepolia-harness)
     chain_id=84532
@@ -32,7 +32,7 @@ case "$deployment" in
     contract_path="src/PhenixFnftStakingTestHarness.sol:PhenixFnftStakingTestHarness"
     fnft_address="0xCBfbb824852047a4fA4CdCa98E106C75545B14bc"
     phenix_address="0x80F325b67D9cf94518930d6E24C631E38F9334f3"
-    owner_address="${BASE_SEPOLIA_OWNER_ADDRESS:-}"
+    owner_address="${DEPLOYER_ADDRESS:-}"
     ;;
   base-mainnet)
     chain_id=8453
@@ -40,7 +40,7 @@ case "$deployment" in
     contract_path="src/PhenixFnftStaking.sol:PhenixFnftStaking"
     fnft_address="0xC1083E18b75A096d32de5BE0fB44ead84f06e402"
     phenix_address="0xBc121C4d6cfE2B7830dCf18163E1892e5bbB1735"
-    owner_address="${BASE_OWNER_ADDRESS:-}"
+    owner_address="${DEPLOYER_ADDRESS:-}"
     ;;
   *)
     echo "Unknown deployment: $deployment" >&2
@@ -54,7 +54,7 @@ if [[ -z "${BASESCAN_API_KEY:-}" ]]; then
 fi
 
 if [[ -z "$owner_address" ]]; then
-  echo "Owner address env var is required for $deployment" >&2
+  echo "DEPLOYER_ADDRESS is required for $deployment constructor args" >&2
   exit 1
 fi
 

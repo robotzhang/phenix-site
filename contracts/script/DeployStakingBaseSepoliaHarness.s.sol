@@ -9,10 +9,11 @@ contract DeployStakingBaseSepoliaHarness is Script {
     address internal constant BASE_SEPOLIA_PHENIX_ADDRESS = 0x80F325b67D9cf94518930d6E24C631E38F9334f3;
 
     function run() external returns (PhenixFnftStakingTestHarness staking) {
-        address ownerAddress = vm.envAddress("BASE_SEPOLIA_OWNER_ADDRESS");
+        address deployerAddress = vm.envAddress("DEPLOYER_ADDRESS");
 
         vm.startBroadcast();
-        staking = new PhenixFnftStakingTestHarness(BASE_SEPOLIA_FNFT_ADDRESS, BASE_SEPOLIA_PHENIX_ADDRESS, ownerAddress);
+        staking =
+            new PhenixFnftStakingTestHarness(BASE_SEPOLIA_FNFT_ADDRESS, BASE_SEPOLIA_PHENIX_ADDRESS, deployerAddress);
         vm.stopBroadcast();
     }
 }

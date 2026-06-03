@@ -9,10 +9,10 @@ contract DeployStakingBaseMainnet is Script {
     address internal constant BASE_PHENIX_ADDRESS = 0xBc121C4d6cfE2B7830dCf18163E1892e5bbB1735;
 
     function run() external returns (PhenixFnftStaking staking) {
-        address ownerAddress = vm.envAddress("BASE_OWNER_ADDRESS");
+        address deployerAddress = vm.envAddress("DEPLOYER_ADDRESS");
 
         vm.startBroadcast();
-        staking = new PhenixFnftStaking(BASE_FNFT_ADDRESS, BASE_PHENIX_ADDRESS, ownerAddress);
+        staking = new PhenixFnftStaking(BASE_FNFT_ADDRESS, BASE_PHENIX_ADDRESS, deployerAddress);
         vm.stopBroadcast();
     }
 }

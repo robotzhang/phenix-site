@@ -64,7 +64,7 @@ the staking deploy scripts.
 
 The Base mainnet PHENIX and F-NFT addresses are project constants and are
 hardcoded in `DeployStakingBaseMainnet.s.sol`. Mainnet deployment still requires
-the deployer wallet address, Base RPC URL, and owner address:
+the deployer wallet address and Base RPC URL:
 
 ```bash
 cd contracts
@@ -86,7 +86,7 @@ signers can also be used without changing the Solidity scripts.
 cd contracts
 forge verify-contract --chain-id 84532 <staking_address> src/PhenixFnftStaking.sol:PhenixFnftStaking \
   --constructor-args $(cast abi-encode "constructor(address,address,address)" \
-  0xCBfbb824852047a4fA4CdCa98E106C75545B14bc 0x80F325b67D9cf94518930d6E24C631E38F9334f3 $BASE_SEPOLIA_OWNER_ADDRESS) \
+  0xCBfbb824852047a4fA4CdCa98E106C75545B14bc 0x80F325b67D9cf94518930d6E24C631E38F9334f3 $DEPLOYER_ADDRESS) \
   --etherscan-api-key $BASESCAN_API_KEY
 ```
 

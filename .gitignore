@@ -12,8 +12,16 @@
 # Cloudflare
 .mf
 .wrangler
+.wrangler-home/
+.tmp-home/
 .dev.vars*
 worker-configuration.d.ts
+
+# Foundry
+contracts/cache/
+contracts/out/
+contracts/lib/*
+!contracts/lib/forge-std/
 
 
 !.dev.vars.example

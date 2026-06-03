@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react";
 import { usePublicClient, useWalletClient } from "wagmi";
 import { toast } from "sonner";
+import { type PublicClient } from "viem";
 import { parseContractError } from "@/lib/parseContractError";
 
 export function useSafeContractWrite() {
@@ -9,8 +10,10 @@ export function useSafeContractWrite() {
   const pendingRef = useRef(false);
 
   const write = useCallback(
-    async (request: any) => {
-      if (!walletClient || !publicClient)
+    async (request: any, receiptClient?: PublicClient) => {
+      const waitClient = receiptClient ?? publicClient;
+
+      if (!walletClient || !waitClient)
         throw new Error("Wallet not ready");
 
       if (pendingRef.current) return;
@@ -23,7 +26,7 @@ export function useSafeContractWrite() {
 
         toast.loading("Transaction sent", { id: toastId });
 
-        const receipt = await publicClient.waitForTransactionReceipt({
+        const receipt = await waitClient.waitForTransactionReceipt({
           hash,
         });
 
@@ -33,7 +36,7 @@ export function useSafeContractWrite() {
             label: "Explorer",
             onClick: () => {
               const explorerURL =
-                publicClient.chain?.blockExplorers?.default.url ??
+                waitClient.chain?.blockExplorers?.default.url ??
                 "https://basescan.org";
               window.open(`${explorerURL}/tx/${hash}`, "_blank");
             },

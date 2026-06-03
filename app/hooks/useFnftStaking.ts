@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatUnits, type Abi, type Address } from "viem";
 import { useAccount, useChainId, usePublicClient, useSwitchChain } from "wagmi";
@@ -21,7 +20,15 @@ const stakingAbi = fnftStakingAbi as Abi;
 const serviceCardAbi = fnftAbi as Abi;
 const tokenAbi = erc20Abi as Abi;
 
-export const STAKING_PLANS = [
+export type StakingPlan = {
+  id: number;
+  months: number;
+  lockDays: number;
+  annualRate: string;
+  rewardPerNft: bigint;
+};
+
+export const STAKING_PLANS: readonly StakingPlan[] = [
   { id: 0, months: 3, lockDays: 90, annualRate: "4%", rewardPerNft: 10n * 10n ** 18n },
   { id: 1, months: 6, lockDays: 180, annualRate: "5%", rewardPerNft: 25n * 10n ** 18n },
   { id: 2, months: 12, lockDays: 360, annualRate: "8%", rewardPerNft: 80n * 10n ** 18n },
@@ -101,6 +108,41 @@ export function useFnftTokenIds() {
 
       return tokenIds.map((tokenId) => tokenId.toString());
     },
+  });
+}
+
+export function useStakingPlans() {
+  const publicClient = usePublicClient({ chainId: STAKING_CHAIN.id });
+  const enabled = !!publicClient && isConfigured(ACTIVE_FNFT_STAKING_ADDRESS);
+
+  return useQuery({
+    queryKey: ["staking-plans", STAKING_CHAIN.id, ACTIVE_FNFT_STAKING_ADDRESS],
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async (): Promise<StakingPlan[]> => {
+      if (!publicClient || !isConfigured(ACTIVE_FNFT_STAKING_ADDRESS)) return [...STAKING_PLANS];
+      const stakingAddress = toAddress(ACTIVE_FNFT_STAKING_ADDRESS);
+
+      const planRows = await Promise.all(
+        STAKING_PLANS.map(async (fallbackPlan) => {
+          const planInfo = await publicClient.readContract({
+            address: stakingAddress,
+            abi: stakingAbi,
+            functionName: "planInfo",
+            args: [fallbackPlan.id],
+          }) as readonly [bigint, bigint, bigint, bigint];
+
+          return {
+            ...fallbackPlan,
+            lockDays: Number(planInfo[2] / 86400n),
+            rewardPerNft: planInfo[3],
+          };
+        }),
+      );
+
+      return planRows;
+    },
+    placeholderData: [...STAKING_PLANS],
   });
 }
 

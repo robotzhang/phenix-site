@@ -7,14 +7,13 @@ import {PhenixFnftStaking} from "../src/PhenixFnftStaking.sol";
 
 contract FundRewards is Script {
     function run() external {
-        uint256 funderKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address stakingAddress = vm.envAddress("FNFT_STAKING_ADDRESS");
         uint256 amount = vm.envUint("INITIAL_REWARD_DEPOSIT_WEI");
 
         PhenixFnftStaking staking = PhenixFnftStaking(stakingAddress);
         IERC20 phenix = IERC20(address(staking.phenix()));
 
-        vm.startBroadcast(funderKey);
+        vm.startBroadcast();
         phenix.approve(stakingAddress, amount);
         staking.depositRewards(amount);
         vm.stopBroadcast();

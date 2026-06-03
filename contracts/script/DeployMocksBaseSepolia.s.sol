@@ -7,12 +7,11 @@ import {MockFnft} from "../src/mocks/MockFnft.sol";
 
 contract DeployMocksBaseSepolia is Script {
     function run() external returns (MockPhenix phenix, MockFnft fnft) {
-        uint256 deployerKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        address ownerMultisig = vm.envAddress("BASE_SEPOLIA_OWNER_MULTISIG");
+        address ownerAddress = vm.envAddress("BASE_SEPOLIA_OWNER_ADDRESS");
 
-        vm.startBroadcast(deployerKey);
-        phenix = new MockPhenix(ownerMultisig);
-        fnft = new MockFnft(ownerMultisig);
+        vm.startBroadcast();
+        phenix = new MockPhenix(ownerAddress);
+        fnft = new MockFnft(ownerAddress);
         vm.stopBroadcast();
     }
 }

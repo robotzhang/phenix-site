@@ -4,8 +4,8 @@ pragma solidity ^0.8.30;
 import {PhenixFnftStaking} from "./PhenixFnftStaking.sol";
 
 contract PhenixFnftStakingTestHarness is PhenixFnftStaking {
-    constructor(address fnftAddress, address phenixAddress, address ownerMultisig)
-        PhenixFnftStaking(fnftAddress, phenixAddress, ownerMultisig)
+    constructor(address fnftAddress, address phenixAddress, address ownerAddress)
+        PhenixFnftStaking(fnftAddress, phenixAddress, ownerAddress)
     {}
 
     function _timeUnit() internal pure override returns (uint64) {

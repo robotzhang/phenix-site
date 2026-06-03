@@ -16,10 +16,11 @@ import fnftAbi from "@/abi/fnft.json";
 import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 import ConnectButton from "@/components/wallet/ConnectButton";
 import {
-  STAKING_PLANS,
   formatPhenix,
+  STAKING_PLANS,
   useFnftStakingActions,
   useFnftTokenIds,
+  useStakingPlans,
   useStakingPoolStatus,
   useStakingPositions,
 } from "@/hooks/useFnftStaking";
@@ -108,6 +109,7 @@ export default function Staking() {
     isLoading: tokenIdsLoading,
     refetch: refetchTokenIds,
   } = useFnftTokenIds();
+  const { data: stakingPlans = STAKING_PLANS } = useStakingPlans();
   const {
     data: positions = [],
     isLoading: positionsLoading,
@@ -135,7 +137,12 @@ export default function Staking() {
     },
   });
 
-  const selectedPlan = STAKING_PLANS.find((plan) => plan.id === selectedPlanId) ?? STAKING_PLANS[2];
+  const selectedPlan =
+    stakingPlans.find((plan) => plan.id === selectedPlanId) ?? STAKING_PLANS[2];
+  const plansById = useMemo(
+    () => new Map(stakingPlans.map((plan) => [plan.id, plan])),
+    [stakingPlans],
+  );
   const now = Math.floor(Date.now() / 1000);
 
   const totalClaimable = useMemo(
@@ -150,7 +157,8 @@ export default function Staking() {
     () => activePositions.filter((position) => position.unlockTime <= now),
     [activePositions, now],
   );
-  const selectedRewardPreview = BigInt(selectedTokenIds.length) * selectedPlan.rewardPerNft;
+  const selectedRewardPreview =
+    selectedPlan ? BigInt(selectedTokenIds.length) * selectedPlan.rewardPerNft : 0n;
 
   async function refreshAll() {
     await Promise.all([refetchTokenIds(), refetchPositions(), refetchPoolStatus()]);
@@ -371,7 +379,7 @@ export default function Staking() {
 
                 <div className="border border-sky-100 bg-white p-6 shadow-sm">
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {STAKING_PLANS.map((plan) => (
+                    {stakingPlans.map((plan) => (
                       <button
                         key={plan.id}
                         type="button"
@@ -524,7 +532,10 @@ export default function Staking() {
                                 Position #{position.idText}
                               </div>
                               <div className="mt-2 text-sm text-sky-900/60">
-                                {position.tokenCount} 张 F-NFT / {STAKING_PLANS[position.planId]?.months ?? "-"} 个月
+                                {position.tokenCount} 张 F-NFT /{" "}
+                                {plansById.has(position.planId)
+                                  ? formatDays(plansById.get(position.planId)?.lockDays ?? 0)
+                                  : "-"}
                               </div>
                             </div>
                             <button

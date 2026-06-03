@@ -76,8 +76,8 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
     error UnexpectedFnftTransfer();
     error NotUntrackedFnft(uint256 tokenId);
 
-    constructor(address fnftAddress, address phenixAddress, address ownerMultisig) Ownable(ownerMultisig) {
-        if (fnftAddress == address(0) || phenixAddress == address(0) || ownerMultisig == address(0)) {
+    constructor(address fnftAddress, address phenixAddress, address ownerAddress) Ownable(ownerAddress) {
+        if (fnftAddress == address(0) || phenixAddress == address(0) || ownerAddress == address(0)) {
             revert ZeroAddress();
         }
 
@@ -105,6 +105,8 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
             planId: planId,
             startTime: startTime,
             unlockTime: unlockTime,
+            // casting to 'uint16' is safe because MAX_TOKENS_PER_POSITION caps tokenCount at 50
+            // forge-lint: disable-next-line(unsafe-typecast)
             tokenCount: uint16(tokenCount),
             totalReward: totalReward,
             claimedReward: 0,

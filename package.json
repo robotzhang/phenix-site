@@ -5,12 +5,13 @@
 	"scripts": {
 		"build": "react-router build",
 		"build:dev": "CLOUDFLARE_ENV=dev react-router build",
-		"cf-typegen": "wrangler types",
+		"cf-typegen": "WRANGLER_HOME=.wrangler-home wrangler types",
 		"deploy": "npm run build && wrangler deploy",
 		"deploy:dev": "npm run build:dev && wrangler deploy",
 		"dev": "react-router dev",
 		"postinstall": "npm run cf-typegen",
 		"preview": "npm run build && vite preview",
+		"staking:sync-abi": "bash contracts/script/sync-staking-abi.sh",
 		"typecheck": "npm run cf-typegen && react-router typegen && tsc -b"
 	},
 	"dependencies": {

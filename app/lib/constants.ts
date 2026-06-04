@@ -22,11 +22,12 @@ export type StakingNetwork = "baseSepolia" | "base";
 
 // Cloudflare deploys the client bundle without runtime VITE_* address injection.
 // Update these public addresses in source after each staking deployment.
-export const STAKING_NETWORK: StakingNetwork = "baseSepolia";
+const ACTIVE_STAKING_NETWORK = "base";
+export const STAKING_NETWORK: StakingNetwork = ACTIVE_STAKING_NETWORK as StakingNetwork;
 
 export const BASE_FNFT_ADDRESS = FNFT_ADDRESS;
 export const BASE_PHENIX_ADDRESS = PHENIX_ADDRESS;
-export const BASE_FNFT_STAKING_ADDRESS = ZERO_ADDRESS;
+export const BASE_FNFT_STAKING_ADDRESS = "0xf9e4cb2e510f0374fa5cc6f75aff6b5607d8b009";
 
 export const BASE_SEPOLIA_FNFT_ADDRESS = TEST_FNFT_ADDRESS;
 export const BASE_SEPOLIA_PHENIX_ADDRESS = TEST_PHENIX_ADDRESS;

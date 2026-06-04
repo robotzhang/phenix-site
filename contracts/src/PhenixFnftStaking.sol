@@ -6,9 +6,10 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
+contract PhenixFnftStaking is Ownable, Pausable, ReentrancyGuard, IERC721Receiver {
     using SafeERC20 for IERC20;
 
     uint8 public constant PLAN_COUNT = 4;
@@ -33,6 +34,7 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
 
     uint256 public nextPositionId = 1;
     uint256 public reservedRewards;
+    bool public permanentlyStopped;
 
     mapping(uint256 => Position) private _positions;
     mapping(uint256 => uint256[]) private _positionTokenIds;
@@ -58,6 +60,7 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
     event RewardsDeposited(address indexed funder, uint256 requestedAmount, uint256 receivedAmount);
     event OwnerPhenixWithdrawn(address indexed owner, address indexed to, uint256 amount);
     event UntrackedFnftRecovered(address indexed owner, address indexed to, uint256 indexed tokenId);
+    event StakingPermanentlyStopped(address indexed owner);
 
     error ZeroAddress();
     error ZeroAmount();
@@ -75,6 +78,7 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
     error NothingToClaim();
     error UnexpectedFnftTransfer();
     error NotUntrackedFnft(uint256 tokenId);
+    error StakingAlreadyStopped();
 
     constructor(address fnftAddress, address phenixAddress, address ownerAddress) Ownable(ownerAddress) {
         if (fnftAddress == address(0) || phenixAddress == address(0) || ownerAddress == address(0)) {
@@ -85,7 +89,30 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
         phenix = IERC20(phenixAddress);
     }
 
-    function stake(uint256[] calldata tokenIds, uint8 planId) external nonReentrant returns (uint256 positionId) {
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    function unpause() external onlyOwner {
+        if (permanentlyStopped) revert StakingAlreadyStopped();
+        _unpause();
+    }
+
+    function stopStakingPermanently() external onlyOwner {
+        if (permanentlyStopped) revert StakingAlreadyStopped();
+        permanentlyStopped = true;
+        if (!paused()) {
+            _pause();
+        }
+        emit StakingPermanentlyStopped(msg.sender);
+    }
+
+    function stake(uint256[] calldata tokenIds, uint8 planId)
+        external
+        nonReentrant
+        returns (uint256 positionId)
+    {
+        _requireActiveStaking();
         uint256 tokenCount = tokenIds.length;
         if (tokenCount == 0) revert EmptyTokenIds();
         if (tokenCount > MAX_TOKENS_PER_POSITION) revert TooManyTokens();
@@ -133,6 +160,7 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
     }
 
     function claim(uint256[] calldata positionIds) external nonReentrant {
+        _requireActiveStaking();
         _validatePositionBatch(positionIds.length);
         if (!rewardSolvent()) revert RewardPoolInsufficient();
 
@@ -166,7 +194,7 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
             Position storage position = _positions[positionIds[i]];
             if (position.owner != msg.sender) revert NotPositionOwner(positionIds[i]);
             if (position.nftWithdrawn) revert PositionAlreadyUnstaked(positionIds[i]);
-            if (block.timestamp < position.unlockTime) revert PositionLocked(positionIds[i]);
+            if (!permanentlyStopped && block.timestamp < position.unlockTime) revert PositionLocked(positionIds[i]);
             totalTransfers += position.tokenCount;
         }
         if (totalTransfers > MAX_NFT_TRANSFERS_PER_TX) revert TooManyNftTransfers();
@@ -295,6 +323,11 @@ contract PhenixFnftStaking is Ownable, ReentrancyGuard, IERC721Receiver {
 
         uint256 vested = (position.totalReward * elapsedUnits) / totalUnits;
         return vested > position.claimedReward ? vested - position.claimedReward : 0;
+    }
+
+    function _requireActiveStaking() internal view {
+        if (permanentlyStopped) revert StakingAlreadyStopped();
+        _requireNotPaused();
     }
 
     function _validatePositionBatch(uint256 length) internal pure {

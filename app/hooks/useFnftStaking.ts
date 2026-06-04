@@ -234,11 +234,13 @@ export function useStakingPoolStatus() {
           reservedRewards: 0n,
           rewardDeficit: 0n,
           rewardSolvent: false,
+          paused: false,
+          permanentlyStopped: false,
         };
       }
       const stakingAddress = toAddress(ACTIVE_FNFT_STAKING_ADDRESS);
 
-      const [balance, reservedRewards, rewardDeficit, rewardSolvent] = await Promise.all([
+      const [balance, reservedRewards, rewardDeficit, rewardSolvent, paused, permanentlyStopped] = await Promise.all([
         isConfigured(STAKING_PHENIX_ADDRESS)
           ? publicClient.readContract({
               address: toAddress(STAKING_PHENIX_ADDRESS),
@@ -262,6 +264,16 @@ export function useStakingPoolStatus() {
           abi: stakingAbi,
           functionName: "rewardSolvent",
         }) as Promise<boolean>,
+        publicClient.readContract({
+          address: stakingAddress,
+          abi: stakingAbi,
+          functionName: "paused",
+        }) as Promise<boolean>,
+        publicClient.readContract({
+          address: stakingAddress,
+          abi: stakingAbi,
+          functionName: "permanentlyStopped",
+        }) as Promise<boolean>,
       ]);
 
       return {
@@ -269,6 +281,8 @@ export function useStakingPoolStatus() {
         reservedRewards,
         rewardDeficit,
         rewardSolvent,
+        paused,
+        permanentlyStopped,
       };
     },
   });

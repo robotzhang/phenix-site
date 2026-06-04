@@ -3,6 +3,7 @@ pragma solidity ^0.8.30;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {PhenixFnftStaking} from "../src/PhenixFnftStaking.sol";
 import {PhenixFnftStakingTestHarness} from "../src/PhenixFnftStakingTestHarness.sol";
 import {MockPhenix} from "../src/mocks/MockPhenix.sol";
@@ -148,6 +149,81 @@ contract PhenixFnftStakingTest is Test, IERC721Receiver {
         vm.prank(user);
         staking.claim(_positionIds(positionId));
         assertEq(phenix.balanceOf(user), 10 ether);
+    }
+
+    function testPauseBlocksStakeAndClaimUntilUnpaused() public {
+        uint256[] memory tokens = _tokens(1, 1);
+
+        vm.startPrank(user);
+        fnft.setApprovalForAll(address(staking), true);
+        uint256 positionId = staking.stake(tokens, 0);
+        vm.stopPrank();
+
+        vm.prank(owner);
+        staking.pause();
+        assertTrue(staking.paused());
+
+        vm.startPrank(user);
+        vm.expectRevert(Pausable.EnforcedPause.selector);
+        staking.stake(_tokens(2, 1), 0);
+
+        vm.warp(block.timestamp + 1 minutes);
+        vm.expectRevert(Pausable.EnforcedPause.selector);
+        staking.claim(_positionIds(positionId));
+        vm.stopPrank();
+
+        vm.prank(owner);
+        staking.unpause();
+        assertFalse(staking.paused());
+
+        vm.prank(user);
+        staking.claim(_positionIds(positionId));
+        assertEq(phenix.balanceOf(user), 5 ether);
+    }
+
+    function testPermanentStopBlocksStakeClaimAndUnpause() public {
+        uint256[] memory tokens = _tokens(1, 1);
+
+        vm.startPrank(user);
+        fnft.setApprovalForAll(address(staking), true);
+        uint256 positionId = staking.stake(tokens, 0);
+        vm.stopPrank();
+
+        vm.prank(owner);
+        staking.stopStakingPermanently();
+        assertTrue(staking.permanentlyStopped());
+        assertTrue(staking.paused());
+
+        vm.startPrank(user);
+        vm.expectRevert(PhenixFnftStaking.StakingAlreadyStopped.selector);
+        staking.stake(_tokens(2, 1), 0);
+
+        vm.warp(block.timestamp + 1 minutes);
+        vm.expectRevert(PhenixFnftStaking.StakingAlreadyStopped.selector);
+        staking.claim(_positionIds(positionId));
+        vm.stopPrank();
+
+        vm.prank(owner);
+        vm.expectRevert(PhenixFnftStaking.StakingAlreadyStopped.selector);
+        staking.unpause();
+    }
+
+    function testPermanentStopAllowsEarlyUnstake() public {
+        uint256[] memory tokens = _tokens(1, 1);
+
+        vm.startPrank(user);
+        fnft.setApprovalForAll(address(staking), true);
+        uint256 positionId = staking.stake(tokens, 0);
+        vm.expectRevert(abi.encodeWithSelector(PhenixFnftStaking.PositionLocked.selector, positionId));
+        staking.unstakeTo(_positionIds(positionId), recipient);
+        vm.stopPrank();
+
+        vm.prank(owner);
+        staking.stopStakingPermanently();
+
+        vm.prank(user);
+        staking.unstakeTo(_positionIds(positionId), recipient);
+        assertEq(fnft.ownerOf(1), recipient);
     }
 
     function testRecoverUntrackedFnft() public {

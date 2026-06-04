@@ -152,9 +152,12 @@ export default function Staking() {
     () => positions.filter((position) => !position.nftWithdrawn),
     [positions],
   );
+  const stakingPaused = Boolean(poolStatus?.paused);
+  const stakingStopped = Boolean(poolStatus?.permanentlyStopped);
+  const stakingActionsPaused = stakingPaused || stakingStopped;
   const unlockablePositions = useMemo(
-    () => activePositions.filter((position) => position.unlockTime <= now),
-    [activePositions, now],
+    () => activePositions.filter((position) => stakingStopped || position.unlockTime <= now),
+    [activePositions, now, stakingStopped],
   );
   const selectedRewardPreview =
     selectedPlan ? BigInt(selectedTokenIds.length) * selectedPlan.rewardPerNft : 0n;
@@ -202,6 +205,14 @@ export default function Staking() {
       toast.error("Staking contract is not configured");
       return;
     }
+    if (stakingStopped) {
+      toast.error("Staking 已完全停止，不能创建新仓位");
+      return;
+    }
+    if (stakingPaused) {
+      toast.error("Staking 暂停中，暂不能创建新仓位");
+      return;
+    }
 
     setBusyAction("stake");
     try {
@@ -220,6 +231,14 @@ export default function Staking() {
     }
     if (!poolStatus?.rewardSolvent) {
       toast.error("奖励池不足，claim 暂停");
+      return;
+    }
+    if (stakingStopped) {
+      toast.error("Staking 已完全停止，不能领取奖励");
+      return;
+    }
+    if (stakingPaused) {
+      toast.error("Staking 暂停中，暂不能领取奖励");
       return;
     }
 
@@ -342,7 +361,13 @@ export default function Staking() {
                 {poolLoading || !poolStatus ? "-" : formatPhenix(poolStatus.balance)}
               </div>
               <p className="mt-3 text-sm leading-6 text-sky-900/60">
-                {poolStatus?.rewardSolvent ? "奖励池充足" : "奖励池存在缺口"}
+                {stakingStopped
+                  ? "Staking 已完全停止"
+                  : stakingPaused
+                    ? "Staking 暂停中"
+                    : poolStatus?.rewardSolvent
+                      ? "奖励池充足"
+                      : "奖励池存在缺口"}
               </p>
             </div>
           </section>
@@ -373,6 +398,8 @@ export default function Staking() {
                   </p>
                   <div className="mt-6 border border-sky-100 bg-sky-50/70 p-4 text-sm leading-6 text-sky-900/70">
                     当前授权状态：{isApprovedForAll ? "已授权" : "未授权"}。
+                    {stakingStopped ? " Staking 已完全停止，不能创建新仓位。" : ""}
+                    {!stakingStopped && stakingPaused ? " Staking 暂停中，不能创建新仓位。" : ""}
                   </div>
                 </div>
 
@@ -457,7 +484,7 @@ export default function Staking() {
                   <button
                     type="button"
                     onClick={handleStake}
-                    disabled={busyAction === "stake" || selectedTokenIds.length === 0}
+                    disabled={busyAction === "stake" || selectedTokenIds.length === 0 || stakingActionsPaused}
                     className="mt-6 inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
                   >
                     {busyAction === "stake" ? "提交中..." : "创建质押仓位"}
@@ -470,13 +497,17 @@ export default function Staking() {
                   <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Rewards</p>
                   <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">领取奖励与提取原卡</h2>
                   <p className="mt-6 leading-8 text-sky-900/70">
-                    奖励按仓位线性释放。到期前只能 claim，不能 unstake；到期后可将 F-NFT 提取回当前钱包。
+                    奖励按仓位线性释放。正常状态下到期前只能 claim，不能 unstake；到期后可将 F-NFT 提取回当前钱包。
                   </p>
                   {poolStatus && (
                     <div className="mt-6 space-y-3 border border-sky-100 bg-sky-50/70 p-5 text-sm text-sky-900/70">
                       <div>合约 PHENIX 余额：{formatPhenix(poolStatus.balance)}</div>
                       <div>已预留奖励：{formatPhenix(poolStatus.reservedRewards)}</div>
                       <div>奖励池缺口：{formatPhenix(poolStatus.rewardDeficit)}</div>
+                      <div>
+                        合约状态：
+                        {stakingStopped ? "完全停止，所有未提取 F-NFT 可立即提取" : stakingPaused ? "暂停中" : "运行中"}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -490,7 +521,12 @@ export default function Staking() {
                           positions.filter((position) => position.claimable > 0n).map((position) => position.idText),
                         )
                       }
-                      disabled={busyAction !== null || totalClaimable === 0n || !poolStatus?.rewardSolvent}
+                      disabled={
+                        busyAction !== null ||
+                        totalClaimable === 0n ||
+                        !poolStatus?.rewardSolvent ||
+                        stakingActionsPaused
+                      }
                       className="inline-flex flex-1 items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
                     >
                       {busyAction === "claim" ? "领取中..." : "领取全部可用奖励"}
@@ -503,7 +539,11 @@ export default function Staking() {
                       disabled={busyAction !== null || unlockablePositions.length === 0}
                       className="inline-flex flex-1 items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:border-sky-200 disabled:text-sky-900/40"
                     >
-                      {busyAction === "unstake" ? "提取中..." : "提取全部已到期仓位"}
+                      {busyAction === "unstake"
+                        ? "提取中..."
+                        : stakingStopped
+                          ? "提取全部未提取仓位"
+                          : "提取全部已到期仓位"}
                     </button>
                   </div>
 
@@ -522,7 +562,7 @@ export default function Staking() {
 
                     {positions.map((position) => {
                       const selected = selectedPositionIds.includes(position.idText);
-                      const unlocked = position.unlockTime <= now;
+                      const unlocked = stakingStopped || position.unlockTime <= now;
                       return (
                         <div key={position.idText} className="border border-sky-100 bg-sky-50/70 p-5">
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -570,7 +610,16 @@ export default function Staking() {
                             <div>解锁时间：{formatDateTime(position.unlockTime)}</div>
                             <div>已领取：{formatPhenix(position.claimedReward)} PHENIX</div>
                             <div>包含卡号：{position.tokenIds.map((tokenId) => `#${tokenId}`).join(", ")}</div>
-                            <div>状态：{position.nftWithdrawn ? "已提取" : unlocked ? "已到期，可提取" : "锁仓中"}</div>
+                            <div>
+                              状态：
+                              {position.nftWithdrawn
+                                ? "已提取"
+                                : stakingStopped
+                                  ? "完全停止，可提取"
+                                  : unlocked
+                                    ? "已到期，可提取"
+                                    : "锁仓中"}
+                            </div>
                           </div>
                         </div>
                       );
@@ -591,7 +640,7 @@ export default function Staking() {
                               .map((position) => position.idText),
                           )
                         }
-                        disabled={busyAction !== null || !poolStatus?.rewardSolvent}
+                        disabled={busyAction !== null || !poolStatus?.rewardSolvent || stakingActionsPaused}
                         className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
                       >
                         领取选中仓位奖励
@@ -605,7 +654,7 @@ export default function Staking() {
                                 (position) =>
                                   selectedPositionIds.includes(position.idText) &&
                                   !position.nftWithdrawn &&
-                                  position.unlockTime <= now,
+                                  (stakingStopped || position.unlockTime <= now),
                               )
                               .map((position) => position.idText),
                           )
@@ -613,7 +662,7 @@ export default function Staking() {
                         disabled={busyAction !== null}
                         className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:border-sky-200 disabled:text-sky-900/40"
                       >
-                        提取选中已到期仓位
+                        {stakingStopped ? "提取选中仓位" : "提取选中已到期仓位"}
                       </button>
                     </div>
                   )}

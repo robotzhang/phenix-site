@@ -113,6 +113,10 @@ After each staking deployment, update the public frontend addresses in
 ## Notes
 
 - Production rewards and lock periods are fixed in the contract.
+- The owner can temporarily pause staking with `pause()` and resume with `unpause()`.
+- The owner can call `stopStakingPermanently()` for an irreversible full stop. After a
+  full stop, new stake and claim actions stay disabled, and users can immediately
+  withdraw their staked F-NFTs without waiting for the original unlock time.
 - Owner PHENIX withdrawals can make rewards underfunded; this pauses claim and new stake,
   but users can still unstake matured positions.
 - Direct ERC721 `transferFrom` can bypass `onERC721Received`; untracked FNFT recovery is

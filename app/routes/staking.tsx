@@ -89,8 +89,8 @@ function chunkUnstakePositionIds(
 
 export function meta() {
   return [
-    { title: "F-NFT Staking | PHENIX" },
-    { name: "description", content: "Stake F-NFT service cards on-chain to earn PHENIX rewards." },
+    { title: "服务卡权益使用 | PHENIX" },
+    { name: "description", content: "PHENIX 服务卡链上托管、权益周期记录与权益积分核算入口。" },
   ];
 }
 
@@ -173,7 +173,7 @@ export default function Staking() {
       }
 
       if (current.length >= 50) {
-        toast.error("单个仓位最多选择 50 张 F-NFT");
+        toast.error("单条权益记录最多选择 50 张服务卡");
         return current;
       }
 
@@ -188,7 +188,7 @@ export default function Staking() {
       }
 
       if (current.length >= 20) {
-        toast.error("单次最多选择 20 个仓位");
+        toast.error("单次最多选择 20 条权益记录");
         return current;
       }
 
@@ -198,19 +198,19 @@ export default function Staking() {
 
   async function handleStake() {
     if (!selectedTokenIds.length) {
-      toast.error("请先选择要质押的 F-NFT");
+      toast.error("请先选择要提交的服务卡");
       return;
     }
     if (!actionsConfigured) {
-      toast.error("Staking contract is not configured");
+      toast.error("服务卡权益合约暂未配置");
       return;
     }
     if (stakingStopped) {
-      toast.error("Staking 已完全停止，不能创建新仓位");
+      toast.error("服务已完全停止，不能创建新的权益记录");
       return;
     }
     if (stakingPaused) {
-      toast.error("Staking 暂停中，暂不能创建新仓位");
+      toast.error("服务维护中，暂不能创建新的权益记录");
       return;
     }
 
@@ -226,19 +226,19 @@ export default function Staking() {
 
   async function handleClaim(positionIds: string[]) {
     if (!positionIds.length) {
-      toast.error("没有可领取奖励的仓位");
+      toast.error("没有可确认的权益记录");
       return;
     }
     if (!poolStatus?.rewardSolvent) {
-      toast.error("奖励池不足，claim 暂停");
+      toast.error("权益记录暂不可用，请稍后再试");
       return;
     }
     if (stakingStopped) {
-      toast.error("Staking 已完全停止，不能领取奖励");
+      toast.error("服务已完全停止，不能确认新的权益记录");
       return;
     }
     if (stakingPaused) {
-      toast.error("Staking 暂停中，暂不能领取奖励");
+      toast.error("服务维护中，暂不能确认权益记录");
       return;
     }
 
@@ -256,7 +256,7 @@ export default function Staking() {
 
   async function handleUnstake(positionIds: string[]) {
     if (!positionIds.length) {
-      toast.error("没有可提取的仓位");
+      toast.error("没有可取回的服务卡记录");
       return;
     }
 
@@ -264,7 +264,7 @@ export default function Staking() {
       .filter((position) => positionIds.includes(position.idText))
       .reduce((sum, position) => sum + position.tokenCount, 0);
     if (nftTransfers > 100) {
-      toast.message("将分批提取，单笔最多处理 100 张 F-NFT");
+      toast.message("将分批取回，单笔最多处理 100 张服务卡");
     }
 
     setBusyAction("unstake");
@@ -283,12 +283,12 @@ export default function Staking() {
     <div className="-mx-4 md:mx-0">
       <section className="border-b border-sky-100 bg-white/80 px-4 py-16 sm:px-0 sm:py-24">
         <div className="max-w-4xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">F-NFT Staking</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">服务卡权益使用</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl">
-            将服务卡质押到链上，按锁仓周期领取 PHENIX
+            将服务卡提交至链上托管，记录会员权益使用周期
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            质押流程已切换为链上合约执行。钱包中的 F-NFT 会直接转入 staking 合约，奖励按仓位线性释放，到期后可提取原卡。
+            本功能用于会员服务卡的链上托管、服务周期记录和权益积分核算。页面展示不构成投资建议、理财服务、融资邀约、收益承诺或虚拟货币交易服务；服务卡和权益积分不代表现金价值，具体权益以平台规则和链上记录为准。
           </p>
           <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
           <div className="mt-6 border border-sky-100 bg-sky-50/70 p-4 text-sm leading-6 text-sky-900/70">
@@ -315,9 +315,9 @@ export default function Staking() {
       {!configured && (
         <section className="px-4 py-16 sm:px-0">
           <div className="border border-amber-200 bg-amber-50 p-6 text-amber-950 shadow-sm">
-            <h2 className="text-xl font-semibold">Staking contract not configured</h2>
+            <h2 className="text-xl font-semibold">服务卡权益合约暂未配置</h2>
             <p className="mt-3 text-sm leading-6">
-              请在 `app/lib/constants.ts` 中设置当前 staking 网络和公开合约地址。
+              请在 `app/lib/constants.ts` 中设置当前服务卡权益网络和公开合约地址。
               Cloudflare 部署不依赖前端 `.env` 注入。
             </p>
           </div>
@@ -329,45 +329,45 @@ export default function Staking() {
           <section className="grid gap-4 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-4">
             <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
               <WalletCards className="h-7 w-7 text-sky-700" />
-              <h2 className="mt-5 text-xl font-semibold text-sky-950">钱包中 F-NFT</h2>
+              <h2 className="mt-5 text-xl font-semibold text-sky-950">钱包中服务卡</h2>
               <div className="mt-5 text-5xl font-semibold text-sky-950">
                 {isConnected ? walletTokenIds.length : "-"}
               </div>
-              <p className="mt-3 text-sm leading-6 text-sky-900/60">可直接选中并创建新仓位。</p>
+              <p className="mt-3 text-sm leading-6 text-sky-900/60">可选择并提交进入权益周期。</p>
             </div>
 
             <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
               <ShieldCheck className="h-7 w-7 text-sky-700" />
-              <h2 className="mt-5 text-xl font-semibold text-sky-950">活跃仓位</h2>
+              <h2 className="mt-5 text-xl font-semibold text-sky-950">进行中的权益周期</h2>
               <div className="mt-5 text-5xl font-semibold text-sky-950">
                 {isConnected ? activePositions.length : "-"}
               </div>
-              <p className="mt-3 text-sm leading-6 text-sky-900/60">未提取原卡的 staking positions。</p>
+              <p className="mt-3 text-sm leading-6 text-sky-900/60">尚未取回服务卡的链上权益记录。</p>
             </div>
 
             <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
               <Gift className="h-7 w-7 text-sky-700" />
-              <h2 className="mt-5 text-xl font-semibold text-sky-950">待领取奖励</h2>
+              <h2 className="mt-5 text-xl font-semibold text-sky-950">可确认权益积分</h2>
               <div className="mt-5 text-5xl font-semibold text-sky-950">
                 {isConnected ? formatPhenix(totalClaimable) : "-"}
               </div>
-              <p className="mt-3 text-sm leading-6 text-sky-900/60">按当前区块时间可领取的 PHENIX。</p>
+              <p className="mt-3 text-sm leading-6 text-sky-900/60">按当前区块时间可确认的权益积分记录。</p>
             </div>
 
             <div className="border border-sky-100 bg-white/80 p-6 shadow-sm">
               <Coins className="h-7 w-7 text-sky-700" />
-              <h2 className="mt-5 text-xl font-semibold text-sky-950">奖励池状态</h2>
+              <h2 className="mt-5 text-xl font-semibold text-sky-950">权益记录状态</h2>
               <div className="mt-5 text-3xl font-semibold text-sky-950">
                 {poolLoading || !poolStatus ? "-" : formatPhenix(poolStatus.balance)}
               </div>
               <p className="mt-3 text-sm leading-6 text-sky-900/60">
                 {stakingStopped
-                  ? "Staking 已完全停止"
+                  ? "服务已完全停止"
                   : stakingPaused
-                    ? "Staking 暂停中"
+                    ? "服务维护中"
                     : poolStatus?.rewardSolvent
-                      ? "奖励池充足"
-                      : "奖励池存在缺口"}
+                      ? "权益记录可用"
+                      : "权益记录暂不可用"}
               </p>
             </div>
           </section>
@@ -376,9 +376,9 @@ export default function Staking() {
             <section className="px-4 pb-16 sm:px-0">
               <div className="border border-sky-100 bg-white/80 p-8 shadow-sm">
                 <WalletCards className="h-7 w-7 text-sky-700" />
-                <h2 className="mt-5 text-xl font-semibold text-sky-950">连接钱包开始质押</h2>
+                <h2 className="mt-5 text-xl font-semibold text-sky-950">连接钱包查看服务卡</h2>
                 <p className="mt-3 leading-7 text-sky-900/70">
-                  连接后可读取持仓、授权 staking 合约，并提交 stake、claim、unstake 交易。
+                  连接后可读取服务卡、完成链上授权，并提交服务卡托管、权益记录确认和服务卡取回操作。
                 </p>
                 <div className="mt-6">
                   <ConnectButton />
@@ -391,15 +391,15 @@ export default function Staking() {
             <>
               <section className="grid gap-8 border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.9fr_1.1fr]">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Create Position</p>
-                  <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">选择 F-NFT 并创建质押仓位</h2>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">权益周期</p>
+                  <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">选择服务卡并提交至权益周期</h2>
                   <p className="mt-6 leading-8 text-sky-900/70">
-                    首次质押会先请求 `setApprovalForAll` 授权。合约限制单仓位最多 50 张卡，单次最多处理 20 个仓位。
+                    首次提交会先请求 `setApprovalForAll` 授权。合约限制单条权益记录最多 50 张卡，单次最多处理 20 条权益记录。
                   </p>
                   <div className="mt-6 border border-sky-100 bg-sky-50/70 p-4 text-sm leading-6 text-sky-900/70">
                     当前授权状态：{isApprovedForAll ? "已授权" : "未授权"}。
-                    {stakingStopped ? " Staking 已完全停止，不能创建新仓位。" : ""}
-                    {!stakingStopped && stakingPaused ? " Staking 暂停中，不能创建新仓位。" : ""}
+                    {stakingStopped ? " 服务已完全停止，不能创建新的权益记录。" : ""}
+                    {!stakingStopped && stakingPaused ? " 服务维护中，暂不能创建新的权益记录。" : ""}
                   </div>
                 </div>
 
@@ -418,34 +418,37 @@ export default function Staking() {
                       >
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-lg font-semibold">{plan.months} 个月</span>
-                          <span className="text-sm text-sky-900/60">{plan.annualRate}</span>
+                          <span className="text-sm text-sky-900/60">权益周期</span>
                         </div>
-                        <div className="mt-3 text-sm text-sky-900/60">锁仓 {formatDays(plan.lockDays)}</div>
+                        <div className="mt-3 text-sm text-sky-900/60">服务周期 {formatDays(plan.lockDays)}</div>
                         <div className="mt-2 text-2xl font-semibold text-sky-950">
-                          {formatPhenix(plan.rewardPerNft)} PHENIX
+                          {formatPhenix(plan.rewardPerNft)}
                         </div>
-                        <p className="mt-2 text-sm leading-6 text-sky-900/60">每张 F-NFT 的总奖励</p>
+                        <p className="mt-2 text-sm leading-6 text-sky-900/60">每张服务卡对应权益记录额度</p>
                       </button>
                     ))}
                   </div>
 
                   <div className="mt-6 border border-sky-100 bg-sky-50 p-5">
-                    <div className="text-sm text-sky-900/60">已选 F-NFT</div>
+                    <div className="text-sm text-sky-900/60">已选服务卡</div>
                     <div className="mt-2 text-3xl font-semibold text-sky-950">{selectedTokenIds.length} 张</div>
                     <div className="mt-2 text-sm text-sky-900/60">
-                      预计总奖励 {formatPhenix(selectedRewardPreview)} PHENIX
+                      预计权益积分记录额度 {formatPhenix(selectedRewardPreview)}
+                    </div>
+                    <div className="mt-3 text-xs leading-5 text-sky-900/50">
+                      以上额度仅用于平台权益核算，不代表现金价值、固定收益或可交易承诺。
                     </div>
                   </div>
 
                   <div className="mt-6">
                     <div className="flex items-center justify-between gap-4">
-                      <h3 className="text-lg font-semibold text-sky-950">可质押的 F-NFT</h3>
+                      <h3 className="text-lg font-semibold text-sky-950">可提交的服务卡</h3>
                       {tokenIdsLoading && <span className="text-sm text-sky-900/60">读取中...</span>}
                     </div>
 
                     {walletTokenIds.length === 0 && !tokenIdsLoading && (
                       <div className="mt-4 border border-dashed border-sky-200 bg-sky-50/60 p-6 text-sm leading-6 text-sky-900/70">
-                        当前钱包没有可质押的 F-NFT，或该账户持仓超过前端显示上限。
+                        当前钱包没有可提交的服务卡，或该账户持仓超过前端显示上限。
                       </div>
                     )}
 
@@ -473,7 +476,7 @@ export default function Staking() {
                                   </span>
                                 )}
                               </div>
-                              <div className="mt-2 text-sm text-sky-900/60">将转入 staking 合约托管</div>
+                              <div className="mt-2 text-sm text-sky-900/60">将转入权益合约托管</div>
                             </button>
                           );
                         })}
@@ -487,26 +490,26 @@ export default function Staking() {
                     disabled={busyAction === "stake" || selectedTokenIds.length === 0 || stakingActionsPaused}
                     className="mt-6 inline-flex w-full items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
                   >
-                    {busyAction === "stake" ? "提交中..." : "创建质押仓位"}
+                    {busyAction === "stake" ? "提交中..." : "提交服务卡进入权益周期"}
                   </button>
                 </div>
               </section>
 
               <section className="grid gap-8 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.85fr_1.15fr]">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Rewards</p>
-                  <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">领取奖励与提取原卡</h2>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">权益记录</p>
+                  <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">确认权益记录与取回服务卡</h2>
                   <p className="mt-6 leading-8 text-sky-900/70">
-                    奖励按仓位线性释放。正常状态下到期前只能 claim，不能 unstake；到期后可将 F-NFT 提取回当前钱包。
+                    权益积分记录按服务周期逐步生成。正常状态下周期结束前可确认已生成记录；周期结束后可将服务卡取回当前钱包。
                   </p>
                   {poolStatus && (
                     <div className="mt-6 space-y-3 border border-sky-100 bg-sky-50/70 p-5 text-sm text-sky-900/70">
-                      <div>合约 PHENIX 余额：{formatPhenix(poolStatus.balance)}</div>
-                      <div>已预留奖励：{formatPhenix(poolStatus.reservedRewards)}</div>
-                      <div>奖励池缺口：{formatPhenix(poolStatus.rewardDeficit)}</div>
+                      <div>合约可用权益额度：{formatPhenix(poolStatus.balance)}</div>
+                      <div>已记录权益额度：{formatPhenix(poolStatus.reservedRewards)}</div>
+                      <div>待补充权益额度：{formatPhenix(poolStatus.rewardDeficit)}</div>
                       <div>
                         合约状态：
-                        {stakingStopped ? "完全停止，所有未提取 F-NFT 可立即提取" : stakingPaused ? "暂停中" : "运行中"}
+                        {stakingStopped ? "完全停止，所有未取回服务卡可立即取回" : stakingPaused ? "服务维护中" : "运行中"}
                       </div>
                     </div>
                   )}
@@ -529,7 +532,7 @@ export default function Staking() {
                       }
                       className="inline-flex flex-1 items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
                     >
-                      {busyAction === "claim" ? "领取中..." : "领取全部可用奖励"}
+                      {busyAction === "claim" ? "确认中..." : "确认全部可用权益记录"}
                     </button>
                     <button
                       type="button"
@@ -540,23 +543,23 @@ export default function Staking() {
                       className="inline-flex flex-1 items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:border-sky-200 disabled:text-sky-900/40"
                     >
                       {busyAction === "unstake"
-                        ? "提取中..."
+                        ? "取回中..."
                         : stakingStopped
-                          ? "提取全部未提取仓位"
-                          : "提取全部已到期仓位"}
+                          ? "取回全部未取回服务卡"
+                          : "取回全部已到期服务卡"}
                     </button>
                   </div>
 
                   <div className="mt-6 space-y-4">
                     {positionsLoading && (
                       <div className="border border-sky-100 bg-sky-50/60 p-6 text-sm text-sky-900/70">
-                        正在读取 staking 仓位...
+                        正在读取权益记录...
                       </div>
                     )}
 
                     {!positionsLoading && positions.length === 0 && (
                       <div className="border border-dashed border-sky-200 bg-sky-50/60 p-6 text-sm leading-6 text-sky-900/70">
-                        当前账户还没有 staking 仓位。
+                        当前账户还没有服务卡权益记录。
                       </div>
                     )}
 
@@ -568,10 +571,10 @@ export default function Staking() {
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                               <div className="text-lg font-semibold text-sky-950">
-                                Position #{position.idText}
+                                权益记录 #{position.idText}
                               </div>
                               <div className="mt-2 text-sm text-sky-900/60">
-                                {position.tokenCount} 张 F-NFT /{" "}
+                                {position.tokenCount} 张服务卡 /{" "}
                                 {plansById.has(position.planId)
                                   ? formatDays(plansById.get(position.planId)?.lockDays ?? 0)
                                   : "-"}
@@ -586,19 +589,19 @@ export default function Staking() {
                                   : "border-sky-200 bg-sky-50 text-sky-900/70 hover:bg-white"
                               }`}
                             >
-                              {selected ? "已选中" : "选择仓位"}
+                              {selected ? "已选中" : "选择记录"}
                             </button>
                           </div>
 
                           <div className="mt-4 grid gap-3 sm:grid-cols-2">
                             <div className="bg-white p-4">
-                              <div className="text-sm text-sky-900/60">可领取奖励</div>
+                              <div className="text-sm text-sky-900/60">可确认权益</div>
                               <div className="mt-2 text-2xl font-semibold text-sky-950">
                                 {formatPhenix(position.claimable)}
                               </div>
                             </div>
                             <div className="bg-white p-4">
-                              <div className="text-sm text-sky-900/60">总奖励</div>
+                              <div className="text-sm text-sky-900/60">权益记录额度</div>
                               <div className="mt-2 text-2xl font-semibold text-sky-950">
                                 {formatPhenix(position.totalReward)}
                               </div>
@@ -607,18 +610,18 @@ export default function Staking() {
 
                           <div className="mt-4 text-sm leading-7 text-sky-900/70">
                             <div>开始时间：{formatDateTime(position.startTime)}</div>
-                            <div>解锁时间：{formatDateTime(position.unlockTime)}</div>
-                            <div>已领取：{formatPhenix(position.claimedReward)} PHENIX</div>
+                            <div>周期结束时间：{formatDateTime(position.unlockTime)}</div>
+                            <div>已确认：{formatPhenix(position.claimedReward)} 权益积分</div>
                             <div>包含卡号：{position.tokenIds.map((tokenId) => `#${tokenId}`).join(", ")}</div>
                             <div>
                               状态：
                               {position.nftWithdrawn
-                                ? "已提取"
+                                ? "已取回"
                                 : stakingStopped
-                                  ? "完全停止，可提取"
+                                  ? "服务停止，可取回"
                                   : unlocked
-                                    ? "已到期，可提取"
-                                    : "锁仓中"}
+                                    ? "周期结束，可取回"
+                                    : "权益周期中"}
                             </div>
                           </div>
                         </div>
@@ -643,7 +646,7 @@ export default function Staking() {
                         disabled={busyAction !== null || !poolStatus?.rewardSolvent || stakingActionsPaused}
                         className="inline-flex items-center justify-center gap-2 border border-sky-900 bg-sky-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:border-sky-200 disabled:bg-sky-100 disabled:text-sky-900/40"
                       >
-                        领取选中仓位奖励
+                        确认选中权益记录
                       </button>
                       <button
                         type="button"
@@ -662,7 +665,7 @@ export default function Staking() {
                         disabled={busyAction !== null}
                         className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:border-sky-200 disabled:text-sky-900/40"
                       >
-                        {stakingStopped ? "提取选中仓位" : "提取选中已到期仓位"}
+                        {stakingStopped ? "取回选中服务卡" : "取回选中已到期服务卡"}
                       </button>
                     </div>
                   )}

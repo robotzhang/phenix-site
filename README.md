@@ -1,7 +1,28 @@
 # phenix site
 
-# DEPLOY 合约
+## DEPLOY 合约
 - 注意 price 要带6位0: 100000000 这才是100u
+
+### 当前生产合约地址（Base 主网）
+以下地址以 `app/lib/constants.ts` 为准，前端生产构建使用源码常量，不依赖 Cloudflare 运行时 `.env` 注入。
+
+- f-NFT / 鉴定服务卡: `0xC1083E18b75A096d32de5BE0fB44ead84f06e402`
+- PHENIX: `0xBc121C4d6cfE2B7830dCf18163E1892e5bbB1735`
+- USDT: `0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2`
+- MEME: `0x4E8AfD027A981ceA4fe6d6dF83e9985c10d7cF1F`
+- RWA: `0xb6e0B5CaABc801c22D9b06f4677F327a09902F10`
+- OE-RWA: `0x34171004F1323ce05cb569188cCF84feFB0ad6b5`
+- F-NFT staking: `0xf9e4cb2e510f0374fa5cc6f75aff6b5607d8b009`
+
+### 当前测试网合约地址（Base Sepolia）
+- f-NFT / 鉴定服务卡: `0xCBfbb824852047a4fA4CdCa98E106C75545B14bc`（测试环境使用，生产勿用）
+- PHENIX: `0x80F325b67D9cf94518930d6E24C631E38F9334f3`
+- F-NFT staking harness: `0xf9e4cb2e510f0374fa5cc6f75aff6b5607d8b009`
+
+### 历史 f-NFT 地址（请勿用于生产）
+- `0xE225ee9cf947c3F78b78EB8F4600501742B5d2d4`: Base Sepolia 旧测试地址
+- `0xceBc6e3bDbDd972658056CB852B5F1bA8e548268`: Base 主网旧地址
+- `0x35CF1a00a53f17145bEfddbD9F720CA05C76f39f`: Base L2 旧地址
 
 ## 使用 shadcn ui
 在 tsconfig.json 文件中添加 path alias
@@ -16,13 +37,15 @@
 }
 ```
 
-## 提示词
+## 历史资料 / Prompt 归档
+以下为历史开发 prompt / 草稿，不代表当前生产配置。当前合约地址以 `app/lib/constants.ts`、本 README 顶部地址区和 `contracts/README.md` 为准。
+
 ### 购买
 我现在需要开发一个购买的功能，已知的信息如下：
 1. 合约部署在 base sepolia testnet
 2. 合约地址的数据放在了 @/lib/constants.ts 文件，内容如下：
 ```
-export const FNFT_ADDRESS = "0xE225ee9cf947c3F78b78EB8F4600501742B5d2d4"; // F-NFT 地址
+export const FNFT_ADDRESS = "0xE225ee9cf947c3F78b78EB8F4600501742B5d2d4"; // 历史 Base Sepolia F-NFT 地址，请勿用于当前生产
 export const PHENIX_ADDRESS = "0x35CF1a00a53f17145bEfddbD9F720CA05C76f39f"; // 模拟的 Phenix 代币地址
 export const USDT_ADDRESS = "0x5502af653792D5d24876f12Ac6658eC2332224bB"; // 模拟的 usdt 地址
 export const USDT_DECIMALS = 6;
@@ -45,31 +68,31 @@ export const FNFT_MAX_SUPPLY = 2000000;
 2. 不能出现 import 错误，typescript 错误
 3. 生产可用
 
-# resources
+### resources
 - https://www.alchemy.com/faucets/base-sepolia # 测试网以太坊，每天领0.1eth，不需要注册，非常快速
 
-# test
+### test
 f-nft price 必须是6位小数 100000000 才是100u
 - usdt: 0xa66Beb8229d7D7C5B078Bea2ae3E87C4DBEe3902 1000000000
 - phenix: 0x80F325b67D9cf94518930d6E24C631E38F9334f3 2000000000(20亿)
-- f-nft: 0xCBfbb824852047a4fA4CdCa98E106C75545B14bc
+- f-nft（Base Sepolia 测试地址，生产勿用）: 0xCBfbb824852047a4fA4CdCa98E106C75545B14bc
 - setRedeemStart 时间戳，必须到秒：js: Math.floor(Date.now() / 1000) + 60
 
 
-# deploy
+### deploy
 1. 一定要先把 phenix 桥接到 base L2 网络
 2. 然后要将 phenix 代币转入 f-nft 合约地址
 3. usdt address: 0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2
 4. phenix base 主网合约地址: 0xf9A7E7D1EA36F2Bbf9e6AD3988177DC001d0f8c0
-5. f-nft: 0xceBc6e3bDbDd972658056CB852B5F1bA8e548268
+5. f-nft（历史主网地址，已废弃）: 0xceBc6e3bDbDd972658056CB852B5F1bA8e548268
 
-# 桥接资产
+### 桥接资产
 1. 桥接主合约以太坊到 base L2 以太坊，用于发布合约的 gas
 2. 使用 主合约地址 在 base L2 上发布合约
 3. 桥接 L1 资产到 L2 上，通过 base 的桥接代码
 
 
-# prompts
+### prompts
 GEO 时代下的官网会是什么形态？如何将 SEO 时代的建站系统升级？
 
 GEO 建站 SAAS 系统，
@@ -79,7 +102,7 @@ GEO 建站 SAAS 系统，
 3. 匹配的开源组件
 4. 实现系统的 SOP
 
-# meme prompts
+### meme prompts
 我现在想做一个 meme 合约用于 phenix 代币的挖矿, meme 是 ERC20 代币，
 1. 构建在 base L2 网络之上
 2. 使用 solidity ^0.8.30
@@ -116,27 +139,27 @@ testnet:
 meme address: 0xcD503Ad62838A3422CFD70e2C138da55bcb1571e
 
 
-# base L2 资产桥接
+### base L2 资产桥接
 - owner wallet: 0xe713Dcf81438ce1DF23E4C423e74F181c7FB249d
 - phenix: 0x18574BDCd95Ac108cAB8e4E6CB536cEF9738c848
 - base L2 phenix: 0x6dE9520092cf47e39402AbeBc43623C893D14Ddc
 - mainnet bridge: 0x9b8275334f070C9fd2324B061dcdE82E3aEA4CBe
 - base bridge: 0x5502af653792D5d24876f12Ac6658eC2332224bB
 
-# 更换思路(base L2)
+### 更换思路(base L2)
 最终 phenix 也发布到 base L2，之后再考虑桥接 base phenix 到主网。
 - owner wallet: 0xe713Dcf81438ce1DF23E4C423e74F181c7FB249d
 - usdt: 0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2
 - phenix: 0xBc121C4d6cfE2B7830dCf18163E1892e5bbB1735
-- f-nft: 0x35CF1a00a53f17145bEfddbD9F720CA05C76f39f
+- f-nft（历史 Base L2 地址，已废弃）: 0x35CF1a00a53f17145bEfddbD9F720CA05C76f39f
 - meme:
 - rwa:
 
-# base testnet
+### base testnet
 - rwa: 0x1003847F3fd4A520cC789F4c81C00e3253a88307
 
 
-# deploy base
+### deploy base
 - phoenix: 0xdC9a8607A7CAE96b4D70E3482f2Ea4A05931a3BF
 - usdt: 0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2
 - meme: 0x4E8AfD027A981ceA4fe6d6dF83e9985c10d7cF1F

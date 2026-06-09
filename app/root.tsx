@@ -75,11 +75,12 @@ export default function App() {
           className={
             clsx(
               "transition-colors duration-500 fixed top-0 left-0 h-14 sm:h-16 px-4 sm:px-6 right-0 w-full z-20",
-              scrolled || !isHome ? "bg-white/[0.88] backdrop-blur-md border-b border-b-sky-100 shadow-sm shadow-sky-950/[0.05]" : "border-b border-b-transparent",
+              "border-b border-b-sky-100 bg-white/[0.9] backdrop-blur-md",
+              scrolled ? "shadow-sm shadow-sky-950/[0.05]" : "",
             )
           }
         >
-          <Header scrolled={scrolled || !isHome} />
+          <Header scrolled />
         </header>
         <main className={clsx("flex-1 container", isHome ? "pt-0" : "pt-14 sm:pt-16")}>
           <Outlet />

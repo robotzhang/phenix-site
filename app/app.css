@@ -157,6 +157,87 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+.home-hero-clouds {
+  background:
+    linear-gradient(104deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.46) 43%, rgba(209, 242, 252, 0.6) 100%),
+    radial-gradient(ellipse at 76% 14%, rgba(114, 211, 238, 0.28), rgba(114, 211, 238, 0) 48%),
+    linear-gradient(180deg, rgba(238, 250, 255, 0.86), rgba(218, 245, 253, 0.7));
+  opacity: 0.92;
+}
+
+.home-hero-clouds::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(112deg, rgba(255, 255, 255, 0) 0 52%, rgba(82, 188, 224, 0.18) 72%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0.6;
+  transform: translate3d(-1%, 0, 0);
+  animation: home-cloud-drift 18s ease-in-out infinite alternate;
+}
+
+.home-hero-clouds::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(112deg, rgba(255, 255, 255, 0.94) 0 42%, rgba(255, 255, 255, 0.42) 58%, rgba(255, 255, 255, 0.08) 100%);
+}
+
+.home-hero-ornament {
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 44%),
+    url("/home-dragon-phoenix-cloud.svg") center / contain no-repeat;
+  filter: saturate(1.06);
+  transform: translate3d(0, 0, 0);
+  animation: home-ornament-float 16s ease-in-out infinite alternate;
+}
+
+.home-hero-ornament::before {
+  content: "";
+  display: block;
+  aspect-ratio: 1440 / 620;
+}
+
+@keyframes home-cloud-drift {
+  from {
+    transform: translate3d(-1.2%, -0.4%, 0) scale(1.01);
+  }
+  to {
+    transform: translate3d(1.2%, 0.8%, 0) scale(1.04);
+  }
+}
+
+@keyframes home-ornament-float {
+  from {
+    transform: translate3d(-1%, -0.5%, 0);
+  }
+  to {
+    transform: translate3d(1%, 0.8%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-clouds::before,
+  .home-hero-ornament {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .home-hero-clouds::before {
+    opacity: 0.12;
+  }
+
+  .home-hero-ornament {
+    display: none;
+  }
+
+  .home-hero-clouds::after {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.42));
+  }
+}
+
 .admin-shell {
   --primary: #821313;
   --primary-foreground: #fff8ec;

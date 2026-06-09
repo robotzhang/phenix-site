@@ -1,0 +1,50 @@
+<svg width="1440" height="620" viewBox="0 0 1440 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="dragon" x1="116" y1="108" x2="748" y2="406" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#80D8EE" stop-opacity="0.72"/>
+      <stop offset="0.52" stop-color="#1598C6" stop-opacity="0.52"/>
+      <stop offset="1" stop-color="#D8B75B" stop-opacity="0.54"/>
+    </linearGradient>
+    <linearGradient id="phoenix" x1="780" y1="96" x2="1378" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EBCB6B" stop-opacity="0.5"/>
+      <stop offset="0.45" stop-color="#2CB6D0" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#D9A447" stop-opacity="0.36"/>
+    </linearGradient>
+    <pattern id="clouds" width="220" height="126" patternUnits="userSpaceOnUse">
+      <path d="M8 82C34 48 68 47 91 74C114 45 160 50 180 90C148 76 121 84 103 108C75 83 43 86 8 82Z" fill="#0B83B5" opacity="0.12"/>
+      <path d="M134 28C158 9 185 16 202 42C176 35 156 42 141 60C127 47 112 44 93 48C101 35 115 28 134 28Z" fill="#D8AD45" opacity="0.1"/>
+    </pattern>
+    <filter id="soften" x="-10%" y="-16%" width="120%" height="132%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="620" fill="url(#clouds)" opacity="0.82"/>
+
+  <g filter="url(#soften)">
+    <g opacity="0.72">
+      <path d="M126 398C244 237 412 146 596 192C655 207 704 236 748 276" stroke="url(#dragon)" stroke-width="19" stroke-linecap="round"/>
+      <path d="M158 440C274 306 428 243 590 272C650 283 704 309 758 348" stroke="#70CEE6" stroke-opacity="0.34" stroke-width="7" stroke-linecap="round"/>
+      <path d="M472 181C437 132 467 88 532 101C495 124 488 151 507 184" stroke="#D7B456" stroke-opacity="0.45" stroke-width="11" stroke-linecap="round"/>
+      <path d="M574 190C595 139 650 128 690 170C645 164 616 178 600 216" stroke="#6FD0E8" stroke-opacity="0.36" stroke-width="9" stroke-linecap="round"/>
+      <path d="M226 332C204 270 235 218 300 214C270 252 271 291 304 332" stroke="#D7B456" stroke-opacity="0.3" stroke-width="9" stroke-linecap="round"/>
+      <path d="M726 264C760 252 788 260 816 284" stroke="#E6C96C" stroke-opacity="0.55" stroke-width="8" stroke-linecap="round"/>
+    </g>
+
+    <g opacity="0.76">
+      <path d="M846 412C940 238 1106 134 1310 140C1219 200 1168 282 1153 388C1244 337 1351 351 1438 450C1320 425 1212 452 1128 526C1048 596 930 582 830 498C901 488 962 449 1000 386C943 417 891 421 846 412Z" fill="url(#phoenix)" opacity="0.44"/>
+      <path d="M826 408C924 272 1048 194 1222 180" stroke="url(#phoenix)" stroke-width="13" stroke-linecap="round"/>
+      <path d="M968 386C1046 304 1152 266 1296 284" stroke="#E8C96D" stroke-opacity="0.38" stroke-width="8" stroke-linecap="round"/>
+      <path d="M982 462C1084 400 1210 384 1378 438" stroke="#62CCE4" stroke-opacity="0.3" stroke-width="8" stroke-linecap="round"/>
+      <path d="M1070 198C1024 148 1040 96 1108 80C1085 124 1094 160 1138 190" stroke="#D7B456" stroke-opacity="0.42" stroke-width="9" stroke-linecap="round"/>
+      <path d="M1172 184C1202 132 1264 122 1310 168C1258 162 1226 178 1206 220" stroke="#6FD0E8" stroke-opacity="0.34" stroke-width="8" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <g opacity="0.22">
+    <path d="M76 126H276" stroke="#0A79AA" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1132 96H1362" stroke="#D8AD45" stroke-width="3" stroke-linecap="round"/>
+    <path d="M996 556H1330" stroke="#0A79AA" stroke-width="3" stroke-linecap="round"/>
+    <path d="M328 520H610" stroke="#D8AD45" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

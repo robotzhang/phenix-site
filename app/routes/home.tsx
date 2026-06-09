@@ -7,7 +7,6 @@ import {
   Building2,
   CircleDollarSign,
   ClipboardCheck,
-  FileCheck2,
   Gavel,
   Gem,
   Landmark,
@@ -15,7 +14,6 @@ import {
   Network,
   Repeat2,
   ShieldCheck,
-  Sparkles,
   WalletCards,
 } from "lucide-react";
 import { PRODUCT_ASSETS } from "@/data/product-assets";
@@ -39,10 +37,10 @@ const solutionItems = [
   { icon: CircleDollarSign, title: "流通服务网络", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的服务申请、资料审核与渠道对接路径。" },
 ];
 
-const trustPrinciples = [
-  { icon: ClipboardCheck, title: "真实资产", text: "以实物资产、影像资料、文件包 hash 与证书索引作为展示基础。" },
-  { icon: ShieldCheck, title: "审慎表达", text: "不公开募资，不承诺收益，不将文化艺术品包装为面向公众销售的金融产品。" },
-  { icon: FileCheck2, title: "规则先行", text: "资产服务以鉴定、托管、合作机构规则和实际交付能力为准。" },
+const serviceSteps = [
+  { step: "01", title: "资料沉淀", text: "整理影像、规格、文件包 hash 与证书索引。" },
+  { step: "02", title: "托管确权", text: "接入第三方托管、线上存证与资产状态记录。" },
+  { step: "03", title: "服务协同", text: "连接典当、拍卖、回收等服务申请路径。" },
 ];
 
 const platformPaths = [
@@ -114,61 +112,63 @@ export function meta() {
 export default function Home() {
   return (
     <div className="-mx-4 md:mx-0">
-      <section className="home-hero relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-b border-sky-100 bg-sky-950 pb-8 pt-10 text-white sm:min-h-[calc(100vh-8rem)] sm:py-14">
-        <img
-          src="/rda-blue-vivid.png"
-          alt="PHENIX"
-          className="absolute inset-0 h-full w-full object-cover opacity-45 sm:opacity-60 lg:opacity-70"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(3,16,26,0.98),rgba(4,28,43,0.94),rgba(7,47,68,0.82))] sm:bg-[linear-gradient(95deg,rgba(5,22,34,0.97),rgba(8,52,68,0.88),rgba(95,73,34,0.34))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(220,183,107,0.16),rgba(220,183,107,0)_34%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(6,42,67,0),rgba(247,251,253,0.98))]" />
+      <section className="home-hero relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-b border-sky-100 bg-[linear-gradient(180deg,#fbfeff_0%,#e4f8ff_100%)] pb-8 pt-20 text-sky-950 sm:min-h-[calc(100vh-8rem)] sm:pb-10 sm:pt-24 lg:pt-20">
+        <div className="home-hero-clouds absolute inset-0" aria-hidden="true" />
+        <div className="home-hero-ornament absolute inset-y-16 right-[-10%] w-[82%] opacity-55 sm:right-[-5%] lg:w-[68%]" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(228,248,255,0),rgba(247,251,253,0.98))]" />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-[1500px] gap-8 px-4 pt-20 sm:px-8 lg:min-h-[calc(100vh-17rem)] lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center lg:pt-0 xl:grid-cols-[minmax(0,1fr)_420px] 2xl:px-10">
-          <div className="max-w-5xl">
-            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-white/35 bg-sky-950/55 px-3 py-1.5 text-sm font-medium text-white shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-md">
-              <Sparkles className="h-4 w-4 text-amber-200" />
+        <div className="relative z-10 mx-auto grid w-full max-w-[1500px] gap-8 px-4 pt-8 sm:px-8 lg:min-h-[calc(100vh-19rem)] lg:grid-cols-[minmax(0,1fr)_610px] lg:items-center lg:pt-0 2xl:px-10">
+          <div className="max-w-4xl">
+            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-sky-200 bg-white/78 px-3 py-1.5 text-sm font-medium text-sky-800 shadow-sm backdrop-blur-md">
+              <ClipboardCheck className="h-4 w-4 text-amber-600" />
               文化艺术品真实资产服务生态
             </div>
-            <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl lg:text-7xl">
               PHENIX
-              <span className="mt-4 block text-[1.55rem] font-medium leading-tight text-white sm:text-4xl">
-                华夏文化艺术品资产服务与流通协同平台
+              <span className="mt-3 block text-[1.55rem] font-medium leading-tight text-sky-950 sm:text-4xl lg:text-[2.75rem]">
+                真实资产服务与可信流通协同
               </span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 sm:mt-8 sm:text-xl">
-              以严选资产库、第三方托管、线上确权与渠道协同为基础，帮助文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-sky-900/72 sm:mt-8 sm:text-xl">
+              用更明亮的晴空蓝和龙凤祥云纹承接服务路径，让文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
             </p>
-            <p className="mt-5 max-w-2xl border-l border-amber-200/80 pl-4 text-sm leading-7 text-white/[0.82]">
+            <p className="mt-5 max-w-2xl border-l border-amber-400 pl-4 text-sm leading-7 text-sky-950/72">
               PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台围绕真实资产提供信息展示、托管协同与流通服务支持。
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
               <Link
                 to="/asset"
-                className="inline-flex items-center justify-center gap-2 border border-white bg-white px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-sky-50"
+                className="inline-flex items-center justify-center gap-2 border border-sky-800 bg-sky-800 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700"
               >
                 浏览资产库
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/custody"
-                className="inline-flex items-center justify-center gap-2 border border-white/55 bg-sky-950/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white/76 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
               >
                 查看托管确权
               </Link>
             </div>
           </div>
 
-          <div className="hidden border border-white/[0.18] bg-white/[0.08] p-5 shadow-2xl backdrop-blur-md lg:block">
-            <div className="text-sm font-semibold uppercase text-amber-100/90">Trust Infrastructure</div>
-            <div className="mt-5 space-y-4">
-              {trustPrinciples.map((item) => (
-                <div key={item.title} className="border border-white/[0.12] bg-white/[0.08] p-4">
-                  <div className="flex items-center gap-3">
-                    <item.icon className="h-5 w-5 text-amber-200" />
-                    <h2 className="font-semibold text-white">{item.title}</h2>
+          <div className="hidden border border-sky-200 bg-white/82 p-8 shadow-[0_28px_80px_rgba(14,116,144,0.14)] backdrop-blur-md lg:block">
+            <div className="text-2xl font-semibold text-sky-950">服务路径</div>
+            <div className="mt-8 space-y-5">
+              {serviceSteps.map((item, index) => (
+                <div key={item.step} className="relative border border-sky-200 bg-sky-50/58 p-5">
+                  {index < serviceSteps.length - 1 && (
+                    <span className="absolute left-[3.25rem] top-[4.75rem] h-5 border-l-2 border-sky-300" aria-hidden="true" />
+                  )}
+                  <div className="grid grid-cols-[3.75rem_1fr] items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-sky-400 bg-sky-50 text-xs font-semibold text-sky-700">
+                      {item.step}
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-sky-950">{item.title}</h2>
+                      <p className="mt-2 text-sm leading-6 text-sky-900/64">{item.text}</p>
+                    </div>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-white/[0.68]">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -178,9 +178,9 @@ export default function Home() {
         <div className="relative z-10 mx-auto mt-8 w-full max-w-[1500px] px-4 sm:mt-10 sm:px-8 2xl:px-10">
           <div className="grid max-w-5xl gap-3 sm:grid-cols-3">
             {heroStats.map((item) => (
-              <div key={item.label} className="border border-white/[0.28] bg-sky-950/[0.24] p-4 backdrop-blur">
-                <div className="text-2xl font-semibold text-white">{item.value}</div>
-                <div className="mt-1 text-sm leading-5 text-white/[0.84]">{item.label}</div>
+              <div key={item.label} className="border border-sky-200 bg-white/82 p-4 shadow-sm backdrop-blur">
+                <div className="text-2xl font-semibold text-sky-950">{item.value}</div>
+                <div className="mt-1 text-sm leading-5 text-sky-900/70">{item.label}</div>
               </div>
             ))}
           </div>

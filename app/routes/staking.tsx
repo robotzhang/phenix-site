@@ -291,9 +291,6 @@ export default function Staking() {
             本功能用于会员服务卡的链上托管、服务周期记录和权益积分核算。页面展示不构成投资建议、理财服务、融资邀约、收益承诺或虚拟货币交易服务；服务卡和权益积分不代表现金价值，具体权益以平台规则和链上记录为准。
           </p>
           <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
-          <div className="mt-6 border border-sky-100 bg-sky-50/70 p-4 text-sm leading-6 text-sky-900/70">
-            当前网络：{STAKING_CHAIN.name}。开发环境默认读取 Base Sepolia，生产环境读取 Base。
-          </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               to="/assets"

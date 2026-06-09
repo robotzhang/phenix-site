@@ -130,7 +130,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-sky-900/72 sm:mt-8 sm:text-xl">
-              用更明亮的晴空蓝和龙凤祥云纹承接服务路径，让文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
+              以严选资产库、第三方托管、线上确权与渠道协同为基础，帮助文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
             </p>
             <p className="mt-5 max-w-2xl border-l border-amber-400 pl-4 text-sm leading-7 text-sky-950/72">
               PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台围绕真实资产提供信息展示、托管协同与流通服务支持。

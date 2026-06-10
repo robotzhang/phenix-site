@@ -264,7 +264,7 @@ export default function AdminAssetList() {
             icon={BadgeCheck}
             label="证书影像"
             value={certificateCount}
-            description="已关联证书与确权资料"
+            description="已关联证书与存证资料"
           />
           <SummaryCard
             icon={ShieldCheck}

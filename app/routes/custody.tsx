@@ -10,7 +10,7 @@ const custodyLayers = [
   {
     icon: Building2,
     title: "分离式托管",
-    text: "将平台交易、资产保管、资金结算与保险保障拆分给专业机构协作完成。",
+    text: "将实物交易服务、资产保管、资金结算与保险保障拆分给专业机构协作完成。",
   },
   {
     icon: Shield,
@@ -20,7 +20,7 @@ const custodyLayers = [
   {
     icon: FileCheck2,
     title: "线上存证",
-    text: "记录资产文件包 hash、所有权与关键流通信息，形成透明、可追溯的数字凭证。",
+    text: "记录资产文件包 hash、权属记录与关键实物流通信息，形成透明、可追溯的存证索引。",
   },
 ];
 
@@ -33,8 +33,8 @@ const records = [
 
 export function meta() {
   return [
-    { title: "托管与确权 | PHENIX" },
-    { name: "description", content: "PHENIX 通过第三方托管、数字确权与线上存证构建文化艺术品资产可信流通基础设施。" },
+    { title: "托管与存证 | PHENIX" },
+    { name: "description", content: "PHENIX 通过第三方托管、线上存证与服务协同构建文化艺术品可信流通基础设施。" },
   ];
 }
 
@@ -48,7 +48,7 @@ export default function Custody() {
             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-6xl">分离式第三方托管</h1>
           </div>
           <p className="text-lg leading-8 text-sky-900/70">
-            PHENIX 联合金融机构、安保机构与保险机构，建立资产保管、资金监管、风险保障和线上存证相互分离的托管体系，提升文化艺术品资产的国际流通能力与全球公信力。
+            PHENIX 联合托管服务机构、安保机构与保险机构，建立资产保管、实物交易资金监管、风险保障和线上存证相互分离的托管体系，提升文化艺术品资产的实物流通能力与公信力。
           </p>
         </div>
       </section>
@@ -91,7 +91,7 @@ export default function Custody() {
         <div className="border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] p-8 text-sky-950 shadow-sm">
           <h2 className="text-2xl font-semibold sm:text-3xl">托管是流通的前提</h2>
           <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
-            当资产的真伪、保管、权属与记录可被持续验证，文化艺术品才具备成为长期资产配置工具的基础条件。
+            当资产的真伪、保管、权属记录与服务记录可被持续验证，文化艺术品才具备进入可信实物流通服务体系的基础条件。
           </p>
           <Link
             to="/liquidity"

@@ -18,7 +18,7 @@ const navItems = [
   { to: "/asset", label: "资产库" },
   { to: "/membership", label: "会员体系" },
   { to: "/points-mall", label: "社区商城" },
-  { to: "/custody", label: "托管与确权" },
+  { to: "/custody", label: "托管与存证" },
   { to: "/liquidity", label: "流通服务" },
   { to: "/faq", label: "FAQ" },
 ];
@@ -116,7 +116,7 @@ export function Header({ scrolled = false }: { scrolled?: boolean }) {
                 合规提示
               </div>
               <p className="mt-2 text-amber-950/[0.78]">
-                PHENIX 不公开募资，不承诺收益。资产服务以真实资料、托管规则和合作机构能力为准。
+                PHENIX 不做虚拟数字交易平台，不做资产代币化发行，不承诺收益。资产服务以真实资料、托管规则和合作机构能力为准。
               </p>
             </div>
           </div>

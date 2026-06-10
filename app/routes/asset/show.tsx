@@ -38,8 +38,8 @@ const trustRecords = [
   },
   {
     icon: LockKeyhole,
-    title: "数字确权",
-    text: "线上存证、持有人信息与状态记录共同形成可追踪的权属凭证。",
+    title: "线上存证",
+    text: "线上存证、持有人信息与状态记录共同形成可追踪的存证索引。",
   },
   {
     icon: ShieldCheck,
@@ -65,7 +65,7 @@ export function meta() {
     {
       name: "description",
       content:
-        "查看 PHENIX 线上文化艺术品资产的确权记录、资产文件包 hash 与流通信息。",
+        "查看 PHENIX 线上文化艺术品资产的存证记录、资产文件包 hash 与流通信息。",
     },
   ];
 }
@@ -196,7 +196,7 @@ export default function RwaShow() {
               </h1>
               <p className="mt-5 leading-8 text-sky-900/70">
                 该资产来自 PHENIX 产品目录，已整理产品影像、规格、会员价与文件包 hash。
-                页面用于资产库展示、会员配置沟通和后续托管确权材料索引。
+                页面用于资产库展示、会员服务沟通和后续托管存证材料索引。
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -264,7 +264,7 @@ export default function RwaShow() {
             </p>
             <h2 className="mt-4 text-3xl font-semibold text-sky-950">产品目录记录</h2>
             <p className="mt-5 leading-8 text-sky-900/70">
-              产品目录记录用于展示真实资产信息，并与后续线上确权、第三方托管、保险及流通资料建立索引关系。
+              产品目录记录用于展示真实资产信息，并与后续线上存证、第三方托管、保险及流通资料建立索引关系。
             </p>
           </div>
           <div className="divide-y divide-sky-100 border border-sky-100 bg-white/80 shadow-sm">
@@ -305,7 +305,7 @@ export default function RwaShow() {
           <div className="border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] p-8 text-sky-950 shadow-sm">
             <h2 className="text-2xl font-semibold">风险提示</h2>
             <p className="mt-4 max-w-4xl leading-7 text-sky-900/70">
-              文化艺术品资产价格受市场需求、稀缺性、保存状态、交易渠道和宏观环境影响。PHENIX
+              文化艺术品资产价格受市场需求、稀缺性、保存状态、实物交易渠道和宏观环境影响。PHENIX
               展示资产信息与服务路径，不公开募资，不承诺收益。
             </p>
           </div>
@@ -544,7 +544,7 @@ export default function RwaShow() {
         <div className="border border-sky-100 bg-[linear-gradient(180deg,#f7fbfd_0%,#e8f2f8_100%)] p-8 text-sky-950 shadow-sm">
           <h2 className="text-2xl font-semibold">风险提示</h2>
             <p className="mt-4 max-w-4xl leading-7 text-sky-900/70">
-              文化艺术品资产价格受市场需求、稀缺性、保存状态、交易渠道和宏观环境影响。PHENIX
+              文化艺术品资产价格受市场需求、稀缺性、保存状态、实物交易渠道和宏观环境影响。PHENIX
               展示资产信息与服务路径，不公开募资，不承诺收益。
             </p>
         </div>

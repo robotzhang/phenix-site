@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { BadgeCheck, BriefcaseBusiness, Gem, Network, ShieldCheck } from "lucide-react";
 
 const benefits = [
-  { icon: Gem, title: "资产配置服务", text: "获取平台严选资产库相关信息与配置服务入口。" },
+  { icon: Gem, title: "严选资产服务", text: "获取平台严选资产库相关信息与服务申请入口。" },
   { icon: Network, title: "圈层资源对接", text: "进入 PHENIX 高净值会员与战略伙伴生态。" },
   { icon: BriefcaseBusiness, title: "项目合作机会", text: "围绕文化艺术品资产、品牌、展陈与跨境流通建立连接。" },
   { icon: ShieldCheck, title: "流通服务协助", text: "对接典当、拍卖、回收等服务申请路径的信息与协助登记。" },
@@ -14,7 +14,7 @@ const benefits = [
 export function meta() {
   return [
     { title: "PHENIX 会员凭证" },
-    { name: "description", content: "获取 PHENIX 会员凭证，进入文化艺术品资产配置与可信流通生态。" },
+    { name: "description", content: "获取 PHENIX 会员凭证，进入真实文化艺术品服务与可信流通生态。" },
     { name: "robots", content: "noindex,nofollow" },
   ];
 }
@@ -29,7 +29,7 @@ export default function Rda() {
             PHENIX 会员凭证
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            会员凭证是进入 PHENIX 文化艺术品资产配置生态的线上入口。它连接资产配置服务、圈层资源、项目合作机会与流通服务协助。
+            会员凭证是进入 PHENIX 真实文化艺术品服务生态的线上入口。它连接严选资产服务、圈层资源、项目合作机会与实物流通服务协助。
           </p>
           <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
           <div className="mt-8 flex flex-wrap gap-3">

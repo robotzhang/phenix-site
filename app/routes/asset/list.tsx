@@ -93,8 +93,8 @@ export default function RwaList() {
               文化艺术品资产库
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-              PHENIX 不卖单品，而是构建可配置资产库。Phenix严选资产入库，每个资产都经过资料收集整理、文件包
-              hash 与确权资料，用于支撑后续第三方托管、第三方典当等服务申请，让平台会员持有的文化艺术品资产拥有更清晰的资料索引和流通服务路径。
+              PHENIX 不做虚拟数字交易平台，而是构建真实文化艺术品严选资产库。每个资产都经过资料收集整理、文件包
+              hash 与证书资料记录，用于支撑后续第三方托管、典当等实物交易渠道服务申请，让平台会员持有的文化艺术品资产拥有更清晰的资料索引和流通服务路径。
             </p>
           </div>
           <div className="grid grid-cols-3 border border-sky-100 bg-white/90 shadow-sm">

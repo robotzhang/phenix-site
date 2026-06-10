@@ -5,8 +5,8 @@ import RightsBoundaryNotice from "@/components/biz/RightsBoundaryNotice";
 const rights = [
   {
     icon: Gem,
-    title: "资产配置服务",
-    text: "基于平台严选资产库，为会员提供文化艺术品资产配置建议与入库资产信息。",
+    title: "严选资产服务",
+    text: "基于平台严选资产库，为会员提供真实文化艺术品入库资产信息与服务申请入口。",
   },
   {
     icon: Network,
@@ -26,15 +26,15 @@ const rights = [
 ];
 
 const tiers = [
-  { name: "Seed Member", focus: "资产配置入门", value: "获得会员凭证、基础资产库信息与生态活动资格。" },
-  { name: "Premier Member", focus: "配置与流通支持", value: "获得优先资产沟通、托管信息追踪与流通路径建议。" },
+  { name: "Seed Member", focus: "资产服务入门", value: "获得会员凭证、基础资产库信息与生态活动资格。" },
+  { name: "Premier Member", focus: "存证与流通支持", value: "获得优先资产沟通、托管信息追踪与实物流通路径建议。" },
   { name: "Strategic Member", focus: "资源与战略合作", value: "面向机构与战略伙伴，参与资产库共建与全球流通网络建设。" },
 ];
 
 export function meta() {
   return [
     { title: "会员体系 | PHENIX" },
-    { name: "description", content: "PHENIX 以资产为纽带、以资源为价值，构建高端会员与文化艺术品资产流通生态。" },
+    { name: "description", content: "PHENIX 以真实资产为纽带、以资源为价值，构建会员服务与文化艺术品实物流通生态。" },
   ];
 }
 
@@ -48,7 +48,7 @@ export default function Membership() {
             资产是纽带，资源是价值。
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            PHENIX 的会员体系不同于传统年费制。会员通过配置平台精选资产进入生态，在资产服务、圈层资源、项目合作与流通服务协助中持续参与平台权益。
+            PHENIX 的会员体系不同于传统年费制。会员通过平台精选资产信息与服务卡进入生态，在真实资产服务、圈层资源、项目合作与实物流通服务协助中持续参与平台权益。
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
@@ -91,7 +91,7 @@ export default function Membership() {
       <section className="border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24">
         <div className="mb-10 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Member Journey</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">从资产配置进入信任生态</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">从真实资产进入信任生态</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {tiers.map((tier) => (

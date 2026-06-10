@@ -5,7 +5,6 @@ import {
   Blocks,
   BriefcaseBusiness,
   Building2,
-  CircleDollarSign,
   ClipboardCheck,
   Gavel,
   Gem,
@@ -20,26 +19,26 @@ import { PRODUCT_ASSETS } from "@/data/product-assets";
 
 const heroStats = [
   { value: String(PRODUCT_ASSETS.length), label: "严选文化艺术品" },
-  { value: "4 层", label: "鉴定、托管、确权、流通协同" },
+  { value: "4 层", label: "鉴定、存证、托管、流通协同" },
   { value: "3 类", label: "典当、拍卖、回收服务通道" },
 ];
 
 const marketSignals = [
-  { title: "交易难", text: "文化艺术品交易周期长，优质资产难以快速进入可信流通。" },
-  { title: "确权难", text: "真伪、来源、托管与交易记录分散，持有人缺少可持续沉淀的资产索引。" },
+  { title: "交易链路长", text: "文化艺术品实物交易周期长，优质资产需要更清晰的资料与服务链路。" },
+  { title: "存证难", text: "真伪、来源、托管与实物交易记录分散，持有人缺少可持续沉淀的资产索引。" },
   { title: "流通难", text: "典当、拍卖、回收等渠道割裂，资产持有人缺少清晰的服务申请与资料对接路径。" },
 ];
 
 const solutionItems = [
-  { icon: BadgeCheck, title: "严选资产库", text: "多层鉴定与专家评审，优先筛选稀缺性强、具备长期流通潜力的文化艺术品资产。" },
-  { icon: LockKeyhole, title: "第三方托管", text: "联合金融、安保、保险等机构建立分离式托管体系，提升资产安全与公信力。" },
-  { icon: Blocks, title: "数字确权存证", text: "通过线上记录沉淀权属、交易与资产文件哈希，让核心信息透明、可追溯。" },
-  { icon: CircleDollarSign, title: "流通服务网络", text: "提前连接典当、拍卖、回收等渠道，为会员建立更清晰的服务申请、资料审核与渠道对接路径。" },
+  { icon: BadgeCheck, title: "严选资产库", text: "多层鉴定与专家评审，优先筛选稀缺性强、具备实物流通基础的文化艺术品。" },
+  { icon: Blocks, title: "线上存证", text: "通过线上记录沉淀资料、权属记录、实物交易与资产文件哈希，让核心信息透明、可追溯。" },
+  { icon: LockKeyhole, title: "第三方托管", text: "联合托管、安保、保险等专业机构建立分离式协作体系，提升资产安全与公信力。" },
+  { icon: Network, title: "交易渠道协同", text: "提前连接典当、拍卖、回收等实物交易渠道，为会员建立更清晰的服务申请、资料审核与渠道对接路径。" },
 ];
 
 const serviceSteps = [
   { step: "01", title: "资料沉淀", text: "整理影像、规格、文件包 hash 与证书索引。" },
-  { step: "02", title: "托管确权", text: "接入第三方托管、线上存证与资产状态记录。" },
+  { step: "02", title: "线上存证", text: "沉淀权属记录、第三方托管与资产状态记录。" },
   { step: "03", title: "服务协同", text: "连接典当、拍卖、回收等服务申请路径。" },
 ];
 
@@ -49,7 +48,7 @@ const platformPaths = [
     to: "/asset",
     label: "Asset Pool",
     title: "文化艺术品资产库",
-    text: "查看Phenix严选文化艺术品库，及其实时的资产状态及交易信息。",
+    text: "查看 PHENIX 严选文化艺术品库、资产状态与实物交易服务信息。",
     accent: "border-amber-200 bg-amber-50/70 text-amber-900",
   },
   {
@@ -57,14 +56,14 @@ const platformPaths = [
     to: "/membership",
     label: "Membership",
     title: "会员服务体系",
-    text: "通过会员凭证、服务卡和积分体系连接资产配置、生态活动与长期服务。",
+    text: "通过会员凭证、服务卡和积分体系连接真实资产服务、生态活动与长期服务。",
     accent: "border-sky-200 bg-sky-50/80 text-sky-900",
   },
   {
     icon: Building2,
     to: "/custody",
     label: "Custody",
-    title: "托管与确权",
+    title: "托管与存证",
     text: "把鉴定、托管、保险、线上存证拆分给专业角色协作，降低信息不对称。",
     accent: "border-emerald-200 bg-emerald-50/70 text-emerald-900",
   },
@@ -72,7 +71,7 @@ const platformPaths = [
     icon: Network,
     to: "/liquidity",
     label: "Liquidity",
-    title: "流通服务机制",
+    title: "文化艺术品实物流通",
     text: "连接典当、拍卖、回收等渠道，为真实资产建立更可追踪的服务申请链路。",
     accent: "border-cyan-200 bg-cyan-50/70 text-cyan-900",
   },
@@ -80,9 +79,9 @@ const platformPaths = [
 
 const operatingSteps = [
   { step: "01", title: "资产入库", text: "围绕真伪、稀缺性、来源材料与流通能力完成初筛。" },
-  { step: "02", title: "托管确权", text: "建立第三方托管、文件包 hash、线上存证与资产状态记录。" },
-  { step: "03", title: "会员配置", text: "向会员开放资产信息、服务卡、积分与生态服务入口。" },
-  { step: "04", title: "流通服务", text: "通过典当、拍卖、回收等合作渠道推进资料审核、价格发现与交易服务。" },
+  { step: "02", title: "线上存证", text: "建立文件包 hash、线上存证、第三方托管与资产状态记录。" },
+  { step: "03", title: "会员服务", text: "向会员开放资产信息、服务卡、积分与生态服务入口。" },
+  { step: "04", title: "实物流通", text: "通过典当、拍卖、回收等合作渠道推进资料审核、价格发现与实物交易服务。" },
 ];
 
 const channelItems = [
@@ -96,7 +95,7 @@ const flywheel = ["资产库扩容", "会员规模增长", "圈层价值增强",
 const milestones = [
   { stage: "第一阶段", title: "基础建设期", goal: "建立核心资产储备、严选入库机制、托管体系和种子会员网络。" },
   { stage: "第二阶段", title: "规模扩张期", goal: "扩展资产规模与会员网络，推动托管、回收和流通渠道落地。" },
-  { stage: "第三阶段", title: "生态成熟期", goal: "建设全球文化艺术品资产配置中心，形成行业标准与全球化运营能力。" },
+  { stage: "第三阶段", title: "生态成熟期", goal: "建设全球文化艺术品可信流通服务中心，形成行业标准与全球化运营能力。" },
 ];
 
 export function meta() {
@@ -104,7 +103,7 @@ export function meta() {
     { title: "PHENIX | 华夏文化艺术品资产服务与流通协同平台" },
     {
       name: "description",
-      content: "构建文化艺术品资产的信任基础设施，以严选资产、托管确权与合规流通服务支持真实资产长期沉淀。",
+      content: "构建文化艺术品可信流通的服务基础设施，以严选资产库、线上存证、第三方托管与实物交易渠道协同支持真实资产长期沉淀。",
     },
   ];
 }
@@ -126,14 +125,24 @@ export default function Home() {
             <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-sky-950 sm:text-6xl lg:text-7xl">
               PHENIX
               <span className="mt-3 block text-[1.55rem] font-medium leading-tight text-sky-950 sm:text-4xl lg:text-[2.75rem]">
-                真实资产服务与可信流通协同
+                华夏文化艺术品真实资产服务平台
               </span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-sky-900/72 sm:mt-8 sm:text-xl">
-              以严选资产库、第三方托管、线上确权与渠道协同为基础，帮助文化艺术品完成资料沉淀、权属记录、服务匹配与可信流通。
+            <p className="mt-5 max-w-2xl text-xl font-medium leading-8 text-sky-900 sm:mt-6 sm:text-2xl">
+              构建文化艺术品可信流通的服务基础设施
             </p>
+            <p className="mt-5 max-w-2xl text-base leading-8 text-sky-900/68 sm:text-lg">
+              以严选资产库、线上存证、第三方托管与交易渠道协同为基础，服务文化艺术品的资料沉淀、权属记录与可信流通。
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {["严选资产库", "线上存证", "第三方托管", "交易渠道协同"].map((item) => (
+                <span key={item} className="border border-sky-200 bg-white/68 px-3 py-1.5 text-sm font-medium text-sky-800 backdrop-blur">
+                  {item}
+                </span>
+              ))}
+            </div>
             <p className="mt-5 max-w-2xl border-l border-amber-400 pl-4 text-sm leading-7 text-sky-950/72">
-              PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台围绕真实资产提供信息展示、托管协同与流通服务支持。
+              PHENIX 不做虚拟数字交易平台，不做资产代币化发行，不承诺收益，不提供公众投资入口。围绕真实文化艺术品，提供实物交易、严选入库、鉴定服务、托管协同、线上存证与第三方服务申请路径协同。
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row">
               <Link
@@ -147,7 +156,7 @@ export default function Home() {
                 to="/custody"
                 className="inline-flex items-center justify-center gap-2 border border-sky-300 bg-white/76 px-5 py-3 text-sm font-semibold text-sky-950 transition hover:bg-white"
               >
-                查看托管确权
+                查看托管存证
               </Link>
             </div>
           </div>
@@ -196,7 +205,7 @@ export default function Home() {
             </h2>
           </div>
           <p className="text-base leading-8 text-sky-900/70 sm:text-lg">
-            全球艺术品市场长期保持在 6000 亿美元以上，中国拥有庞大的文化艺术品存量和活跃交易需求。
+            全球艺术品市场长期保持在 6000 亿美元以上，中国拥有庞大的文化艺术品存量和活跃的实物流通需求。
             真正限制流通的，是信任、流动性与标准化基础设施的缺口。
           </p>
         </div>
@@ -242,7 +251,7 @@ export default function Home() {
             </h2>
           </div>
           <p className="text-base leading-8 text-sky-900/70 sm:text-lg">
-            官网不只展示项目，也承载会员使用路径。资产库、会员体系、托管确权与流通机制共同组成 PHENIX 的服务中台。
+            官网不只展示项目，也承载会员使用路径。资产库、会员体系、托管存证与流通机制共同组成 PHENIX 的服务中台。
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
@@ -273,7 +282,7 @@ export default function Home() {
         <div>
           <p className="text-sm font-semibold uppercase text-emerald-700">Operating Model</p>
           <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">
-            把分散交易，组织成可追踪的服务链路。
+            把分散的实物交易申请，组织成可追踪的服务链路。
           </h2>
           <p className="mt-6 leading-8 text-sky-900/70">
             PHENIX 的核心不是单一资产展示，而是把线下鉴定、第三方托管、线上记录和流通渠道接入同一套会员服务流程。
@@ -300,7 +309,7 @@ export default function Home() {
               会员不是旁观者，而是资产生态的参与者。
             </h2>
             <p className="mt-6 leading-8 text-sky-900/70">
-              服务卡、权益积分规则、资产配置与社区商城共同形成会员入口。平台通过真实资产、真实服务和真实交易记录，帮助会员长期参与文化艺术品流通生态。
+              服务卡、权益积分规则、真实资产服务与社区商城共同形成会员入口。平台通过真实资产、真实服务和实物交易记录，帮助会员长期参与文化艺术品流通生态。
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -391,7 +400,7 @@ export default function Home() {
             <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">三阶段战略路径</h2>
           </div>
           <Link to="/custody" className="inline-flex items-center gap-2 text-sm font-semibold text-sky-900 hover:text-sky-700">
-            查看托管与确权体系
+            查看托管与存证体系
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -414,7 +423,7 @@ export default function Home() {
               <h2 className="text-2xl font-semibold sm:text-3xl">面向合规机构与长期战略伙伴</h2>
             </div>
             <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
-              PHENIX 不公开募资，不承诺收益，不面向公众销售金融产品。平台以真实资产、真实资料、真实服务为基础，欢迎长期认同文化艺术品可信流通价值的伙伴共同参与基础设施建设。
+              PHENIX 不做虚拟数字交易平台，不做资产代币化发行，不承诺收益，不提供公众投资入口。平台以真实资产、真实资料、真实服务为基础，欢迎长期认同文化艺术品可信流通价值的伙伴共同参与基础设施建设。
             </p>
           </div>
           <Link

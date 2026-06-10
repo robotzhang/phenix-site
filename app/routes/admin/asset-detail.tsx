@@ -90,8 +90,8 @@ const trustRecords = [
   },
   {
     icon: LockKeyhole,
-    title: "数字确权",
-    text: "线上存证、持有人信息与状态记录共同形成可追踪的权属凭证。",
+    title: "线上存证",
+    text: "线上存证、持有人信息与状态记录共同形成可追踪的存证索引。",
   },
   {
     icon: ShieldCheck,
@@ -486,7 +486,7 @@ export default function AdminAssetDetail() {
                 </h1>
                 <p className="mt-5 leading-8 text-sky-900/70">
                   该资产来自 PHENIX 产品目录，已整理产品影像、规格、会员价与文件包 hash。
-                  页面用于资产库展示、会员配置沟通和后续托管确权材料索引。
+                  页面用于资产库展示、会员服务沟通和后续托管存证材料索引。
                 </p>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -528,7 +528,7 @@ export default function AdminAssetDetail() {
                 </p>
                 <h2 className="mt-4 text-3xl font-semibold text-sky-950">产品目录记录</h2>
                 <p className="mt-5 leading-8 text-sky-900/70">
-                  产品目录记录用于展示真实资产信息，并与后续线上确权、第三方托管、保险及流通资料建立索引关系。
+                  产品目录记录用于展示真实资产信息，并与后续线上存证、第三方托管、保险及流通资料建立索引关系。
                 </p>
               </div>
               <ProductRecordTable asset={asset} displayName={displayName} />
@@ -935,7 +935,7 @@ function ChainDraftEditorPanel({
                     name: event.target.value,
                   }))
                 }
-                placeholder="链上 RWA 名称"
+                placeholder="链上资产名称"
               />
             </label>
             <label className="grid gap-2">
@@ -982,8 +982,8 @@ function ChainDraftEditorPanel({
           />
 
           <ProductAssetImageUploader
-            title="证书 / 确权资料"
-            description="证书和确权资料并入链上 ZIP 文件包，资产上链后锁定。"
+            title="证书 / 存证资料"
+            description="证书和存证资料并入链上 ZIP 文件包，资产上链后锁定。"
             imageURLs={form.certificateURLs}
             maxImages={MAX_CERTIFICATE_IMAGES}
             uploading={uploadingCertificateImages}
@@ -1087,8 +1087,8 @@ function MaterialsPanel({
 
       <Card>
         <CardHeader>
-          <CardTitle>证书 / 确权资料</CardTitle>
-          <CardDescription>用于展示证书、确权资料和托管文件截图。</CardDescription>
+          <CardTitle>证书 / 存证资料</CardTitle>
+          <CardDescription>用于展示证书、存证资料和托管文件截图。</CardDescription>
         </CardHeader>
         <CardContent>
           {asset.certificateURLs.length > 0 ? (
@@ -1156,7 +1156,7 @@ function ChainInfoPanel({
     if (!isConnected || !address) return "请先连接交易钱包";
     if (chainId !== RWA_CHAIN.id) return `请切换到 ${RWA_CHAIN.name} 网络`;
     if (chainPermissionLoading) return "正在检查发行权限";
-    if (!isIssuerWallet) return "当前钱包不是 RWA 合约 owner 或授权 issuer";
+    if (!isIssuerWallet) return "当前钱包不是资产合约 owner 或授权 issuer";
     if (!isAddress(asset.recipient?.trim() ?? "")) {
       return "请先在本页填写并保存有效的接收钱包地址";
     }

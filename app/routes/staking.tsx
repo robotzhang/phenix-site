@@ -288,7 +288,7 @@ export default function Staking() {
             将服务卡提交至链上托管，记录会员权益使用周期
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            本功能用于会员服务卡的链上托管、服务周期记录和权益积分核算。页面展示不构成投资建议、理财服务、融资邀约、收益承诺或虚拟货币交易服务；服务卡和权益积分不代表现金价值，具体权益以平台规则和链上记录为准。
+            本功能用于会员服务卡的链上托管、服务周期记录和权益积分核算。页面展示不构成投资建议、理财服务、融资邀约、收益承诺或虚拟货币交易服务；PHENIX 不做虚拟数字交易平台，不做资产代币化发行，服务卡和权益积分不代表现金价值，具体权益以平台规则和链上记录为准。
           </p>
           <RightsBoundaryNotice className="mt-6 max-w-3xl" compact />
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -433,7 +433,7 @@ export default function Staking() {
                       预计权益积分记录额度 {formatPhenix(selectedRewardPreview)}
                     </div>
                     <div className="mt-3 text-xs leading-5 text-sky-900/50">
-                      以上额度仅用于平台权益核算，不代表现金价值、固定收益或可交易承诺。
+                      以上额度仅用于平台权益核算，不代表现金价值、固定收益或可转让承诺。
                     </div>
                   </div>
 

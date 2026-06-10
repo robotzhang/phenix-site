@@ -15,7 +15,7 @@ const scenarios = [
   {
     icon: BookOpenCheck,
     title: "线上课程",
-    text: "使用 PHENIX 积分兑换文化艺术品鉴赏、资产配置、托管确权等线上课程。",
+    text: "使用 PHENIX 积分兑换文化艺术品鉴赏、真实资产服务、托管存证等线上课程。",
   },
   {
     icon: Gift,
@@ -32,7 +32,7 @@ const scenarios = [
 const communityMemberHighlights = [
   { label: "权益积分计量", value: "按平台规则测算积分记录" },
   { label: "积分累计方式", value: "依据权益使用周期与线上记录计算" },
-  { label: "服务申请路径", value: "可操作服务卡可提交转让/退出服务申请" },
+  { label: "服务申请路径", value: "可操作服务卡可提交转让服务申请" },
 ];
 
 export function meta() {

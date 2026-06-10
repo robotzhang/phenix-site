@@ -19,13 +19,13 @@ const redemptionProducts = [
   {
     id: "culture-course",
     type: "课程",
-    name: "文化艺术品资产配置入门课",
+    name: "文化艺术品真实资产服务入门课",
     points: 800,
     status: "即将上线",
     image: "/rda-blue-vivid.png",
-    summary: "面向新会员的文化艺术品资产配置基础课程。",
+    summary: "面向新会员的文化艺术品真实资产服务基础课程。",
     description:
-      "围绕文化艺术品资产识别、托管确权、会员权益与流通边界展开，帮助会员建立参与 PHENIX 生态前的基础认知。",
+      "围绕文化艺术品资产识别、托管存证、会员权益与流通边界展开，帮助会员建立参与 PHENIX 生态前的基础认知。",
     rights: ["线上课程访问资格", "课程资料包", "后续专题活动优先通知"],
     actionLabel: "预约兑换",
     icon: BookOpenCheck,

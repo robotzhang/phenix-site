@@ -21,9 +21,9 @@ const channels = [
 
 const process = [
   "资产信息确认",
-  "托管与确权记录复核",
+  "托管与存证记录复核",
   "渠道评估与价格发现",
-  "交易、结算与合规服务",
+  "实物交易、结算与合规服务",
 ];
 
 export function meta() {
@@ -43,7 +43,7 @@ export default function Liquidity() {
             流通，是信任的结果。
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-900/70">
-            PHENIX 提前连接典当、拍卖、回收等渠道，为会员建立更清晰的服务申请路径。流通服务机制不是收益承诺或平台兜底退出，而是围绕真实资产与专业服务搭建的协作网络。
+            PHENIX 提前连接典当、拍卖、回收等渠道，为会员建立更清晰的服务申请路径。流通服务机制不是收益承诺或平台兜底回购，而是围绕真实资产与专业服务搭建的协作网络。
           </p>
         </div>
       </section>
@@ -63,9 +63,9 @@ export default function Liquidity() {
       <section className="grid gap-8 border-y border-sky-100 bg-white/70 px-4 py-16 sm:px-0 sm:py-24 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">Service Path</p>
-          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">从资产确认到交易结算</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-sky-950 sm:text-5xl">从资产确认到实物交易结算</h2>
           <p className="mt-6 leading-8 text-sky-900/70">
-            平台围绕托管、确权、估值、渠道匹配和结算服务，把原本分散的流通申请流程组织成可追踪的服务链路，不承诺成交。
+            平台围绕托管、存证、估值、渠道匹配和实物交易结算服务，把原本分散的流通申请流程组织成可追踪的服务链路，不承诺成交。
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -83,7 +83,7 @@ export default function Liquidity() {
           <BadgeDollarSign className="h-7 w-7 text-sky-700" />
           <h2 className="mt-5 text-2xl font-semibold sm:text-3xl">不承诺收益，只建设更可信的流通基础设施</h2>
           <p className="mt-4 max-w-3xl leading-7 text-sky-900/70">
-            文化艺术品资产价格受市场、资产稀缺性、保存状况、交易渠道和宏观环境影响。PHENIX 的目标是降低信息不对称与流通摩擦，而不是提供固定收益承诺。
+            文化艺术品资产价格受市场、资产稀缺性、保存状况、实物交易渠道和宏观环境影响。PHENIX 的目标是降低信息不对称与流通摩擦，而不是提供固定收益承诺。
           </p>
           <Link
             to="/asset"
